@@ -668,55 +668,82 @@
             }
             
             .race-mini-card {
-                min-height: 100px;
+                min-height: 140px;
                 padding: 1rem;
             }
             
             .race-card-front, .race-card-back {
-                min-height: 100px;
+                min-height: 140px;
+                padding: 1rem;
+            }
+            
+            .race-card-back {
+                max-height: 500px;
+                padding: 1.25rem;
+            }
+            
+            .latest-race-card,
+            .series-card {
+                min-height: 160px;
+            }
+            
+            .latest-race-card .race-card-front,
+            .latest-race-card .race-card-back,
+            .series-card .race-card-front,
+            .series-card .race-card-back {
+                min-height: 160px;
+                padding: 1.25rem;
+            }
+            
+            .latest-race-card .race-card-back,
+            .series-card .race-card-back {
+                max-height: 550px;
             }
             
             .race-card-front > div {
-                margin-bottom: 0.5rem;
+                margin-bottom: 0.75rem;
             }
             
             .race-card-front > div:first-child {
-                font-size: 0.8rem !important;
+                font-size: 0.85rem !important;
                 color: rgba(255,255,255,0.7) !important;
             }
             
             .race-card-front > div:nth-child(2) {
-                font-size: 1.4rem !important;
-                margin: 0.5rem 0;
+                font-size: 1.5rem !important;
+                margin: 0.75rem 0;
             }
             
             .race-card-front > div:nth-child(3) {
-                font-size: 0.8rem !important;
+                font-size: 0.85rem !important;
             }
             
             .race-card-front > div:last-child {
-                font-size: 0.75rem !important;
-            }
-            
-            #racingResultsCard h3 {
-                font-size: 1.1rem;
-            }
-            
-            .race-card-back {
-                max-height: 350px;
-                padding: 0.75rem;
+                font-size: 0.8rem !important;
             }
             
             .race-result-row {
-                font-size: 0.65rem;
+                font-size: 0.7rem;
                 gap: 0.3rem;
-                padding: 0.4rem;
-                margin-bottom: 0.4rem;
+                padding: 0.6rem;
+                margin-bottom: 0.5rem;
             }
             
             .race-results-header {
-                font-size: 0.7rem;
-                margin-bottom: 0.75rem;
+                font-size: 0.75rem;
+                margin-bottom: 1rem;
+            }
+            
+            .standings-row {
+                font-size: 0.65rem;
+                gap: 0.3rem;
+                padding: 0.6rem;
+                margin-bottom: 0.5rem;
+            }
+            
+            .standings-header {
+                font-size: 0.75rem;
+                margin-bottom: 1rem;
             }
             
             /* Improve mobile flip card interaction */
@@ -735,23 +762,8 @@
                 font-size: 0.65rem !important;
             }
             
-            /* Series card mobile optimization */
-            .series-card {
-                min-height: 120px;
-            }
-            
-            .series-card .race-card-back {
-                max-height: 400px;
-            }
-            
-            .standings-row {
-                font-size: 0.6rem;
-                gap: 0.3rem;
-                padding: 0.4rem;
-            }
-            
-            .standings-header {
-                font-size: 0.7rem;
+            #racingResultsCard h3 {
+                font-size: 1.1rem;
             }
         }
 
