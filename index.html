@@ -112,9 +112,10 @@
         }
 
         .upload-icon {
-            font-size: 3rem;
+            font-size: 1.2rem;
             color: rgba(255, 255, 255, 0.6);
             margin-bottom: 1rem;
+            font-weight: bold;
         }
 
         .upload-text {
@@ -422,19 +423,24 @@
             transform-style: preserve-3d;
         }
 
-        .race-mini-card:before {
-            content: '🔄';
-            position: absolute;
-            top: 0.25rem;
-            right: 0.25rem;
-            font-size: 0.6rem;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            z-index: 10;
+        .latest-race-card {
+            background: rgba(255, 255, 255, 0.05) !important;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
         }
 
-        .race-mini-card:hover:before {
-            opacity: 0.6;
+        .latest-race-card:hover {
+            background: rgba(255, 255, 255, 0.08) !important;
+            border-color: rgba(255, 255, 255, 0.25);
+        }
+
+        .latest-race-card .race-card-back {
+            background: rgba(255, 255, 255, 0.15);
+            max-height: 400px;
+        }
+
+        .race-mini-card:before {
+            display: none;
         }
 
         .race-mini-card:hover {
@@ -558,12 +564,78 @@
             font-weight: bold;
         }
 
-        .race-mini-card.upcoming:before {
-            display: none;
+        .series-card {
+            background: rgba(255, 255, 255, 0.05) !important;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
         }
 
-        .race-mini-card.upcoming:hover {
-            transform: translateY(-1px);
+        .series-card:hover {
+            background: rgba(255, 255, 255, 0.08) !important;
+            border-color: rgba(255, 255, 255, 0.25);
+        }
+
+        .series-card .race-card-back {
+            background: rgba(255, 255, 255, 0.15);
+            max-height: 400px;
+        }
+
+        .standings-header {
+            color: white;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+            text-align: center;
+        }
+
+        .standings-row {
+            display: grid;
+            grid-template-columns: 0.8fr 2.5fr 1fr 1fr 1fr 1fr 1fr;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            padding: 0.5rem;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            align-items: center;
+            transition: all 0.2s ease;
+        }
+
+        .standings-row:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .standings-row.standings-highlight {
+            background: rgba(79, 172, 254, 0.2);
+            border: 1px solid rgba(79, 172, 254, 0.4);
+        }
+
+        .standings-position {
+            color: white;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .standings-boat {
+            color: white;
+            font-weight: 600;
+            text-align: left;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .standings-points {
+            color: rgba(255, 255, 255, 0.9);
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .race-points {
+            color: rgba(255, 255, 255, 0.7);
+            text-align: center;
+            font-family: monospace;
         }
 
         @media (max-width: 767px) {
@@ -589,13 +661,41 @@
                 gap: 0.5rem;
             }
             
-            #racingResultsCard > div:nth-child(2) {
-                grid-template-columns: 1fr;
+            /* Mobile-optimized race cards - stacked vertically */
+            #raceHistory > div:last-child {
+                grid-template-columns: 1fr !important;
                 gap: 1rem;
             }
             
-            #raceHistory > div:last-child {
-                grid-template-columns: repeat(2, 1fr);
+            .race-mini-card {
+                min-height: 100px;
+                padding: 1rem;
+            }
+            
+            .race-card-front, .race-card-back {
+                min-height: 100px;
+            }
+            
+            .race-card-front > div {
+                margin-bottom: 0.5rem;
+            }
+            
+            .race-card-front > div:first-child {
+                font-size: 0.8rem !important;
+                color: rgba(255,255,255,0.7) !important;
+            }
+            
+            .race-card-front > div:nth-child(2) {
+                font-size: 1.4rem !important;
+                margin: 0.5rem 0;
+            }
+            
+            .race-card-front > div:nth-child(3) {
+                font-size: 0.8rem !important;
+            }
+            
+            .race-card-front > div:last-child {
+                font-size: 0.75rem !important;
             }
             
             #racingResultsCard h3 {
@@ -603,16 +703,55 @@
             }
             
             .race-card-back {
-                max-height: 250px;
+                max-height: 350px;
+                padding: 0.75rem;
             }
             
             .race-result-row {
-                font-size: 0.6rem;
-                gap: 0.2rem;
+                font-size: 0.65rem;
+                gap: 0.3rem;
+                padding: 0.4rem;
+                margin-bottom: 0.4rem;
             }
             
             .race-results-header {
-                font-size: 0.65rem;
+                font-size: 0.7rem;
+                margin-bottom: 0.75rem;
+            }
+            
+            /* Improve mobile flip card interaction */
+            .race-mini-card:hover {
+                transform: translateY(-1px);
+            }
+            
+            .race-mini-card:hover .race-card-inner {
+                transform: rotateY(180deg);
+            }
+            
+            /* Mobile hint text adjustment */
+            #raceHistory h4 span {
+                display: block;
+                margin-top: 0.25rem;
+                font-size: 0.65rem !important;
+            }
+            
+            /* Series card mobile optimization */
+            .series-card {
+                min-height: 120px;
+            }
+            
+            .series-card .race-card-back {
+                max-height: 400px;
+            }
+            
+            .standings-row {
+                font-size: 0.6rem;
+                gap: 0.3rem;
+                padding: 0.4rem;
+            }
+            
+            .standings-header {
+                font-size: 0.7rem;
             }
         }
 
@@ -704,7 +843,7 @@
 <body>
             <div class="container">
         <div class="header">
-            <h1>⛵ MOAT</h1>
+            <h1>MOAT</h1>
             <p>Real-time performance dashboard for MOAT</p>
         </div>
 
@@ -712,7 +851,7 @@
         <div id="configCard" class="glass-card" style="margin-bottom: 1rem;">
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <div>
-                    <h3 style="color: white; margin: 0; font-size: 1rem;">🛥️ Sailboat Configuration</h3>
+                    <h3 style="color: white; margin: 0; font-size: 1rem;">Sailboat Configuration</h3>
                     <p style="color: rgba(255,255,255,0.7); margin: 0.25rem 0 0 0; font-size: 0.85rem;">
                         <span id="currentBoatName">MOAT</span> • <span id="currentBoatClass">Superyacht Class</span>
                     </p>
@@ -727,7 +866,7 @@
                     backdrop-filter: blur(10px);
                     transition: all 0.3s ease;
                     font-size: 0.8rem;
-                ">⚙️ Configure</button>
+                ">Configure</button>
             </div>
         </div>
 
@@ -735,7 +874,7 @@
         <div id="racingResultsCard" class="glass-card">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
                 <div>
-                    <h3 style="color: white; margin: 0; font-size: 1.3rem;">🏆 Giorgio Armani Superyacht Regatta</h3>
+                    <h3 style="color: white; margin: 0; font-size: 1.3rem;">Giorgio Armani Superyacht Regatta</h3>
                     <p style="color: rgba(255,255,255,0.7); margin: 0.25rem 0 0 0; font-size: 0.9rem;">
                         <span id="raceBoatName">MOAT</span> • Porto Cervo • 27/5/2025 - 31/5/2025
                     </p>
@@ -752,68 +891,96 @@
                 </div>
             </div>
 
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1rem;">
-                <!-- Latest Race Result -->
+            <div style="margin-bottom: 1rem;">
+                <!-- Latest Race Result - Flippable -->
                 <div class="race-result-section">
-                    <h4 style="color: rgba(255,255,255,0.8); font-size: 0.9rem; margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 1px;">
+                    <h4 style="color: rgba(255,255,255,0.8); font-size: 0.9rem; margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 0.5rem;">
                         Latest Race - R3 Results
+                        <span style="color: rgba(255,255,255,0.5); font-size: 0.7rem; font-weight: normal; background: rgba(255,255,255,0.1); padding: 0.2rem 0.5rem; border-radius: 10px;">
+                            Hover for full race results
+                        </span>
                     </h4>
-                    <div id="latestRace" style="background: rgba(255,255,255,0.05); border-radius: 12px; padding: 1rem;">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
-                            <span style="color: white; font-weight: 600; font-size: 1.1rem;" id="latestRaceName">Race R3</span>
-                            <span style="color: rgba(255,255,255,0.7); font-size: 0.8rem;" id="latestRaceDate">Today</span>
-                        </div>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.75rem; text-align: center;">
-                            <div>
-                                <div style="color: rgba(255,255,255,0.6); font-size: 0.75rem;">Position</div>
-                                <div style="color: white; font-size: 1.3rem; font-weight: 700;" id="latestPosition">2nd</div>
+                    <div class="race-mini-card latest-race-card" style="min-height: 120px; padding: 0;">
+                        <div class="race-card-inner">
+                            <!-- Front Side - MOAT's Latest Race Result -->
+                            <div class="race-card-front" style="background: rgba(255,255,255,0.05); border-radius: 12px; padding: 1rem;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                                    <span style="color: white; font-weight: 600; font-size: 1.1rem;" id="latestRaceName">Race R3</span>
+                                    <span style="color: rgba(255,255,255,0.7); font-size: 0.8rem;" id="latestRaceDate">Today</span>
+                                </div>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.75rem; text-align: center;">
+                                    <div>
+                                        <div style="color: rgba(255,255,255,0.6); font-size: 0.75rem;">Position</div>
+                                        <div style="color: white; font-size: 1.3rem; font-weight: 700;" id="latestPosition">3rd</div>
+                                    </div>
+                                    <div>
+                                        <div style="color: rgba(255,255,255,0.6); font-size: 0.75rem;">Finish Time</div>
+                                        <div style="color: white; font-size: 0.9rem; font-weight: 600;" id="latestTime">14:45:33</div>
+                                    </div>
+                                    <div>
+                                        <div style="color: rgba(255,255,255,0.6); font-size: 0.75rem;">Points</div>
+                                        <div style="color: white; font-size: 1.3rem; font-weight: 700;" id="latestPoints">3.0</div>
+                                    </div>
+                                </div>
                             </div>
-                            <div>
-                                <div style="color: rgba(255,255,255,0.6); font-size: 0.75rem;">Finish Time</div>
-                                <div style="color: white; font-size: 0.9rem; font-weight: 600;" id="latestTime">14:32:15</div>
-                            </div>
-                            <div>
-                                <div style="color: rgba(255,255,255,0.6); font-size: 0.75rem;">Points</div>
-                                <div style="color: white; font-size: 1.3rem; font-weight: 700;" id="latestPoints">2.0</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Series Results Overall -->
-                <div class="race-result-section">
-                    <h4 style="color: rgba(255,255,255,0.8); font-size: 0.9rem; margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 1px;">
-                        Series Results Overall
-                    </h4>
-                    <div id="overallStanding" style="background: rgba(255,255,255,0.05); border-radius: 12px; padding: 1rem;">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
-                            <span style="color: white; font-weight: 600; font-size: 1.1rem;" id="overallClass">Superyacht Class</span>
-                            <span style="color: rgba(255,255,255,0.7); font-size: 0.8rem;" id="overallRaces">3 races</span>
-                        </div>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.75rem; text-align: center;">
-                            <div>
-                                <div style="color: rgba(255,255,255,0.6); font-size: 0.75rem;">Position</div>
-                                <div style="color: white; font-size: 1.3rem; font-weight: 700;" id="overallPosition">3rd</div>
-                            </div>
-                            <div>
-                                <div style="color: rgba(255,255,255,0.6); font-size: 0.75rem;">Total Points</div>
-                                <div style="color: white; font-size: 1.3rem; font-weight: 700;" id="overallPoints">7.0</div>
-                            </div>
-                            <div>
-                                <div style="color: rgba(255,255,255,0.6); font-size: 0.75rem;">Net Points</div>
-                                <div style="color: white; font-size: 1.3rem; font-weight: 700;" id="overallNet">7.0</div>
+                            
+                            <!-- Back Side - Full Latest Race Results -->
+                            <div class="race-card-back" id="latestRaceBack">
+                                <!-- Will be populated with latest race fleet results -->
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Race Results Grid -->
+            <!-- Series Results Overall - Flippable Card -->
+            <div style="margin-bottom: 1rem;">
+                <div class="race-result-section">
+                    <h4 style="color: rgba(255,255,255,0.8); font-size: 0.9rem; margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 0.5rem;">
+                        Series Results Overall
+                        <span style="color: rgba(255,255,255,0.5); font-size: 0.7rem; font-weight: normal; background: rgba(255,255,255,0.1); padding: 0.2rem 0.5rem; border-radius: 10px;">
+                            Hover for points breakdown
+                        </span>
+                    </h4>
+                    <div class="race-mini-card series-card" style="min-height: 120px; padding: 0;">
+                        <div class="race-card-inner">
+                            <!-- Front Side - Series Summary -->
+                            <div class="race-card-front" style="background: rgba(255,255,255,0.05); border-radius: 12px; padding: 1rem;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                                    <span style="color: white; font-weight: 600; font-size: 1.1rem;" id="overallClass">Superyacht Class</span>
+                                    <span style="color: rgba(255,255,255,0.7); font-size: 0.8rem;" id="overallRaces">3 races</span>
+                                </div>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.75rem; text-align: center;">
+                                    <div>
+                                        <div style="color: rgba(255,255,255,0.6); font-size: 0.75rem;">Position</div>
+                                        <div style="color: white; font-size: 1.3rem; font-weight: 700;" id="overallPosition">2nd</div>
+                                    </div>
+                                    <div>
+                                        <div style="color: rgba(255,255,255,0.6); font-size: 0.75rem;">Total Points</div>
+                                        <div style="color: white; font-size: 1.3rem; font-weight: 700;" id="overallPoints">6.0</div>
+                                    </div>
+                                    <div>
+                                        <div style="color: rgba(255,255,255,0.6); font-size: 0.75rem;">Net Points</div>
+                                        <div style="color: white; font-size: 1.3rem; font-weight: 700;" id="overallNet">6.0</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Back Side - Overall Standings -->
+                            <div class="race-card-back" id="seriesStandingsBack">
+                                <!-- Will be populated with overall standings -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Race Result Details -->
             <div id="raceHistory" style="margin-top: 1rem;">
                 <h4 style="color: rgba(255,255,255,0.8); font-size: 0.9rem; margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 0.5rem;">
-                    Race Results Scratch Sheet
+                    Race Result Details
                     <span style="color: rgba(255,255,255,0.5); font-size: 0.7rem; font-weight: normal; background: rgba(255,255,255,0.1); padding: 0.2rem 0.5rem; border-radius: 10px;">
-                        💡 Hover to view full results
+                        Hover to view full results
                     </span>
                 </h4>
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 0.75rem;">
@@ -834,7 +1001,7 @@
                     border: 1px solid rgba(79, 172, 254, 0.3);
                     background: rgba(79, 172, 254, 0.1);
                     transition: all 0.3s ease;
-                " id="orcResultsLink">📊 View MOAT Results</a>
+                " id="orcResultsLink">View MOAT Results</a>
             </div>
         </div>
 
@@ -1236,6 +1403,15 @@
                             { position: 6, boat: 'SEAWAVE', elapsedTime: '4:35:22', correctedTime: '4:25:18', delta: '0:37:03', points: 6.0 }
                         ]
                     },
+                    // Overall series standings
+                    seriesStandings: [
+                        { position: 1, boat: 'BELLA VITA', r1: 1.0, r2: 3.0, r3: 1.0, total: 5.0, net: 5.0 },
+                        { position: 2, boat: 'MOAT', r1: 2.0, r2: 1.0, r3: 3.0, total: 6.0, net: 6.0 },
+                        { position: 3, boat: 'AZZURRA', r1: 3.0, r2: 2.0, r3: 2.0, total: 7.0, net: 7.0 },
+                        { position: 4, boat: 'PHOENIX', r1: 4.0, r2: 4.0, r3: 4.0, total: 12.0, net: 12.0 },
+                        { position: 5, boat: 'SEAWAVE', r1: 6.0, r2: 5.0, r3: 6.0, total: 17.0, net: 17.0 },
+                        { position: 6, boat: 'RAMBLE ON ROSE', r1: 5.0, r2: 6.0, r3: 5.0, total: 16.0, net: 16.0 }
+                    ],
                     scheduledRaces: [
                         { id: 4, name: 'Race R4', scheduled: 'Tomorrow', date: '30/5', boat: this.config.sailboatName },
                         { id: 5, name: 'Race R5', scheduled: 'Scheduled', date: '31/5', boat: this.config.sailboatName }
@@ -1414,7 +1590,7 @@
                 
                 // Calculate deltas and final format
                 const winnerTime = results[0].correctedSeconds;
-                return results.map((result, index) => ({
+                const fleetResults = results.map((result, index) => ({
                     position: index + 1,
                     boat: result.boat,
                     elapsedTime: result.elapsedTime,
@@ -1422,6 +1598,45 @@
                     delta: index === 0 ? '0:00:00' : this.secondsToTimeString(result.correctedSeconds - winnerTime),
                     points: index + 1
                 }));
+                
+                // Update series standings with new race
+                this.updateSeriesStandingsWithNewRace(fleetResults);
+                
+                return fleetResults;
+            }
+
+            updateSeriesStandingsWithNewRace(raceResults) {
+                if (!this.raceData.seriesStandings) return;
+                
+                const newRaceId = this.raceData.lastRaceId;
+                const raceKey = `r${newRaceId}`;
+                
+                // Update each boat's points for the new race
+                this.raceData.seriesStandings.forEach(standing => {
+                    const raceResult = raceResults.find(r => r.boat === standing.boat);
+                    if (raceResult) {
+                        standing[raceKey] = raceResult.points;
+                        
+                        // Recalculate total and net points
+                        const raceKeys = Object.keys(standing).filter(key => key.startsWith('r'));
+                        standing.total = raceKeys.reduce((sum, key) => sum + standing[key], 0);
+                        standing.net = standing.total; // No discards yet
+                    }
+                });
+                
+                // Resort standings by total points
+                this.raceData.seriesStandings.sort((a, b) => {
+                    if (a.total === b.total) {
+                        // Tiebreaker: better last race result
+                        return a[raceKey] - b[raceKey];
+                    }
+                    return a.total - b.total;
+                });
+                
+                // Update positions
+                this.raceData.seriesStandings.forEach((standing, index) => {
+                    standing.position = index + 1;
+                });
             }
 
             secondsToTimeString(totalSeconds) {
@@ -1442,6 +1657,9 @@
                     document.getElementById('latestTime').textContent = latestRace.finishTime;
                     document.getElementById('latestPoints').textContent = latestRace.points.toFixed(1);
                     document.getElementById('latestRaceDate').textContent = latestRace.date;
+                    
+                    // Update latest race flip side with full results
+                    this.displayLatestRaceResults(latestRace.id);
                 }
                 
                 // Update overall standing
@@ -1452,8 +1670,105 @@
                 document.getElementById('overallRaces').textContent = `${overall.completedRaces} races`;
                 document.getElementById('overallClass').textContent = overall.className;
                 
+                // Update series standings back content
+                this.displaySeriesStandings();
+                
                 // Update race history with ORC format
                 this.displayRaceHistory();
+            }
+
+            displayLatestRaceResults(raceId) {
+                const backElement = document.getElementById('latestRaceBack');
+                if (!backElement) return;
+                
+                const fleetResults = this.raceData.fleetResults[raceId];
+                if (!fleetResults) {
+                    backElement.innerHTML = '<div style="color: rgba(255,255,255,0.6); font-size: 0.7rem; text-align: center; padding: 2rem;">No detailed results available</div>';
+                    return;
+                }
+                
+                const raceName = this.raceData.races.find(r => r.id === raceId)?.name || `Race R${raceId}`;
+                
+                let html = `
+                    <div class="race-results-header">
+                        ${raceName} - Full Fleet Results
+                    </div>
+                    <div class="race-result-row" style="background: rgba(255,255,255,0.1); font-weight: bold; margin-bottom: 0.5rem;">
+                        <div class="position-cell">Pos</div>
+                        <div class="boat-name-cell">Boat</div>
+                        <div class="time-cell">Elapsed</div>
+                        <div class="time-cell">Corrected</div>
+                        <div class="delta-cell">Delta</div>
+                    </div>
+                `;
+                
+                fleetResults.forEach((result) => {
+                    const isUserBoat = result.boat === this.config.sailboatName;
+                    const isWinner = result.position === 1;
+                    const deltaClass = isWinner ? 'delta-winner' : 'delta-positive';
+                    
+                    html += `
+                        <div class="race-result-row ${isUserBoat ? 'boat-highlight' : ''}">
+                            <div class="position-cell">${result.position}</div>
+                            <div class="boat-name-cell">${result.boat}</div>
+                            <div class="time-cell">${result.elapsedTime}</div>
+                            <div class="time-cell">${result.correctedTime}</div>
+                            <div class="delta-cell ${deltaClass}">${isWinner ? 'Winner' : '+' + result.delta}</div>
+                        </div>
+                    `;
+                });
+                
+                backElement.innerHTML = html;
+            }
+
+            displaySeriesStandings() {
+                const backElement = document.getElementById('seriesStandingsBack');
+                if (!backElement || !this.raceData.seriesStandings) return;
+                
+                let html = `
+                    <div class="standings-header">
+                        Superyacht Class - Series Standings
+                    </div>
+                    <div class="standings-row" style="background: rgba(255,255,255,0.2); font-weight: bold; margin-bottom: 0.75rem;">
+                        <div class="standings-position">Pos</div>
+                        <div class="standings-boat">Boat Name</div>
+                        <div class="race-points">R1</div>
+                        <div class="race-points">R2</div>
+                        <div class="race-points">R3</div>
+                        <div class="standings-points">Total</div>
+                        <div class="standings-points">Net</div>
+                    </div>
+                `;
+                
+                this.raceData.seriesStandings.forEach((standing) => {
+                    const isUserBoat = standing.boat === this.config.sailboatName;
+                    
+                    html += `
+                        <div class="standings-row ${isUserBoat ? 'standings-highlight' : ''}">
+                            <div class="standings-position">${standing.position}</div>
+                            <div class="standings-boat">${standing.boat}</div>
+                            <div class="race-points">${standing.r1.toFixed(1)}</div>
+                            <div class="race-points">${standing.r2.toFixed(1)}</div>
+                            <div class="race-points">${standing.r3.toFixed(1)}</div>
+                            <div class="standings-points">${standing.total.toFixed(1)}</div>
+                            <div class="standings-points">${standing.net.toFixed(1)}</div>
+                        </div>
+                    `;
+                });
+                
+                // Add points explanation
+                html += `
+                    <div style="margin-top: 1rem; padding: 0.75rem; background: rgba(255,255,255,0.1); border-radius: 8px;">
+                        <div style="color: rgba(255,255,255,0.8); font-size: 0.65rem; line-height: 1.4;">
+                            <strong>Scoring System:</strong><br>
+                            • Low Point System (1st = 1 pt, 2nd = 2 pts, etc.)<br>
+                            • Net Points = Total - Discards (if any)<br>
+                            • ${this.config.sailboatName} currently ${this.formatPosition(this.raceData.overallStanding.position)} overall
+                        </div>
+                    </div>
+                `;
+                
+                backElement.innerHTML = html;
             }
 
             displayRaceHistory() {
@@ -1670,7 +1985,7 @@
                 this.initializeRaceResults(); // Refresh with new boat name
                 
                 this.closeConfigModal();
-                alert(`✅ Configuration saved! Dashboard updated for ${this.config.sailboatName}`);
+                alert(`Configuration saved! Dashboard updated for ${this.config.sailboatName}`);
             }
 
             updateBoatSpecificElements() {
@@ -2138,7 +2453,7 @@
             // Method to suggest data extraction approaches
             suggestDataExtraction() {
                 const suggestions = `
-                🔧 Data Extraction Options:
+                Data Extraction Options:
 
                 1. **Manual Export:**
                    - Log into your WebReports
