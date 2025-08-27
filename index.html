@@ -859,26 +859,40 @@
             <p>Real-time performance dashboard for MOAT</p>
         </div>
 
-        <!-- Sailboat Configuration Card -->
-        <div id="configCard" class="glass-card" style="margin-bottom: 1rem;">
+        <!-- Login Card -->
+        <div id="loginCard" class="glass-card" style="margin-bottom: 1rem;">
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <div>
-                    <h3 style="color: white; margin: 0; font-size: 1rem;">Sailboat Configuration</h3>
-                    <p style="color: rgba(255,255,255,0.7); margin: 0.25rem 0 0 0; font-size: 0.85rem;">
-                        <span id="currentBoatName">MOAT</span> • <span id="currentBoatClass">Superyacht Class</span>
+                    <h3 style="color: white; margin: 0; font-size: 1rem;">Access Control</h3>
+                    <p style="color: rgba(255,255,255,0.7); margin: 0.25rem 0 0 0; font-size: 0.85rem;" id="loginStatus">
+                        Not logged in
                     </p>
                 </div>
-                <button onclick="dashboard.showConfigModal()" style="
-                    background: rgba(255,255,255,0.1); 
-                    border: 1px solid rgba(255,255,255,0.3); 
-                    padding: 0.5rem 1rem; 
-                    border-radius: 20px; 
-                    color: white; 
-                    cursor: pointer;
-                    backdrop-filter: blur(10px);
-                    transition: all 0.3s ease;
-                    font-size: 0.8rem;
-                ">Configure</button>
+                <div style="display: flex; gap: 0.5rem;">
+                    <button id="loginBtn" onclick="dashboard.showLoginModal()" style="
+                        background: rgba(79, 172, 254, 0.8); 
+                        border: 1px solid rgba(79, 172, 254, 0.3); 
+                        padding: 0.5rem 1rem; 
+                        border-radius: 20px; 
+                        color: white; 
+                        cursor: pointer;
+                        backdrop-filter: blur(10px);
+                        transition: all 0.3s ease;
+                        font-size: 0.8rem;
+                    ">Login</button>
+                    <button id="logoutBtn" onclick="dashboard.logout()" style="
+                        background: rgba(255,255,255,0.1); 
+                        border: 1px solid rgba(255,255,255,0.3); 
+                        padding: 0.5rem 1rem; 
+                        border-radius: 20px; 
+                        color: white; 
+                        cursor: pointer;
+                        backdrop-filter: blur(10px);
+                        transition: all 0.3s ease;
+                        font-size: 0.8rem;
+                        display: none;
+                    ">Logout</button>
+                </div>
             </div>
         </div>
 
@@ -891,16 +905,42 @@
                         <span id="raceBoatName">MOAT</span> • Porto Cervo • 27/5/2025 - 31/5/2025
                     </p>
                 </div>
-                <div style="display: flex; align-items: center; gap: 0.5rem;">
-                    <div id="refreshIndicator" style="
-                        width: 8px; 
-                        height: 8px; 
-                        border-radius: 50%; 
-                        background: rgba(81, 207, 102, 0.8);
-                        animation: pulse 2s infinite;
-                    "></div>
-                    <span style="color: rgba(255,255,255,0.6); font-size: 0.8rem;">Live</span>
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <div style="text-align: right;">
+                        <div style="color: rgba(255,255,255,0.5); font-size: 0.7rem;">Last Update</div>
+                        <div style="color: rgba(255,255,255,0.8); font-size: 0.8rem;" id="lastUpdateDisplay">Just now</div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <div id="refreshIndicator" style="
+                            width: 8px; 
+                            height: 8px; 
+                            border-radius: 50%; 
+                            background: rgba(81, 207, 102, 0.8);
+                            animation: pulse 2s infinite;
+                        "></div>
+                        <span style="color: rgba(255,255,255,0.6); font-size: 0.8rem;">Live</span>
+                    </div>
                 </div>
+            </div>
+
+            <!-- Notification Bar -->
+            <div id="notificationBar" class="notification-bar hidden" style="
+                background: rgba(79, 172, 254, 0.2);
+                border: 1px solid rgba(79, 172, 254, 0.4);
+                border-radius: 10px;
+                padding: 0.75rem;
+                margin-bottom: 1rem;
+                text-align: center;
+            ">
+                <span style="color: white; font-weight: 600;">New race results available!</span>
+                <button onclick="dashboard.dismissNotification()" style="
+                    background: none;
+                    border: none;
+                    color: rgba(255,255,255,0.7);
+                    cursor: pointer;
+                    float: right;
+                    font-size: 1.2rem;
+                ">×</button>
             </div>
 
             <div style="margin-bottom: 1rem;">
@@ -1013,7 +1053,30 @@
                     border: 1px solid rgba(79, 172, 254, 0.3);
                     background: rgba(79, 172, 254, 0.1);
                     transition: all 0.3s ease;
-                " id="orcResultsLink">View MOAT Results</a>
+                " id="orcResultsLink">Results on Event Website</a>
+            </div>
+        </div>
+
+        <!-- Sailboat Configuration Card -->
+        <div id="configCard" class="glass-card" style="margin-bottom: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h3 style="color: white; margin: 0; font-size: 1rem;">Sailboat Configuration</h3>
+                    <p style="color: rgba(255,255,255,0.7); margin: 0.25rem 0 0 0; font-size: 0.85rem;">
+                        <span id="currentBoatName">MOAT</span> • <span id="currentBoatClass">Superyacht Class</span>
+                    </p>
+                </div>
+                <button onclick="dashboard.showConfigModal()" style="
+                    background: rgba(255,255,255,0.1); 
+                    border: 1px solid rgba(255,255,255,0.3); 
+                    padding: 0.5rem 1rem; 
+                    border-radius: 20px; 
+                    color: white; 
+                    cursor: pointer;
+                    backdrop-filter: blur(10px);
+                    transition: all 0.3s ease;
+                    font-size: 0.8rem;
+                ">Configure</button>
             </div>
         </div>
 
@@ -1344,7 +1407,10 @@
             }
 
             initializeRaceResults() {
-                // Initialize with MOAT-specific ORC race data including full fleet results
+                // Initialize with MOAT-specific ORC race data including full fleet results and time deltas
+                const now = new Date();
+                const latestRaceTime = new Date(now.getTime() - (30 * 60 * 1000)); // 30 minutes ago
+                
                 this.raceData = {
                     lastRaceId: 3,
                     eventName: "Giorgio Armani Superyacht Regatta",
@@ -1357,72 +1423,89 @@
                             id: 1, 
                             name: 'Race R1', 
                             position: 2, 
-                            finishTime: '13:58:42', 
+                            finishTime: '13:58:42',
+                            elapsedTime: '3:58:42',
+                            correctedTime: '3:43:28',
+                            elapsedTimeDelta: '+0:13:10',
+                            correctedTimeDelta: '+0:01:13',
                             points: 2.0, 
                             netPoints: 2.0,
                             finished: true,
                             date: '27/5',
-                            boat: this.config.sailboatName
+                            boat: this.config.sailboatName,
+                            updatedAt: new Date(now.getTime() - (2 * 24 * 60 * 60 * 1000)) // 2 days ago
                         },
                         { 
                             id: 2, 
                             name: 'Race R2', 
                             position: 1, 
-                            finishTime: '15:02:18', 
+                            finishTime: '15:02:18',
+                            elapsedTime: '4:02:18',
+                            correctedTime: '3:58:45',
+                            elapsedTimeDelta: '0:00:00',
+                            correctedTimeDelta: '0:00:00',
                             points: 1.0, 
                             netPoints: 1.0,
                             finished: true,
                             date: '28/5',
-                            boat: this.config.sailboatName
+                            boat: this.config.sailboatName,
+                            updatedAt: new Date(now.getTime() - (1 * 24 * 60 * 60 * 1000)) // 1 day ago
                         },
                         { 
                             id: 3, 
                             name: 'Race R3', 
                             position: 3, 
-                            finishTime: '14:45:33', 
+                            finishTime: '14:45:33',
+                            elapsedTime: '4:05:33',
+                            correctedTime: '3:58:28',
+                            elapsedTimeDelta: '+0:13:05',
+                            correctedTimeDelta: '+0:10:13',
                             points: 3.0, 
                             netPoints: 3.0,
                             finished: true, 
                             isLatest: true,
                             date: 'Today',
-                            boat: this.config.sailboatName
+                            boat: this.config.sailboatName,
+                            updatedAt: latestRaceTime,
+                            deltaToAhead: '-0:05:45', // Behind AZZURRA 
+                            deltaToBehind: '+0:06:54'  // Ahead of PHOENIX
                         }
                     ],
-                    // Full fleet results for each race
+                    // Fleet results with enhanced time data
                     fleetResults: {
                         1: [
-                            { position: 1, boat: 'BELLA VITA', elapsedTime: '3:45:32', correctedTime: '3:42:15', delta: '0:00:00', points: 1.0 },
-                            { position: 2, boat: 'MOAT', elapsedTime: '3:58:42', correctedTime: '3:43:28', delta: '0:01:13', points: 2.0 },
-                            { position: 3, boat: 'AZZURRA', elapsedTime: '4:02:15', correctedTime: '3:45:45', delta: '0:03:30', points: 3.0 },
-                            { position: 4, boat: 'PHOENIX', elapsedTime: '4:08:33', correctedTime: '3:48:22', delta: '0:06:07', points: 4.0 },
-                            { position: 5, boat: 'RAMBLE ON ROSE', elapsedTime: '4:15:47', correctedTime: '3:52:18', delta: '0:10:03', points: 5.0 },
-                            { position: 6, boat: 'SEAWAVE', elapsedTime: '4:22:12', correctedTime: '3:55:33', delta: '0:13:18', points: 6.0 }
+                            { position: 1, boat: 'BELLA VITA', elapsedTime: '3:45:32', correctedTime: '3:42:15', delta: '0:00:00', points: 1.0, finishTime: '13:45:32' },
+                            { position: 2, boat: 'MOAT', elapsedTime: '3:58:42', correctedTime: '3:43:28', delta: '0:01:13', points: 2.0, finishTime: '13:58:42' },
+                            { position: 3, boat: 'AZZURRA', elapsedTime: '4:02:15', correctedTime: '3:45:45', delta: '0:03:30', points: 3.0, finishTime: '14:02:15' },
+                            { position: 4, boat: 'PHOENIX', elapsedTime: '4:08:33', correctedTime: '3:48:22', delta: '0:06:07', points: 4.0, finishTime: '14:08:33' },
+                            { position: 5, boat: 'RAMBLE ON ROSE', elapsedTime: '4:15:47', correctedTime: '3:52:18', delta: '0:10:03', points: 5.0, finishTime: '14:15:47' },
+                            { position: 6, boat: 'SEAWAVE', elapsedTime: '4:22:12', correctedTime: '3:55:33', delta: '0:13:18', points: 6.0, finishTime: '14:22:12' }
                         ],
                         2: [
-                            { position: 1, boat: 'MOAT', elapsedTime: '4:02:18', correctedTime: '3:58:45', delta: '0:00:00', points: 1.0 },
-                            { position: 2, boat: 'AZZURRA', elapsedTime: '4:05:33', correctedTime: '4:01:22', delta: '0:02:37', points: 2.0 },
-                            { position: 3, boat: 'BELLA VITA', elapsedTime: '4:08:45', correctedTime: '4:05:28', delta: '0:06:43', points: 3.0 },
-                            { position: 4, boat: 'PHOENIX', elapsedTime: '4:18:22', correctedTime: '4:12:15', delta: '0:13:30', points: 4.0 },
-                            { position: 5, boat: 'SEAWAVE', elapsedTime: '4:25:15', correctedTime: '4:18:33', delta: '0:19:48', points: 5.0 },
-                            { position: 6, boat: 'RAMBLE ON ROSE', elapsedTime: '4:32:08', correctedTime: '4:25:42', delta: '0:26:57', points: 6.0 }
+                            { position: 1, boat: 'MOAT', elapsedTime: '4:02:18', correctedTime: '3:58:45', delta: '0:00:00', points: 1.0, finishTime: '15:02:18' },
+                            { position: 2, boat: 'AZZURRA', elapsedTime: '4:05:33', correctedTime: '4:01:22', delta: '0:02:37', points: 2.0, finishTime: '15:05:33' },
+                            { position: 3, boat: 'BELLA VITA', elapsedTime: '4:08:45', correctedTime: '4:05:28', delta: '0:06:43', points: 3.0, finishTime: '15:08:45' },
+                            { position: 4, boat: 'PHOENIX', elapsedTime: '4:18:22', correctedTime: '4:12:15', delta: '0:13:30', points: 4.0, finishTime: '15:18:22' },
+                            { position: 5, boat: 'SEAWAVE', elapsedTime: '4:25:15', correctedTime: '4:18:33', delta: '0:19:48', points: 5.0, finishTime: '15:25:15' },
+                            { position: 6, boat: 'RAMBLE ON ROSE', elapsedTime: '4:32:08', correctedTime: '4:25:42', delta: '0:26:57', points: 6.0, finishTime: '15:32:08' }
                         ],
                         3: [
-                            { position: 1, boat: 'BELLA VITA', elapsedTime: '3:52:28', correctedTime: '3:48:15', delta: '0:00:00', points: 1.0 },
-                            { position: 2, boat: 'AZZURRA', elapsedTime: '3:58:12', correctedTime: '3:52:33', delta: '0:04:18', points: 2.0 },
-                            { position: 3, boat: 'MOAT', elapsedTime: '4:05:33', correctedTime: '3:58:28', delta: '0:10:13', points: 3.0 },
-                            { position: 4, boat: 'PHOENIX', elapsedTime: '4:12:45', correctedTime: '4:05:22', delta: '0:17:07', points: 4.0 },
-                            { position: 5, boat: 'RAMBLE ON ROSE', elapsedTime: '4:28:33', correctedTime: '4:18:45', delta: '0:30:30', points: 5.0 },
-                            { position: 6, boat: 'SEAWAVE', elapsedTime: '4:35:22', correctedTime: '4:25:18', delta: '0:37:03', points: 6.0 }
+                            { position: 1, boat: 'BELLA VITA', elapsedTime: '3:52:28', correctedTime: '3:48:15', delta: '0:00:00', points: 1.0, finishTime: '14:52:28', deltaToNext: '+0:04:18' },
+                            { position: 2, boat: 'AZZURRA', elapsedTime: '3:58:12', correctedTime: '3:52:33', delta: '0:04:18', points: 2.0, finishTime: '14:58:12', deltaToNext: '+0:05:55' },
+                            { position: 3, boat: 'MOAT', elapsedTime: '4:05:33', correctedTime: '3:58:28', delta: '0:10:13', points: 3.0, finishTime: '14:45:33', deltaToNext: '+0:06:54' },
+                            { position: 4, boat: 'PHOENIX', elapsedTime: '4:12:45', correctedTime: '4:05:22', delta: '0:17:07', points: 4.0, finishTime: '14:52:45', deltaToNext: '+0:13:23' },
+                            { position: 5, boat: 'RAMBLE ON ROSE', elapsedTime: '4:28:33', correctedTime: '4:18:45', delta: '0:30:30', points: 5.0, finishTime: '15:08:33', deltaToNext: '+0:06:33' },
+                            { position: 6, boat: 'SEAWAVE', elapsedTime: '4:35:22', correctedTime: '4:25:18', delta: '0:37:03', points: 6.0, finishTime: '15:15:22', deltaToNext: '' }
                         ]
                     },
                     // Overall series standings
                     seriesStandings: [
-                        { position: 1, boat: 'BELLA VITA', r1: 1.0, r2: 3.0, r3: 1.0, total: 5.0, net: 5.0 },
-                        { position: 2, boat: 'MOAT', r1: 2.0, r2: 1.0, r3: 3.0, total: 6.0, net: 6.0 },
-                        { position: 3, boat: 'AZZURRA', r1: 3.0, r2: 2.0, r3: 2.0, total: 7.0, net: 7.0 },
-                        { position: 4, boat: 'PHOENIX', r1: 4.0, r2: 4.0, r3: 4.0, total: 12.0, net: 12.0 },
-                        { position: 5, boat: 'SEAWAVE', r1: 6.0, r2: 5.0, r3: 6.0, total: 17.0, net: 17.0 },
-                        { position: 6, boat: 'RAMBLE ON ROSE', r1: 5.0, r2: 6.0, r3: 5.0, total: 16.0, net: 16.0 }
+                        { position: 1, boat: 'BELLA VITA', r1: 1.0, r2: 3.0, r3: 1.0, total: 5.0, net: 5.0, correctedTimeDelta: '0:00:00' },
+                        { position: 2, boat: 'MOAT', r1: 2.0, r2: 1.0, r3: 3.0, total: 6.0, net: 6.0, correctedTimeDelta: '+0:01:13' },
+                        { position: 3, boat: 'AZZURRA', r1: 3.0, r2: 2.0, r3: 2.0, total: 7.0, net: 7.0, correctedTimeDelta: '+0:03:30' },
+                        { position: 4, boat: 'PHOENIX', r1: 4.0, r2: 4.0, r3: 4.0, total: 12.0, net: 12.0, correctedTimeDelta: '+0:06:07' },
+                        { position: 5, boat: 'SEAWAVE', r1: 6.0, r2: 5.0, r3: 6.0, total: 17.0, net: 17.0, correctedTimeDelta: '+0:13:18' },
+                        { position: 6, boat: 'RAMBLE ON ROSE', r1: 5.0, r2: 6.0, r3: 5.0, total: 16.0, net: 16.0, correctedTimeDelta: '+0:10:03' }
                     ],
                     scheduledRaces: [
                         { id: 4, name: 'Race R4', scheduled: 'Tomorrow', date: '30/5', boat: this.config.sailboatName },
@@ -1440,6 +1523,7 @@
                 };
                 
                 this.displayRaceResults();
+                this.checkForRecentUpdates();
             }
 
             startAutoRefresh() {
@@ -1462,13 +1546,18 @@
                     const indicator = document.getElementById('refreshIndicator');
                     indicator.style.background = 'rgba(255, 212, 59, 0.8)';
                     
-                    // Simulate checking for new race data
-                    // In real implementation, this would call your race results API
-                    const hasNewData = await this.fetchLatestRaceResults();
-                    
-                    if (hasNewData) {
-                        this.displayRaceResults();
-                        this.flashUpdatedElements();
+                    // Only check if logged in for real-time updates
+                    if (this.loginState.isLoggedIn) {
+                        const hasNewData = await this.fetchLatestRaceResults();
+                        
+                        if (hasNewData) {
+                            this.displayRaceResults();
+                            this.flashUpdatedElements();
+                            this.checkForRecentUpdates();
+                            
+                            // Show notification for new results
+                            this.showNotification('New race results are now available!');
+                        }
                     }
                     
                     // Reset indicator
@@ -1658,6 +1747,30 @@
                 return `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
             }
 
+            checkForRecentUpdates() {
+                const now = new Date();
+                const latestRace = this.raceData.races.find(race => race.isLatest);
+                
+                if (latestRace && latestRace.updatedAt) {
+                    const timeSinceUpdate = now - new Date(latestRace.updatedAt);
+                    const minutesSinceUpdate = Math.floor(timeSinceUpdate / (60 * 1000));
+                    
+                    // Color latest race green if updated in last 45 minutes
+                    if (minutesSinceUpdate < 45) {
+                        const latestRaceCard = document.querySelector('.latest-race-card');
+                        if (latestRaceCard) {
+                            latestRaceCard.classList.add('latest-race-updated');
+                        }
+                        
+                        // Show notification for very recent updates (less than 5 minutes)
+                        if (minutesSinceUpdate < 5 && !this.notifications.hasNewResults) {
+                            this.showNotification(`Latest race results updated ${minutesSinceUpdate} minutes ago`);
+                            this.notifications.hasNewResults = true;
+                        }
+                    }
+                }
+            }
+
             displayRaceResults() {
                 const latestRace = this.raceData.races.find(race => race.isLatest) || 
                                    this.raceData.races[this.raceData.races.length - 1];
@@ -1682,11 +1795,21 @@
                 document.getElementById('overallRaces').textContent = `${overall.completedRaces} races`;
                 document.getElementById('overallClass').textContent = overall.className;
                 
+                // Update last update display
+                this.updateLastUpdateDisplay();
+                
                 // Update series standings back content
                 this.displaySeriesStandings();
                 
                 // Update race history with ORC format
                 this.displayRaceHistory();
+            }
+
+            updateLastUpdateDisplay() {
+                const now = new Date();
+                this.lastUpdateTime = now;
+                document.getElementById('lastUpdateDisplay').textContent = 
+                    now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
             }
 
             displayLatestRaceResults(raceId) {
@@ -1705,27 +1828,26 @@
                     <div class="race-results-header">
                         ${raceName} - Full Fleet Results
                     </div>
-                    <div class="race-result-row" style="background: rgba(255,255,255,0.1); font-weight: bold; margin-bottom: 0.5rem;">
+                    <div class="race-result-row" style="background: rgba(255,255,255,0.1); font-weight: bold; margin-bottom: 0.5rem; grid-template-columns: 0.8fr 2fr 1.2fr 1.2fr 1.2fr;">
                         <div class="position-cell">Pos</div>
                         <div class="boat-name-cell">Boat</div>
+                        <div class="time-cell">Finish Time</div>
                         <div class="time-cell">Elapsed</div>
                         <div class="time-cell">Corrected</div>
-                        <div class="delta-cell">Delta</div>
                     </div>
                 `;
                 
                 fleetResults.forEach((result) => {
                     const isUserBoat = result.boat === this.config.sailboatName;
-                    const isWinner = result.position === 1;
-                    const deltaClass = isWinner ? 'delta-winner' : 'delta-positive';
+                    const finishTime = result.finishTime || result.elapsedTime;
                     
                     html += `
-                        <div class="race-result-row ${isUserBoat ? 'boat-highlight' : ''}">
+                        <div class="race-result-row ${isUserBoat ? 'boat-highlight' : ''}" style="grid-template-columns: 0.8fr 2fr 1.2fr 1.2fr 1.2fr;">
                             <div class="position-cell">${result.position}</div>
                             <div class="boat-name-cell">${result.boat}</div>
+                            <div class="time-cell">${finishTime}</div>
                             <div class="time-cell">${result.elapsedTime}</div>
                             <div class="time-cell">${result.correctedTime}</div>
-                            <div class="delta-cell ${deltaClass}">${isWinner ? 'Winner' : '+' + result.delta}</div>
                         </div>
                     `;
                 });
@@ -1803,14 +1925,21 @@
                     const cardInner = document.createElement('div');
                     cardInner.className = 'race-card-inner';
                     
-                    // Front side - MOAT's result
+                    // Front side - MOAT's result with time data
                     const cardFront = document.createElement('div');
                     cardFront.className = 'race-card-front';
                     cardFront.innerHTML = `
                         <div style="color: rgba(255,255,255,0.6); font-size: 0.7rem;">${race.name}</div>
                         <div style="color: white; font-weight: 600; font-size: 1.1rem;">${this.formatPosition(race.position)}</div>
-                        <div style="color: rgba(255,255,255,0.5); font-size: 0.7rem;">${race.points.toFixed(1)} pts</div>
-                        <div style="color: rgba(255,255,255,0.4); font-size: 0.65rem;">${race.finishTime}</div>
+                        <div style="color: rgba(255,255,255,0.5); font-size: 0.7rem;">Finish: ${race.finishTime}</div>
+                        <div style="color: rgba(255,255,255,0.4); font-size: 0.65rem;">
+                            ${race.deltaToAhead ? 
+                                `<span class="time-delta delta-behind">${race.deltaToAhead} behind</span>` : 
+                                race.deltaToBehind ? 
+                                `<span class="time-delta delta-ahead">${race.deltaToBehind} ahead</span>` : 
+                                '<span class="time-delta">No gap data</span>'
+                            }
+                        </div>
                     `;
                     
                     // Back side - Full fleet results
@@ -1862,29 +1991,28 @@
                 
                 let html = `
                     <div class="race-results-header">
-                        ${this.raceData.races.find(r => r.id === raceId)?.name || `Race R${raceId}`} - Full Results
+                        ${this.raceData.races.find(r => r.id === raceId)?.name || `Race R${raceId}`} - Detailed Results
                     </div>
-                    <div class="race-result-row" style="background: rgba(255,255,255,0.1); font-weight: bold; margin-bottom: 0.5rem;">
+                    <div class="race-result-row" style="background: rgba(255,255,255,0.1); font-weight: bold; margin-bottom: 0.5rem; grid-template-columns: 0.6fr 1.8fr 1fr 1fr 1fr;">
                         <div class="position-cell">Pos</div>
                         <div class="boat-name-cell">Boat</div>
+                        <div class="time-cell">Finish</div>
                         <div class="time-cell">Elapsed</div>
                         <div class="time-cell">Corrected</div>
-                        <div class="delta-cell">Delta</div>
                     </div>
                 `;
                 
-                fleetResults.forEach((result) => {
+                fleetResults.forEach((result, index) => {
                     const isUserBoat = result.boat === this.config.sailboatName;
-                    const isWinner = result.position === 1;
-                    const deltaClass = isWinner ? 'delta-winner' : 'delta-positive';
+                    const finishTime = result.finishTime || result.elapsedTime;
                     
                     html += `
-                        <div class="race-result-row ${isUserBoat ? 'boat-highlight' : ''}">
+                        <div class="race-result-row ${isUserBoat ? 'boat-highlight' : ''}" style="grid-template-columns: 0.6fr 1.8fr 1fr 1fr 1fr;">
                             <div class="position-cell">${result.position}</div>
                             <div class="boat-name-cell">${result.boat}</div>
+                            <div class="time-cell">${finishTime}</div>
                             <div class="time-cell">${result.elapsedTime}</div>
                             <div class="time-cell">${result.correctedTime}</div>
-                            <div class="delta-cell ${deltaClass}">${isWinner ? 'Winner' : '+' + result.delta}</div>
                         </div>
                     `;
                 });
@@ -1959,7 +2087,145 @@
                 }
             }
 
+            // Login Management Methods
+            showLoginModal() {
+                document.getElementById('loginModal').classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            }
+
+            closeLoginModal() {
+                document.getElementById('loginModal').classList.add('hidden');
+                document.body.style.overflow = 'auto';
+                // Clear form
+                document.getElementById('loginUsername').value = '';
+                document.getElementById('loginPassword').value = '';
+            }
+
+            attemptLogin() {
+                const username = document.getElementById('loginUsername').value.trim();
+                const password = document.getElementById('loginPassword').value.trim();
+                
+                if (!username || !password) {
+                    alert('Please enter both username and password');
+                    return;
+                }
+                
+                // Simulate login process
+                // In real implementation, this would call authentication API
+                if (username === 'demo' || username.toLowerCase() === 'moat') {
+                    this.loginState = {
+                        isLoggedIn: true,
+                        username: username,
+                        lastLoginTime: new Date().toISOString()
+                    };
+                    
+                    localStorage.setItem('login_state', JSON.stringify(this.loginState));
+                    this.updateLoginDisplay();
+                    this.closeLoginModal();
+                    alert(`Login successful! Welcome ${username}`);
+                    
+                    // Enable real-time features
+                    this.apiConfig.enabled = true;
+                } else {
+                    alert('Invalid credentials. Try "demo" or "moat" for demonstration.');
+                }
+            }
+
+            logout() {
+                this.loginState = {
+                    isLoggedIn: false,
+                    username: '',
+                    lastLoginTime: null
+                };
+                
+                localStorage.removeItem('login_state');
+                this.updateLoginDisplay();
+                this.apiConfig.enabled = false;
+                alert('Logged out successfully');
+            }
+
             // Configuration Management Methods
+            showConfigModal() {
+                // Populate current values
+                document.getElementById('configBoatName').value = this.config.sailboatName;
+                document.getElementById('configBoatClass').value = this.config.boatClass;
+                document.getElementById('configOwnerName').value = this.config.ownerName || '';
+                document.getElementById('configSailNumber').value = this.config.sailNumber || '';
+                
+                document.getElementById('configModal').classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            }
+
+            closeConfigModal() {
+                document.getElementById('configModal').classList.add('hidden');
+                document.body.style.overflow = 'auto';
+            }
+
+            saveConfiguration() {
+                const newConfig = {
+                    sailboatName: document.getElementById('configBoatName').value.trim().toUpperCase() || 'MOAT',
+                    boatClass: document.getElementById('configBoatClass').value.trim() || 'Superyacht Class',
+                    ownerName: document.getElementById('configOwnerName').value.trim(),
+                    sailNumber: document.getElementById('configSailNumber').value.trim()
+                };
+                
+                // Update configuration
+                this.config = { ...this.config, ...newConfig };
+                this.config.displayName = `${this.config.sailboatName} Performance Dashboard`;
+                
+                // Save to localStorage
+                localStorage.setItem('sailboat_config', JSON.stringify(this.config));
+                
+                // Update dashboard
+                this.updateDashboardBranding();
+                this.updateBoatSpecificElements();
+                this.initializeRaceResults(); // Refresh with new boat name
+                
+                this.closeConfigModal();
+                alert(`Configuration saved! Dashboard updated for ${this.config.sailboatName}`);
+            }
+
+            updateBoatSpecificElements() {
+                // Update all boat-specific display elements
+                document.getElementById('currentBoatName').textContent = this.config.sailboatName;
+                document.getElementById('currentBoatClass').textContent = this.config.boatClass;
+                document.getElementById('raceBoatName').textContent = this.config.sailboatName;
+                
+                // Update ORC results link to use new text
+                const orcLink = document.getElementById('orcResultsLink');
+                if (orcLink) {
+                    orcLink.textContent = 'Results on Event Website';
+                }
+                
+                // Update data display if available
+                if (this.raceData && this.raceData.races.length > 0) {
+                    this.displayRaceResults();
+                }
+            }
+
+            // Notification Management
+            showNotification(message) {
+                const notificationBar = document.getElementById('notificationBar');
+                notificationBar.querySelector('span').textContent = message;
+                notificationBar.classList.remove('hidden');
+                this.notifications.lastNotificationTime = new Date();
+            }
+
+            dismissNotification() {
+                document.getElementById('notificationBar').classList.add('hidden');
+                this.notifications.hasNewResults = false;
+            }
+            showNotification(message) {
+                const notificationBar = document.getElementById('notificationBar');
+                notificationBar.querySelector('span').textContent = message;
+                notificationBar.classList.remove('hidden');
+                this.notifications.lastNotificationTime = new Date();
+            }
+
+            dismissNotification() {
+                document.getElementById('notificationBar').classList.add('hidden');
+                this.notifications.hasNewResults = false;
+            }
             showConfigModal() {
                 // Populate current values
                 document.getElementById('configBoatName').value = this.config.sailboatName;
