@@ -2075,8 +2075,15 @@
                 if (latestRace) {
                     document.getElementById('latestRaceName').textContent = latestRace.name;
                     document.getElementById('latestPosition').textContent = this.formatPosition(latestRace.position);
-                    document.getElementById('latestDeltaAhead').textContent = latestRace.correctedDeltaAhead || '-';
-                    document.getElementById('latestDeltaBehind').textContent = latestRace.correctedDeltaBehind || '-';
+                    
+                    // Update delta ahead - show "Winner" if in first place, otherwise show time gap
+                    const deltaAhead = latestRace.position === 1 ? 'Winner' : (latestRace.correctedDeltaAhead || '+0:00:00');
+                    document.getElementById('latestDeltaAhead').textContent = deltaAhead;
+                    
+                    // Update delta behind - show time gap to boat behind
+                    const deltaBehind = latestRace.correctedDeltaBehind || '+0:00:00';
+                    document.getElementById('latestDeltaBehind').textContent = deltaBehind;
+                    
                     document.getElementById('latestRaceDate').textContent = latestRace.date;
                     
                     this.displayLatestRaceResults(latestRace.id);
