@@ -859,12 +859,12 @@
                                         <div style="color: white; font-size: 1.3rem; font-weight: 700;" id="latestPosition">3rd</div>
                                     </div>
                                     <div>
-                                        <div style="color: rgba(255,255,255,0.6); font-size: 0.75rem;">Finish Time</div>
-                                        <div style="color: white; font-size: 0.9rem; font-weight: 600;" id="latestTime">14:45:33</div>
+                                        <div style="color: rgba(255,255,255,0.6); font-size: 0.75rem;">Delta Ahead</div>
+                                        <div style="color: rgba(255, 140, 66, 0.9); font-size: 0.85rem; font-weight: 600;" id="latestDeltaAhead">+0:05:45</div>
                                     </div>
                                     <div>
-                                        <div style="color: rgba(255,255,255,0.6); font-size: 0.75rem;">Points</div>
-                                        <div style="color: white; font-size: 1.3rem; font-weight: 700;" id="latestPoints">3.0</div>
+                                        <div style="color: rgba(255,255,255,0.6); font-size: 0.75rem;">Delta Behind</div>
+                                        <div style="color: rgba(81, 207, 102, 0.9); font-size: 0.85rem; font-weight: 600;" id="latestDeltaBehind">+0:06:54</div>
                                     </div>
                                 </div>
                             </div>
@@ -2075,8 +2075,8 @@
                 if (latestRace) {
                     document.getElementById('latestRaceName').textContent = latestRace.name;
                     document.getElementById('latestPosition').textContent = this.formatPosition(latestRace.position);
-                    document.getElementById('latestTime').textContent = latestRace.finishTime;
-                    document.getElementById('latestPoints').textContent = latestRace.points.toFixed(1);
+                    document.getElementById('latestDeltaAhead').textContent = latestRace.correctedDeltaAhead || '-';
+                    document.getElementById('latestDeltaBehind').textContent = latestRace.correctedDeltaBehind || '-';
                     document.getElementById('latestRaceDate').textContent = latestRace.date;
                     
                     this.displayLatestRaceResults(latestRace.id);
