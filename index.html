@@ -1697,7 +1697,7 @@
                     return;
                 }
                 
-                if (username === 'demo' || username.toLowerCase() === 'moat') {
+                if (username === 'demo' || username.toLowerCase() === 'burrasca' || username.toLowerCase() === 'andros2025') {
                     this.loginState = {
                         isLoggedIn: true,
                         username: username,
@@ -2074,14 +2074,18 @@
                 
                 if (latestRace) {
                     document.getElementById('latestRaceName').textContent = latestRace.name;
-                    document.getElementById('latestPosition').textContent = this.formatPosition(latestRace.position);
+                    document.getElementById('latestPosition').textContent = latestRace.position === 0 ? 'TBD' : this.formatPosition(latestRace.position);
                     
-                    // Update delta ahead - show "Winner" if in first place, otherwise show time gap
-                    const deltaAhead = latestRace.position === 1 ? 'Winner' : (latestRace.correctedDeltaAhead || '+0:00:00');
+                    // Update delta ahead - show "TBD" if race not finished
+                    const deltaAhead = latestRace.finished ? 
+                        (latestRace.position === 1 ? 'Winner' : (latestRace.correctedDeltaAhead || 'TBD')) : 
+                        'TBD';
                     document.getElementById('latestDeltaAhead').textContent = deltaAhead;
                     
-                    // Update delta behind - show time gap to boat behind
-                    const deltaBehind = latestRace.correctedDeltaBehind || '+0:00:00';
+                    // Update delta behind - show "TBD" if race not finished
+                    const deltaBehind = latestRace.finished ? 
+                        (latestRace.correctedDeltaBehind || 'TBD') : 
+                        'TBD';
                     document.getElementById('latestDeltaBehind').textContent = deltaBehind;
                     
                     document.getElementById('latestRaceDate').textContent = latestRace.date;
@@ -2090,7 +2094,7 @@
                 }
                 
                 const overall = this.raceData.overallStanding;
-                document.getElementById('overallPosition').textContent = this.formatPosition(overall.position);
+                document.getElementById('overallPosition').textContent = overall.position === 0 ? 'TBD' : this.formatPosition(overall.position);
                 document.getElementById('overallPoints').textContent = overall.totalPoints.toFixed(1);
                 document.getElementById('overallNet').textContent = overall.netPoints.toFixed(1);
                 document.getElementById('overallRaces').textContent = `${overall.completedRaces} races`;
@@ -2115,12 +2119,26 @@
                 if (!backElement) return;
                 
                 const fleetResults = this.raceData.fleetResults[raceId];
-                if (!fleetResults) {
-                    backElement.innerHTML = '<div style="color: rgba(255,255,255,0.6); font-size: 0.7rem; text-align: center; padding: 2rem;">No detailed results available</div>';
+                const raceName = this.raceData.races.find(r => r.id === raceId)?.name || `Race ${raceId}`;
+                const raceData = this.raceData.races.find(r => r.id === raceId);
+                
+                if (!fleetResults || !raceData || !raceData.finished) {
+                    backElement.innerHTML = `
+                        <div style="text-align: center; padding: 2rem; color: rgba(255,255,255,0.6);">
+                            <div style="font-size: 1.2rem; margin-bottom: 1rem;">⛵</div>
+                            <div style="font-size: 0.9rem; margin-bottom: 0.5rem;">${raceName}</div>
+                            <div style="font-size: 0.75rem; line-height: 1.4;">
+                                Results will be posted on<br>
+                                <a href="https://data.orc.org/public/WEV.dll?action=index&eventid=andros2025" 
+                                   target="_blank" 
+                                   style="color: rgba(79, 172, 254, 0.8); text-decoration: none;">
+                                    ORC Event Website
+                                </a>
+                            </div>
+                        </div>
+                    `;
                     return;
                 }
-                
-                const raceName = this.raceData.races.find(r => r.id === raceId)?.name || `Race R${raceId}`;
                 
                 let html = `
                     <div class="race-results-header">
@@ -2159,45 +2177,48 @@
                 
                 let html = `
                     <div class="standings-header">
-                        Superyacht Class - Series Standings
-                    </div>
-                    <div class="standings-row" style="background: rgba(255,255,255,0.2); font-weight: bold; margin-bottom: 0.75rem;">
-                        <div class="standings-position">Pos</div>
-                        <div class="standings-boat">Boat Name</div>
-                        <div class="race-points">R1</div>
-                        <div class="race-points">R2</div>
-                        <div class="race-points">R3</div>
-                        <div class="standings-points">Total</div>
-                        <div class="standings-points">Net</div>
+                        Andros 2025 - Series Standings
                     </div>
                 `;
                 
-                this.raceData.seriesStandings.forEach((standing) => {
-                    const isUserBoat = standing.boat === this.config.sailboatName;
-                    
+                // Check if event has started
+                if (this.raceData.overallStanding.completedRaces === 0) {
                     html += `
-                        <div class="standings-row ${isUserBoat ? 'standings-highlight' : ''}">
-                            <div class="standings-position">${standing.position}</div>
-                            <div class="standings-boat">${standing.boat}</div>
-                            <div class="race-points">${standing.r1.toFixed(1)}</div>
-                            <div class="race-points">${standing.r2.toFixed(1)}</div>
-                            <div class="race-points">${standing.r3.toFixed(1)}</div>
-                            <div class="standings-points">${standing.total.toFixed(1)}</div>
-                            <div class="standings-points">${standing.net.toFixed(1)}</div>
+                        <div style="text-align: center; padding: 2rem; color: rgba(255,255,255,0.6);">
+                            <div style="font-size: 1.2rem; margin-bottom: 1rem;">⛵</div>
+                            <div style="font-size: 0.9rem; margin-bottom: 0.5rem;">Event Pending</div>
+                            <div style="font-size: 0.75rem; line-height: 1.4;">
+                                Results will appear here once the<br>
+                                Chios to Andros race begins
+                            </div>
                         </div>
                     `;
-                });
-                
-                html += `
-                    <div style="margin-top: 1rem; padding: 0.75rem; background: rgba(255,255,255,0.1); border-radius: 8px;">
-                        <div style="color: rgba(255,255,255,0.8); font-size: 0.65rem; line-height: 1.4;">
-                            <strong>Scoring System:</strong><br>
-                            • Low Point System (1st = 1 pt, 2nd = 2 pts, etc.)<br>
-                            • Net Points = Total - Discards (if any)<br>
-                            • ${this.config.sailboatName} currently ${this.formatPosition(this.raceData.overallStanding.position)} overall
+                } else {
+                    // Show actual standings when races are completed
+                    html += `
+                        <div class="standings-row" style="background: rgba(255,255,255,0.2); font-weight: bold; margin-bottom: 0.75rem;">
+                            <div class="standings-position">Pos</div>
+                            <div class="standings-boat">Boat Name</div>
+                            <div class="race-points">R1</div>
+                            <div class="standings-points">Total</div>
+                            <div class="standings-points">Net</div>
                         </div>
-                    </div>
-                `;
+                    `;
+                    
+                    this.raceData.seriesStandings.forEach((standing) => {
+                        const isUserBoat = standing.boat === this.config.sailboatName;
+                        
+                        html += `
+                            <div class="standings-row ${isUserBoat ? 'standings-highlight' : ''}">
+                                <div class="standings-position">${standing.position}</div>
+                                <div class="standings-boat">${standing.boat}</div>
+                                <div class="race-points">${standing.r1}</div>
+                                <div class="standings-points">${standing.total}</div>
+                                <div class="standings-points">${standing.net}</div>
+                            </div>
+                        `;
+                    });
+                }
                 
                 backElement.innerHTML = html;
             }
@@ -2206,53 +2227,57 @@
                 const historyContainer = document.querySelector('#raceHistory > div:last-child');
                 historyContainer.innerHTML = '';
                 
+                // Display completed races (none for Andros 2025 yet)
                 this.raceData.races.forEach(race => {
-                    const raceCard = document.createElement('div');
-                    raceCard.className = 'race-mini-card';
-                    raceCard.setAttribute('data-race', race.id);
-                    
-                    if (race.isLatest) {
-                        raceCard.className += ' latest-race';
-                        raceCard.style.border = '1px solid rgba(79, 172, 254, 0.6)';
-                        raceCard.style.background = 'rgba(79, 172, 254, 0.1)';
+                    if (race.finished) {
+                        const raceCard = document.createElement('div');
+                        raceCard.className = 'race-mini-card';
+                        raceCard.setAttribute('data-race', race.id);
+                        
+                        if (race.isLatest) {
+                            raceCard.className += ' latest-race';
+                            raceCard.style.border = '1px solid rgba(79, 172, 254, 0.6)';
+                            raceCard.style.background = 'rgba(79, 172, 254, 0.1)';
+                        }
+                        
+                        const cardInner = document.createElement('div');
+                        cardInner.className = 'race-card-inner';
+                        
+                        const cardFront = document.createElement('div');
+                        cardFront.className = 'race-card-front';
+                        cardFront.innerHTML = `
+                            <div style="color: rgba(255,255,255,0.6); font-size: 0.7rem;">${race.name}</div>
+                            <div style="color: white; font-weight: 600; font-size: 1.1rem;">${this.formatPosition(race.position)}</div>
+                            <div style="color: rgba(255,255,255,0.5); font-size: 0.7rem;">Finish: ${race.finishTime}</div>
+                            <div style="color: rgba(255,255,255,0.4); font-size: 0.65rem;">
+                                ${race.deltaToAhead ? 
+                                    `<span class="time-delta delta-behind">${race.deltaToAhead} behind</span>` : 
+                                    race.deltaToBehind ? 
+                                    `<span class="time-delta delta-ahead">${race.deltaToBehind} ahead</span>` : 
+                                    '<span class="time-delta">No gap data</span>'
+                                }
+                            </div>
+                        `;
+                        
+                        const cardBack = document.createElement('div');
+                        cardBack.className = 'race-card-back';
+                        cardBack.innerHTML = this.generateFleetResults(race.id);
+                        
+                        cardInner.appendChild(cardFront);
+                        cardInner.appendChild(cardBack);
+                        raceCard.appendChild(cardInner);
+                        
+                        historyContainer.appendChild(raceCard);
                     }
-                    
-                    const cardInner = document.createElement('div');
-                    cardInner.className = 'race-card-inner';
-                    
-                    const cardFront = document.createElement('div');
-                    cardFront.className = 'race-card-front';
-                    cardFront.innerHTML = `
-                        <div style="color: rgba(255,255,255,0.6); font-size: 0.7rem;">${race.name}</div>
-                        <div style="color: white; font-weight: 600; font-size: 1.1rem;">${this.formatPosition(race.position)}</div>
-                        <div style="color: rgba(255,255,255,0.5); font-size: 0.7rem;">Finish: ${race.finishTime}</div>
-                        <div style="color: rgba(255,255,255,0.4); font-size: 0.65rem;">
-                            ${race.deltaToAhead ? 
-                                `<span class="time-delta delta-behind">${race.deltaToAhead} behind</span>` : 
-                                race.deltaToBehind ? 
-                                `<span class="time-delta delta-ahead">${race.deltaToBehind} ahead</span>` : 
-                                '<span class="time-delta">No gap data</span>'
-                            }
-                        </div>
-                    `;
-                    
-                    const cardBack = document.createElement('div');
-                    cardBack.className = 'race-card-back';
-                    cardBack.innerHTML = this.generateFleetResults(race.id);
-                    
-                    cardInner.appendChild(cardFront);
-                    cardInner.appendChild(cardBack);
-                    raceCard.appendChild(cardInner);
-                    
-                    historyContainer.appendChild(raceCard);
                 });
                 
+                // Display scheduled races - for Andros 2025, show the upcoming race
                 this.raceData.scheduledRaces.forEach(race => {
                     const raceCard = document.createElement('div');
                     raceCard.className = 'race-mini-card upcoming';
                     raceCard.setAttribute('data-race', race.id);
-                    raceCard.style.border = '1px dashed rgba(255,255,255,0.3)';
-                    raceCard.style.opacity = '0.6';
+                    raceCard.style.border = '1px dashed rgba(255,255,255,0.4)';
+                    raceCard.style.background = 'rgba(79, 172, 254, 0.05)';
                     raceCard.style.cursor = 'default';
                     
                     const cardInner = document.createElement('div');
@@ -2261,10 +2286,15 @@
                     const cardFront = document.createElement('div');
                     cardFront.className = 'race-card-front';
                     cardFront.innerHTML = `
-                        <div style="color: rgba(255,255,255,0.6); font-size: 0.7rem;">${race.name}</div>
-                        <div style="color: rgba(255,255,255,0.5); font-weight: 600; font-size: 1.1rem;">—</div>
-                        <div style="color: rgba(255,255,255,0.3); font-size: 0.7rem;">${race.scheduled}</div>
-                        <div style="color: rgba(255,255,255,0.3); font-size: 0.65rem;">${race.date}</div>
+                        <div style="color: rgba(255,255,255,0.7); font-size: 0.75rem; font-weight: 600;">${race.name}</div>
+                        <div style="color: rgba(79, 172, 254, 0.9); font-weight: 600; font-size: 1.1rem;">Upcoming</div>
+                        <div style="color: rgba(255,255,255,0.6); font-size: 0.7rem;">${race.date}</div>
+                        <div style="color: rgba(255,255,255,0.5); font-size: 0.65rem;">
+                            Check <a href="https://data.orc.org/public/WEV.dll?action=index&eventid=andros2025" 
+                                    target="_blank" 
+                                    style="color: rgba(79, 172, 254, 0.8); text-decoration: none;">
+                                ORC</a> for updates
+                        </div>
                     `;
                     
                     cardInner.appendChild(cardFront);
@@ -2272,6 +2302,21 @@
                     
                     historyContainer.appendChild(raceCard);
                 });
+                
+                // If no races at all, show a placeholder
+                if (this.raceData.races.length === 0 && this.raceData.scheduledRaces.length === 0) {
+                    const placeholderCard = document.createElement('div');
+                    placeholderCard.className = 'race-mini-card';
+                    placeholderCard.style.border = '1px dashed rgba(255,255,255,0.3)';
+                    placeholderCard.style.opacity = '0.6';
+                    placeholderCard.innerHTML = `
+                        <div style="text-align: center; padding: 1rem; color: rgba(255,255,255,0.6);">
+                            <div style="margin-bottom: 0.5rem;">Event Schedule TBD</div>
+                            <div style="font-size: 0.7rem;">Check back for race updates</div>
+                        </div>
+                    `;
+                    historyContainer.appendChild(placeholderCard);
+                }
             }
 
             generateFleetResults(raceId) {
