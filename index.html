@@ -2473,6 +2473,34 @@
         }
 
         const dashboard = new SailingDashboard();
+
+        // Test function for debugging flip cards
+        window.testFlipCard = function() {
+            const card = document.querySelector('.latest-race-card');
+            if (card) {
+                card.classList.toggle('flipped');
+                console.log('Manual flip test - Flipped state:', card.classList.contains('flipped'));
+                console.log('Card classes:', card.className);
+                console.log('Transform applied:', window.getComputedStyle(card.querySelector('.race-card-inner')).transform);
+                return 'Test completed - check console';
+            } else {
+                return 'No card found';
+            }
+        };
+
+        // Test if cards exist after page load
+        setTimeout(() => {
+            console.log('=== FLIP CARD DEBUG ===');
+            const allCards = document.querySelectorAll('.race-mini-card');
+            console.log('Total race cards found:', allCards.length);
+            
+            allCards.forEach((card, index) => {
+                console.log(`Card ${index}:`, card.className);
+            });
+            
+            console.log('To test manually, run: testFlipCard()');
+            console.log('======================');
+        }, 2000);
     </script>
 </body>
 </html>
