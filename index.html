@@ -1712,44 +1712,36 @@
             }
 
             setupFlipCards() {
-                // Setup flip functionality for race cards
-                const setupCardFlip = (cardSelector) => {
-                    const card = document.querySelector(cardSelector);
+                console.log('Setting up flip cards...');
+                
+                // Direct approach - setup click handlers using event delegation
+                document.addEventListener('click', (e) => {
+                    // Find the closest race card
+                    const card = e.target.closest('.race-mini-card:not(.upcoming)');
+                    
                     if (card) {
-                        card.addEventListener('click', (e) => {
-                            // Prevent flipping when clicking on links inside the card
-                            if (e.target.tagName === 'A') return;
-                            
-                            card.classList.toggle('flipped');
-                        });
+                        // Prevent flipping when clicking on links
+                        if (e.target.tagName === 'A' || e.target.closest('a')) {
+                            return;
+                        }
                         
-                        // Add visual indicator that card is clickable
+                        console.log('Card clicked:', card.className);
+                        card.classList.toggle('flipped');
+                        console.log('Flipped state:', card.classList.contains('flipped'));
+                    }
+                });
+                
+                // Add visual indicators to all flip cards
+                setTimeout(() => {
+                    const allCards = document.querySelectorAll('.race-mini-card:not(.upcoming)');
+                    console.log(`Found ${allCards.length} flip cards`);
+                    
+                    allCards.forEach((card, index) => {
                         card.style.cursor = 'pointer';
                         card.setAttribute('title', 'Click to flip card');
-                    }
-                };
-
-                // Setup flip for latest race card
-                setupCardFlip('.latest-race-card');
-                
-                // Setup flip for series standings card
-                setupCardFlip('.series-card');
-                
-                // Setup flip for any future race history cards
-                setTimeout(() => {
-                    const raceCards = document.querySelectorAll('.race-mini-card:not(.latest-race-card):not(.series-card):not(.upcoming)');
-                    raceCards.forEach(card => {
-                        if (!card.hasAttribute('data-flip-setup')) {
-                            card.addEventListener('click', (e) => {
-                                if (e.target.tagName === 'A') return;
-                                card.classList.toggle('flipped');
-                            });
-                            card.style.cursor = 'pointer';
-                            card.setAttribute('title', 'Click to flip card');
-                            card.setAttribute('data-flip-setup', 'true');
-                        }
+                        console.log(`Setup card ${index}:`, card.className);
                     });
-                }, 1000);
+                }, 100);
             }
 
             displayRaceResults() {
