@@ -1714,22 +1714,41 @@
             setupFlipCards() {
                 console.log('Setting up flip cards...');
                 
-                // Direct approach - setup click handlers using event delegation
-                document.addEventListener('click', (e) => {
+                // Remove any existing listeners first
+                document.removeEventListener('click', this.flipCardHandler);
+                
+                // Store the handler so we can remove it later
+                this.flipCardHandler = (e) => {
+                    console.log('Document click detected, target:', e.target.tagName, e.target.className);
+                    
                     // Find the closest race card
                     const card = e.target.closest('.race-mini-card:not(.upcoming)');
                     
                     if (card) {
                         // Prevent flipping when clicking on links
                         if (e.target.tagName === 'A' || e.target.closest('a')) {
+                            console.log('Link clicked, preventing flip');
                             return;
                         }
                         
                         console.log('Card clicked:', card.className);
                         card.classList.toggle('flipped');
                         console.log('Flipped state:', card.classList.contains('flipped'));
+                        
+                        // Check transform after flipping
+                        const inner = card.querySelector('.race-card-inner');
+                        if (inner) {
+                            setTimeout(() => {
+                                console.log('Transform after flip:', window.getComputedStyle(inner).transform);
+                            }, 100);
+                        }
+                    } else {
+                        console.log('No race card found for click');
                     }
-                });
+                };
+                
+                // Add the event listener
+                document.addEventListener('click', this.flipCardHandler);
                 
                 // Add visual indicators to all flip cards
                 setTimeout(() => {
