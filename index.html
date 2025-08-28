@@ -469,7 +469,7 @@
             min-height: 80px;
         }
 
-        .race-mini-card:hover .race-card-inner {
+        .race-mini-card.flipped .race-card-inner {
             transform: rotateY(180deg);
         }
 
@@ -1604,6 +1604,7 @@
                 this.startAutoRefresh();
                 this.setupBackgroundImageHandling();
                 this.applyStoredBackground();
+                this.setupFlipCards();
             }
 
             initializeRaceResults() {
@@ -1710,9 +1711,55 @@
                 `;
             }
 
+            setupFlipCards() {
+                // Setup flip functionality for race cards
+                const setupCardFlip = (cardSelector) => {
+                    const card = document.querySelector(cardSelector);
+                    if (card) {
+                        card.addEventListener('click', (e) => {
+                            // Prevent flipping when clicking on links inside the card
+                            if (e.target.tagName === 'A') return;
+                            
+                            card.classList.toggle('flipped');
+                        });
+                        
+                        // Add visual indicator that card is clickable
+                        card.style.cursor = 'pointer';
+                        card.setAttribute('title', 'Click to flip card');
+                    }
+                };
+
+                // Setup flip for latest race card
+                setupCardFlip('.latest-race-card');
+                
+                // Setup flip for series standings card
+                setupCardFlip('.series-card');
+                
+                // Setup flip for any future race history cards
+                setTimeout(() => {
+                    const raceCards = document.querySelectorAll('.race-mini-card:not(.latest-race-card):not(.series-card):not(.upcoming)');
+                    raceCards.forEach(card => {
+                        if (!card.hasAttribute('data-flip-setup')) {
+                            card.addEventListener('click', (e) => {
+                                if (e.target.tagName === 'A') return;
+                                card.classList.toggle('flipped');
+                            });
+                            card.style.cursor = 'pointer';
+                            card.setAttribute('title', 'Click to flip card');
+                            card.setAttribute('data-flip-setup', 'true');
+                        }
+                    });
+                }, 1000);
+            }
+
             displayRaceResults() {
                 // Since no races are completed, show pending state
                 this.clearAllDisplays();
+                
+                // Re-setup flip cards after clearing displays
+                setTimeout(() => {
+                    this.setupFlipCards();
+                }, 100);
             }
 
             setupBackgroundImageHandling() {
