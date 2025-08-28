@@ -847,31 +847,31 @@
                     </h4>
                     <div class="race-mini-card latest-race-card" style="min-height: 120px; padding: 0;">
                         <div class="race-card-inner">
-                            <!-- Front Side - MOAT's Latest Race Result -->
+                            <!-- Front Side - Latest Race Result -->
                             <div class="race-card-front" style="background: rgba(255,255,255,0.05); border-radius: 12px; padding: 1rem;">
                                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
-                                    <span style="color: white; font-weight: 600; font-size: 1.1rem;" id="latestRaceName">Chios to Andros</span>
-                                    <span style="color: rgba(255,255,255,0.7); font-size: 0.8rem;" id="latestRaceDate">Pending</span>
+                                    <span style="color: white; font-weight: 600; font-size: 1.1rem;" id="latestRaceName"></span>
+                                    <span style="color: rgba(255,255,255,0.7); font-size: 0.8rem;" id="latestRaceDate"></span>
                                 </div>
                                 <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.75rem; text-align: center;">
                                     <div>
                                         <div style="color: rgba(255,255,255,0.6); font-size: 0.75rem;">Position</div>
-                                        <div style="color: white; font-size: 1.3rem; font-weight: 700;" id="latestPosition">TBD</div>
+                                        <div style="color: white; font-size: 1.3rem; font-weight: 700;" id="latestPosition"></div>
                                     </div>
                                     <div>
                                         <div style="color: rgba(255,255,255,0.6); font-size: 0.75rem;">Delta Ahead</div>
-                                        <div style="color: rgba(255, 140, 66, 0.9); font-size: 0.85rem; font-weight: 600;" id="latestDeltaAhead">TBD</div>
+                                        <div style="color: rgba(255, 140, 66, 0.9); font-size: 0.85rem; font-weight: 600;" id="latestDeltaAhead"></div>
                                     </div>
                                     <div>
                                         <div style="color: rgba(255,255,255,0.6); font-size: 0.75rem;">Delta Behind</div>
-                                        <div style="color: rgba(81, 207, 102, 0.9); font-size: 0.85rem; font-weight: 600;" id="latestDeltaBehind">TBD</div>
+                                        <div style="color: rgba(81, 207, 102, 0.9); font-size: 0.85rem; font-weight: 600;" id="latestDeltaBehind"></div>
                                     </div>
                                 </div>
                             </div>
                             
                             <!-- Back Side - Full Latest Race Results -->
                             <div class="race-card-back" id="latestRaceBack">
-                                <!-- Will be populated with latest race fleet results -->
+                                <!-- Will be populated with race results -->
                             </div>
                         </div>
                     </div>
@@ -892,21 +892,21 @@
                             <!-- Front Side - Series Summary -->
                             <div class="race-card-front" style="background: rgba(255,255,255,0.05); border-radius: 12px; padding: 1rem;">
                                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
-                                    <span style="color: white; font-weight: 600; font-size: 1.1rem;" id="overallClass">ORC International</span>
-                                    <span style="color: rgba(255,255,255,0.7); font-size: 0.8rem;" id="overallRaces">0 races</span>
+                                    <span style="color: white; font-weight: 600; font-size: 1.1rem;" id="overallClass"></span>
+                                    <span style="color: rgba(255,255,255,0.7); font-size: 0.8rem;" id="overallRaces"></span>
                                 </div>
                                 <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.75rem; text-align: center;">
                                     <div>
                                         <div style="color: rgba(255,255,255,0.6); font-size: 0.75rem;">Position</div>
-                                        <div style="color: white; font-size: 1.3rem; font-weight: 700;" id="overallPosition">TBD</div>
+                                        <div style="color: white; font-size: 1.3rem; font-weight: 700;" id="overallPosition"></div>
                                     </div>
                                     <div>
                                         <div style="color: rgba(255,255,255,0.6); font-size: 0.75rem;">Total Points</div>
-                                        <div style="color: white; font-size: 1.3rem; font-weight: 700;" id="overallPoints">0.0</div>
+                                        <div style="color: white; font-size: 1.3rem; font-weight: 700;" id="overallPoints"></div>
                                     </div>
                                     <div>
                                         <div style="color: rgba(255,255,255,0.6); font-size: 0.75rem;">Net Points</div>
-                                        <div style="color: white; font-size: 1.3rem; font-weight: 700;" id="overallNet">0.0</div>
+                                        <div style="color: white; font-size: 1.3rem; font-weight: 700;" id="overallNet"></div>
                                     </div>
                                 </div>
                             </div>
@@ -1175,7 +1175,7 @@
                             <label style="color: rgba(255,255,255,0.8); display: block; margin-bottom: 0.5rem; font-size: 0.9rem;">
                                 Boat Class *
                             </label>
-                            <input type="text" id="configBoatClass" placeholder="e.g., Superyacht Class" style="
+                            <input type="text" id="configBoatClass" placeholder="e.g., ORC International" style="
                                 width: 100%;
                                 padding: 0.75rem;
                                 border-radius: 10px;
@@ -1394,7 +1394,7 @@
                 
                 <div style="margin-top: 1rem; padding: 1rem; background: rgba(79, 172, 254, 0.1); border-radius: 8px;">
                     <div style="color: rgba(79, 172, 254, 1); font-size: 0.8rem; font-weight: bold;">
-                        🔒 Demo Mode: Use "demo" or "moat" as username with any password
+                        🔒 Demo Mode: Use "demo", "burrasca", or "andros2025" as username
                     </div>
                 </div>
             </div>
@@ -1525,16 +1525,7 @@
                     hasNewResults: false,
                     lastNotificationTime: null
                 };
-                this.raceData = {
-                    lastRaceId: 1,
-                    eventName: "Andros 2025",
-                    location: "Greek Islands",
-                    dates: "June 2025",
-                    className: "ORC International",
-                    races: [],
-                    scheduledRaces: [],
-                    overallStanding: {}
-                };
+                this.raceData = {};
                 this.apiConfig = {
                     baseUrl: 'https://kndwebreport.azurewebsites.net',
                     apiKey: '',
@@ -1545,6 +1536,8 @@
                     raceReportId: '',
                     enabled: false
                 };
+                
+                // Initialize everything
                 this.loadConfiguration();
                 this.setupEventListeners();
                 this.setupIntersectionObserver();
@@ -1553,6 +1546,115 @@
                 this.startAutoRefresh();
                 this.setupBackgroundImageHandling();
                 this.applyStoredBackground();
+            }
+
+            initializeRaceResults() {
+                // Clear any old data completely
+                this.raceData = {
+                    lastRaceId: 0,
+                    eventName: "Andros 2025",
+                    location: "Greek Islands",
+                    dates: "June 2025",
+                    className: "ORC International",
+                    sailboatName: this.config.sailboatName,
+                    races: [],
+                    fleetResults: {},
+                    seriesStandings: [],
+                    scheduledRaces: [
+                        { 
+                            id: 1, 
+                            name: 'Chios to Andros', 
+                            scheduled: 'Race 1', 
+                            date: 'June 2025', 
+                            boat: this.config.sailboatName, 
+                            status: 'Upcoming' 
+                        }
+                    ],
+                    overallStanding: {
+                        position: 0,
+                        totalPoints: 0.0,
+                        netPoints: 0.0,
+                        className: "ORC International",
+                        totalRaces: 1,
+                        completedRaces: 0,
+                        boat: this.config.sailboatName,
+                        status: 'Event Pending'
+                    }
+                };
+                
+                // Force clear all display elements
+                this.clearAllDisplays();
+                this.displayRaceResults();
+            }
+
+            clearAllDisplays() {
+                // Clear latest race display
+                document.getElementById('latestRaceName').textContent = 'Chios to Andros';
+                document.getElementById('latestPosition').textContent = 'TBD';
+                document.getElementById('latestDeltaAhead').textContent = 'TBD';
+                document.getElementById('latestDeltaBehind').textContent = 'TBD';
+                document.getElementById('latestRaceDate').textContent = 'Pending';
+                
+                // Clear overall standings display
+                document.getElementById('overallPosition').textContent = 'TBD';
+                document.getElementById('overallPoints').textContent = '0.0';
+                document.getElementById('overallNet').textContent = '0.0';
+                document.getElementById('overallRaces').textContent = '0 races';
+                document.getElementById('overallClass').textContent = 'ORC International';
+                
+                // Clear race history container
+                const historyContainer = document.querySelector('#raceHistory > div:last-child');
+                historyContainer.innerHTML = '';
+                
+                // Show upcoming race card
+                const upcomingCard = document.createElement('div');
+                upcomingCard.className = 'race-mini-card upcoming';
+                upcomingCard.style.cssText = 'border: 1px dashed rgba(79, 172, 254, 0.4); background: rgba(79, 172, 254, 0.05); cursor: default; min-height: 80px; padding: 1rem;';
+                upcomingCard.innerHTML = `
+                    <div style="text-align: center; color: rgba(255,255,255,0.7);">
+                        <div style="font-weight: 600; margin-bottom: 0.5rem;">Chios to Andros</div>
+                        <div style="color: rgba(79, 172, 254, 0.9); font-weight: 600; margin-bottom: 0.5rem;">Upcoming</div>
+                        <div style="font-size: 0.7rem; color: rgba(255,255,255,0.5);">June 2025</div>
+                        <div style="font-size: 0.65rem; color: rgba(255,255,255,0.5); margin-top: 0.25rem;">
+                            Check <a href="https://data.orc.org/public/WEV.dll?action=index&eventid=andros2025" 
+                                    target="_blank" 
+                                    style="color: rgba(79, 172, 254, 0.8); text-decoration: none;">ORC</a> for updates
+                        </div>
+                    </div>
+                `;
+                historyContainer.appendChild(upcomingCard);
+                
+                // Clear back sides with pending messages
+                document.getElementById('latestRaceBack').innerHTML = `
+                    <div style="text-align: center; padding: 2rem; color: rgba(255,255,255,0.6);">
+                        <div style="font-size: 1.2rem; margin-bottom: 1rem;">⛵</div>
+                        <div style="font-size: 0.9rem; margin-bottom: 0.5rem;">Chios to Andros</div>
+                        <div style="font-size: 0.75rem; line-height: 1.4;">
+                            Results will be posted on<br>
+                            <a href="https://data.orc.org/public/WEV.dll?action=index&eventid=andros2025" 
+                               target="_blank" 
+                               style="color: rgba(79, 172, 254, 0.8); text-decoration: none;">
+                                ORC Event Website
+                            </a>
+                        </div>
+                    </div>
+                `;
+                
+                document.getElementById('seriesStandingsBack').innerHTML = `
+                    <div class="standings-header">Andros 2025 - Series Standings</div>
+                    <div style="text-align: center; padding: 2rem; color: rgba(255,255,255,0.6);">
+                        <div style="font-size: 1.2rem; margin-bottom: 1rem;">⛵</div>
+                        <div style="font-size: 0.9rem; margin-bottom: 0.5rem;">Event Pending</div>
+                        <div style="font-size: 0.75rem; line-height: 1.4;">
+                            Results will appear here once the<br>Chios to Andros race begins
+                        </div>
+                    </div>
+                `;
+            }
+
+            displayRaceResults() {
+                // Since no races are completed, show pending state
+                this.clearAllDisplays();
             }
 
             setupBackgroundImageHandling() {
@@ -1579,11 +1681,8 @@
                 
                 try {
                     const base64 = await this.fileToBase64(file);
-                    
                     this.config.backgroundImage = base64;
-                    
                     this.showBackgroundPreview(base64);
-                    
                 } catch (error) {
                     console.error('Error processing background image:', error);
                     alert('Error processing the image. Please try a different file.');
@@ -1660,6 +1759,18 @@
                 }, 100);
             }
 
+            updateDashboardBranding() {
+                document.title = `${this.config.sailboatName} - Sailing Performance Dashboard`;
+                document.querySelector('.header h1').textContent = this.config.sailboatName;
+                document.querySelector('.header p').textContent = `Real-time performance dashboard for ${this.config.sailboatName}`;
+            }
+
+            updateBoatSpecificElements() {
+                document.getElementById('currentBoatName').textContent = this.config.sailboatName;
+                document.getElementById('currentBoatClass').textContent = this.config.boatClass;
+                document.getElementById('raceBoatName').textContent = this.config.sailboatName;
+            }
+
             updateLoginDisplay() {
                 const loginStatus = document.getElementById('loginStatus');
                 const loginBtn = document.getElementById('loginBtn');
@@ -1674,6 +1785,21 @@
                     loginBtn.style.display = 'inline-block';
                     logoutBtn.style.display = 'none';
                 }
+            }
+
+            startAutoRefresh() {
+                setInterval(() => {
+                    this.updateLastRefreshTime();
+                }, 30000);
+                this.updateLastRefreshTime();
+            }
+
+            updateLastRefreshTime() {
+                const now = new Date();
+                document.getElementById('lastUpdateTime').textContent = 
+                    now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                document.getElementById('lastUpdateDisplay').textContent = 
+                    now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
             }
 
             showLoginModal() {
@@ -1711,7 +1837,7 @@
                     
                     this.apiConfig.enabled = true;
                 } else {
-                    alert('Invalid credentials. Try "demo" or "moat" for demonstration.');
+                    alert('Invalid credentials. Try "demo", "burrasca", or "andros2025" for demonstration.');
                 }
             }
 
@@ -1726,699 +1852,6 @@
                 this.updateLoginDisplay();
                 this.apiConfig.enabled = false;
                 alert('Logged out successfully');
-            }
-
-            updateDashboardBranding() {
-                document.title = `${this.config.sailboatName} - Sailing Performance Dashboard`;
-                
-                const headerTitle = document.querySelector('.header h1');
-                headerTitle.innerHTML = `⛵ ${this.config.sailboatName}`;
-                
-                const headerSubtitle = document.querySelector('.header p');
-                headerSubtitle.textContent = `Real-time performance dashboard for ${this.config.sailboatName}`;
-            }
-
-            initializeRaceResults() {
-                const now = new Date();
-                const latestRaceTime = new Date(now.getTime() - (30 * 60 * 1000));
-                
-                this.raceData = {
-                    lastRaceId: 3,
-                    eventName: "Giorgio Armani Superyacht Regatta",
-                    location: "Porto Cervo",
-                    dates: "27/5/2025 - 31/5/2025",
-                    className: this.config.boatClass || "Superyacht Class",
-                    sailboatName: this.config.sailboatName,
-                    races: [
-                        { 
-                            id: 1, 
-                            name: 'Race R1', 
-                            position: 2, 
-                            finishTime: '13:58:42',
-                            elapsedTime: '3:58:42',
-                            correctedTime: '3:43:28',
-                            elapsedTimeDelta: '+0:13:10',
-                            correctedTimeDelta: '+0:01:13',
-                            points: 2.0, 
-                            netPoints: 2.0,
-                            finished: true,
-                            date: '27/5',
-                            boat: this.config.sailboatName,
-                            updatedAt: new Date(now.getTime() - (2 * 24 * 60 * 60 * 1000))
-                        },
-                        { 
-                            id: 2, 
-                            name: 'Race R2', 
-                            position: 1, 
-                            finishTime: '15:02:18',
-                            elapsedTime: '4:02:18',
-                            correctedTime: '3:58:45',
-                            elapsedTimeDelta: '0:00:00',
-                            correctedTimeDelta: '0:00:00',
-                            points: 1.0, 
-                            netPoints: 1.0,
-                            finished: true,
-                            date: '28/5',
-                            boat: this.config.sailboatName,
-                            updatedAt: new Date(now.getTime() - (1 * 24 * 60 * 60 * 1000))
-                        },
-                        { 
-                            id: 3, 
-                            name: 'Race R3', 
-                            position: 3, 
-                            finishTime: '14:45:33',
-                            elapsedTime: '4:05:33',
-                            correctedTime: '3:58:28',
-                            elapsedTimeDelta: '+0:13:05',
-                            correctedTimeDelta: '+0:10:13',
-                            points: 3.0, 
-                            netPoints: 3.0,
-                            finished: true, 
-                            isLatest: true,
-                            date: 'Today',
-                            boat: this.config.sailboatName,
-                            updatedAt: latestRaceTime,
-                            deltaToAhead: '-0:05:45',
-                            deltaToBehind: '+0:06:54'
-                        }
-                    ],
-                    fleetResults: {
-                        1: [
-                            { position: 1, boat: 'BELLA VITA', elapsedTime: '3:45:32', correctedTime: '3:42:15', delta: '0:00:00', points: 1.0, finishTime: '13:45:32' },
-                            { position: 2, boat: 'MOAT', elapsedTime: '3:58:42', correctedTime: '3:43:28', delta: '0:01:13', points: 2.0, finishTime: '13:58:42' },
-                            { position: 3, boat: 'AZZURRA', elapsedTime: '4:02:15', correctedTime: '3:45:45', delta: '0:03:30', points: 3.0, finishTime: '14:02:15' },
-                            { position: 4, boat: 'PHOENIX', elapsedTime: '4:08:33', correctedTime: '3:48:22', delta: '0:06:07', points: 4.0, finishTime: '14:08:33' },
-                            { position: 5, boat: 'RAMBLE ON ROSE', elapsedTime: '4:15:47', correctedTime: '3:52:18', delta: '0:10:03', points: 5.0, finishTime: '14:15:47' },
-                            { position: 6, boat: 'SEAWAVE', elapsedTime: '4:22:12', correctedTime: '3:55:33', delta: '0:13:18', points: 6.0, finishTime: '14:22:12' }
-                        ],
-                        2: [
-                            { position: 1, boat: 'MOAT', elapsedTime: '4:02:18', correctedTime: '3:58:45', delta: '0:00:00', points: 1.0, finishTime: '15:02:18' },
-                            { position: 2, boat: 'AZZURRA', elapsedTime: '4:05:33', correctedTime: '4:01:22', delta: '0:02:37', points: 2.0, finishTime: '15:05:33' },
-                            { position: 3, boat: 'BELLA VITA', elapsedTime: '4:08:45', correctedTime: '4:05:28', delta: '0:06:43', points: 3.0, finishTime: '15:08:45' },
-                            { position: 4, boat: 'PHOENIX', elapsedTime: '4:18:22', correctedTime: '4:12:15', delta: '0:13:30', points: 4.0, finishTime: '15:18:22' },
-                            { position: 5, boat: 'SEAWAVE', elapsedTime: '4:25:15', correctedTime: '4:18:33', delta: '0:19:48', points: 5.0, finishTime: '15:25:15' },
-                            { position: 6, boat: 'RAMBLE ON ROSE', elapsedTime: '4:32:08', correctedTime: '4:25:42', delta: '0:26:57', points: 6.0, finishTime: '15:32:08' }
-                        ],
-                        3: [
-                            { position: 1, boat: 'BELLA VITA', elapsedTime: '3:52:28', correctedTime: '3:48:15', delta: '0:00:00', points: 1.0, finishTime: '14:52:28', deltaToNext: '+0:04:18' },
-                            { position: 2, boat: 'AZZURRA', elapsedTime: '3:58:12', correctedTime: '3:52:33', delta: '0:04:18', points: 2.0, finishTime: '14:58:12', deltaToNext: '+0:05:55' },
-                            { position: 3, boat: 'MOAT', elapsedTime: '4:05:33', correctedTime: '3:58:28', delta: '0:10:13', points: 3.0, finishTime: '14:45:33', deltaToNext: '+0:06:54' },
-                            { position: 4, boat: 'PHOENIX', elapsedTime: '4:12:45', correctedTime: '4:05:22', delta: '0:17:07', points: 4.0, finishTime: '14:52:45', deltaToNext: '+0:13:23' },
-                            { position: 5, boat: 'RAMBLE ON ROSE', elapsedTime: '4:28:33', correctedTime: '4:18:45', delta: '0:30:30', points: 5.0, finishTime: '15:08:33', deltaToNext: '+0:06:33' },
-                            { position: 6, boat: 'SEAWAVE', elapsedTime: '4:35:22', correctedTime: '4:25:18', delta: '0:37:03', points: 6.0, finishTime: '15:15:22', deltaToNext: '' }
-                        ]
-                    },
-                    seriesStandings: [
-                        { position: 1, boat: 'BELLA VITA', r1: 1.0, r2: 3.0, r3: 1.0, total: 5.0, net: 5.0, correctedTimeDelta: '0:00:00' },
-                        { position: 2, boat: 'MOAT', r1: 2.0, r2: 1.0, r3: 3.0, total: 6.0, net: 6.0, correctedTimeDelta: '+0:01:13' },
-                        { position: 3, boat: 'AZZURRA', r1: 3.0, r2: 2.0, r3: 2.0, total: 7.0, net: 7.0, correctedTimeDelta: '+0:03:30' },
-                        { position: 4, boat: 'PHOENIX', r1: 4.0, r2: 4.0, r3: 4.0, total: 12.0, net: 12.0, correctedTimeDelta: '+0:06:07' },
-                        { position: 5, boat: 'SEAWAVE', r1: 6.0, r2: 5.0, r3: 6.0, total: 17.0, net: 17.0, correctedTimeDelta: '+0:13:18' },
-                        { position: 6, boat: 'RAMBLE ON ROSE', r1: 5.0, r2: 6.0, r3: 5.0, total: 16.0, net: 16.0, correctedTimeDelta: '+0:10:03' }
-                    ],
-                    scheduledRaces: [
-                        { id: 4, name: 'Race R4', scheduled: 'Tomorrow', date: '30/5', boat: this.config.sailboatName },
-                        { id: 5, name: 'Race R5', scheduled: 'Scheduled', date: '31/5', boat: this.config.sailboatName }
-                    ],
-                    overallStanding: {
-                        position: 2,
-                        totalPoints: 6.0,
-                        netPoints: 6.0,
-                        className: this.config.boatClass || 'Superyacht Class',
-                        totalRaces: 3,
-                        completedRaces: 3,
-                        boat: this.config.sailboatName
-                    }
-                };
-                
-                this.displayRaceResults();
-                this.checkForRecentUpdates();
-            }
-
-            startAutoRefresh() {
-                setInterval(() => {
-                    this.checkForRaceUpdates();
-                }, 60000);
-                
-                setInterval(() => {
-                    this.updateLastRefreshTime();
-                }, 30000);
-                
-                this.updateLastRefreshTime();
-            }
-
-            async checkForRaceUpdates() {
-                try {
-                    const indicator = document.getElementById('refreshIndicator');
-                    indicator.style.background = 'rgba(255, 212, 59, 0.8)';
-                    
-                    if (this.loginState.isLoggedIn) {
-                        const hasNewData = await this.fetchLatestRaceResults();
-                        
-                        if (hasNewData) {
-                            this.displayRaceResults();
-                            this.flashUpdatedElements();
-                            this.checkForRecentUpdates();
-                            
-                            this.showNotification('New race results are now available!');
-                        }
-                    }
-                    
-                    setTimeout(() => {
-                        indicator.style.background = 'rgba(81, 207, 102, 0.8)';
-                    }, 1000);
-                    
-                } catch (error) {
-                    console.warn('Race update check failed:', error);
-                    const indicator = document.getElementById('refreshIndicator');
-                    indicator.style.background = 'rgba(255, 107, 107, 0.8)';
-                    
-                    setTimeout(() => {
-                        indicator.style.background = 'rgba(81, 207, 102, 0.8)';
-                    }, 3000);
-                }
-            }
-
-            async fetchLatestRaceResults() {
-                return new Promise((resolve) => {
-                    setTimeout(() => {
-                        const hasUpdate = Math.random() > 0.7;
-                        
-                        if (hasUpdate) {
-                            if (Math.random() > 0.8 && this.raceData.lastRaceId < 7) {
-                                this.raceData.lastRaceId++;
-                                const newRaceId = this.raceData.lastRaceId;
-                                
-                                const scheduledIndex = this.raceData.scheduledRaces.findIndex(r => r.id === newRaceId);
-                                if (scheduledIndex !== -1) {
-                                    const scheduledRace = this.raceData.scheduledRaces.splice(scheduledIndex, 1)[0];
-                                    
-                                    this.raceData.races.forEach(race => race.isLatest = false);
-                                    
-                                    const moatPosition = Math.floor(Math.random() * 4) + 1;
-                                    const newRace = {
-                                        id: newRaceId,
-                                        name: scheduledRace.name,
-                                        position: moatPosition,
-                                        finishTime: `${14 + Math.floor(Math.random() * 2)}:${Math.floor(Math.random() * 60).toString().padStart(2, '0')}:${Math.floor(Math.random() * 60).toString().padStart(2, '0')}`,
-                                        points: moatPosition,
-                                        netPoints: moatPosition,
-                                        finished: true,
-                                        isLatest: true,
-                                        date: 'Today',
-                                        boat: this.config.sailboatName
-                                    };
-                                    
-                                    this.raceData.races.push(newRace);
-                                    
-                                    this.raceData.fleetResults[newRaceId] = this.generateNewFleetResults(moatPosition);
-                                    
-                                    const totalPoints = this.raceData.races.reduce((sum, race) => sum + race.points, 0);
-                                    const netPoints = this.raceData.races.reduce((sum, race) => sum + race.netPoints, 0);
-                                    
-                                    this.raceData.overallStanding.totalPoints = totalPoints;
-                                    this.raceData.overallStanding.netPoints = netPoints;
-                                    this.raceData.overallStanding.completedRaces = this.raceData.races.length;
-                                    this.raceData.overallStanding.position = Math.min(4, Math.max(1, Math.ceil(totalPoints / 2)));
-                                    this.raceData.overallStanding.boat = this.config.sailboatName;
-                                }
-                            } else {
-                                const randomRace = this.raceData.races[Math.floor(Math.random() * this.raceData.races.length)];
-                                if (randomRace && randomRace.boat === this.config.sailboatName) {
-                                    const timeParts = randomRace.finishTime.split(':');
-                                    const seconds = parseInt(timeParts[2]) + (Math.random() > 0.5 ? 1 : -1);
-                                    randomRace.finishTime = `${timeParts[0]}:${timeParts[1]}:${Math.max(0, Math.min(59, seconds)).toString().padStart(2, '0')}`;
-                                    
-                                    const fleetResults = this.raceData.fleetResults[randomRace.id];
-                                    if (fleetResults) {
-                                        const moatResult = fleetResults.find(result => result.boat === this.config.sailboatName);
-                                        if (moatResult) {
-                                            const elapsedParts = moatResult.elapsedTime.split(':');
-                                            moatResult.elapsedTime = `${elapsedParts[0]}:${elapsedParts[1]}:${Math.max(0, Math.min(59, seconds)).toString().padStart(2, '0')}`;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        
-                        resolve(hasUpdate);
-                    }, 1000);
-                });
-            }
-
-            generateNewFleetResults(moatPosition) {
-                const boats = ['BELLA VITA', 'MOAT', 'AZZURRA', 'PHOENIX', 'RAMBLE ON ROSE', 'SEAWAVE'];
-                const results = [];
-                
-                boats.forEach((boat, index) => {
-                    const baseTime = 3 * 3600 + 45 * 60 + Math.random() * 1800;
-                    const elapsedSeconds = baseTime + (index * 300) + Math.random() * 600;
-                    const correctedSeconds = elapsedSeconds - (Math.random() * 300);
-                    
-                    results.push({
-                        boat: boat,
-                        elapsedSeconds: elapsedSeconds,
-                        correctedSeconds: correctedSeconds,
-                        elapsedTime: this.secondsToTimeString(elapsedSeconds),
-                        correctedTime: this.secondsToTimeString(correctedSeconds)
-                    });
-                });
-                
-                results.sort((a, b) => a.correctedSeconds - b.correctedSeconds);
-                
-                const moatResult = results.find(r => r.boat === 'MOAT');
-                const currentMoatIndex = results.indexOf(moatResult);
-                const targetIndex = moatPosition - 1;
-                
-                if (currentMoatIndex !== targetIndex) {
-                    results.splice(currentMoatIndex, 1);
-                    results.splice(targetIndex, 0, moatResult);
-                }
-                
-                const winnerTime = results[0].correctedSeconds;
-                const fleetResults = results.map((result, index) => ({
-                    position: index + 1,
-                    boat: result.boat,
-                    elapsedTime: result.elapsedTime,
-                    correctedTime: result.correctedTime,
-                    delta: index === 0 ? '0:00:00' : this.secondsToTimeString(result.correctedSeconds - winnerTime),
-                    points: index + 1
-                }));
-                
-                this.updateSeriesStandingsWithNewRace(fleetResults);
-                
-                return fleetResults;
-            }
-
-            updateSeriesStandingsWithNewRace(raceResults) {
-                if (!this.raceData.seriesStandings) return;
-                
-                const newRaceId = this.raceData.lastRaceId;
-                const raceKey = `r${newRaceId}`;
-                
-                this.raceData.seriesStandings.forEach(standing => {
-                    const raceResult = raceResults.find(r => r.boat === standing.boat);
-                    if (raceResult) {
-                        standing[raceKey] = raceResult.points;
-                        
-                        const raceKeys = Object.keys(standing).filter(key => key.startsWith('r'));
-                        standing.total = raceKeys.reduce((sum, key) => sum + standing[key], 0);
-                        standing.net = standing.total;
-                    }
-                });
-                
-                this.raceData.seriesStandings.sort((a, b) => {
-                    if (a.total === b.total) {
-                        return a[raceKey] - b[raceKey];
-                    }
-                    return a.total - b.total;
-                });
-                
-                this.raceData.seriesStandings.forEach((standing, index) => {
-                    standing.position = index + 1;
-                });
-            }
-
-            secondsToTimeString(totalSeconds) {
-                const hours = Math.floor(totalSeconds / 3600);
-                const minutes = Math.floor((totalSeconds % 3600) / 60);
-                const seconds = Math.floor(totalSeconds % 60);
-                return `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-            }
-
-            checkForRecentUpdates() {
-                const now = new Date();
-                const latestRace = this.raceData.races.find(race => race.isLatest);
-                
-                if (latestRace && latestRace.updatedAt) {
-                    const timeSinceUpdate = now - new Date(latestRace.updatedAt);
-                    const minutesSinceUpdate = Math.floor(timeSinceUpdate / (60 * 1000));
-                    
-                    if (minutesSinceUpdate < 45) {
-                        const latestRaceCard = document.querySelector('.latest-race-card');
-                        if (latestRaceCard) {
-                            latestRaceCard.classList.add('latest-race-updated');
-                        }
-                        
-                        if (minutesSinceUpdate < 5 && !this.notifications.hasNewResults) {
-                            this.showNotification(`Latest race results updated ${minutesSinceUpdate} minutes ago`);
-                            this.notifications.hasNewResults = true;
-                        }
-                    }
-                }
-            }
-
-            displayRaceResults() {
-                const latestRace = this.raceData.races.find(race => race.isLatest) || 
-                                   this.raceData.races[this.raceData.races.length - 1];
-                
-                if (latestRace) {
-                    document.getElementById('latestRaceName').textContent = latestRace.name;
-                    document.getElementById('latestPosition').textContent = latestRace.position === 0 ? 'TBD' : this.formatPosition(latestRace.position);
-                    
-                    // Update delta ahead - show "TBD" if race not finished
-                    const deltaAhead = latestRace.finished ? 
-                        (latestRace.position === 1 ? 'Winner' : (latestRace.correctedDeltaAhead || 'TBD')) : 
-                        'TBD';
-                    document.getElementById('latestDeltaAhead').textContent = deltaAhead;
-                    
-                    // Update delta behind - show "TBD" if race not finished
-                    const deltaBehind = latestRace.finished ? 
-                        (latestRace.correctedDeltaBehind || 'TBD') : 
-                        'TBD';
-                    document.getElementById('latestDeltaBehind').textContent = deltaBehind;
-                    
-                    document.getElementById('latestRaceDate').textContent = latestRace.date;
-                    
-                    this.displayLatestRaceResults(latestRace.id);
-                }
-                
-                const overall = this.raceData.overallStanding;
-                document.getElementById('overallPosition').textContent = overall.position === 0 ? 'TBD' : this.formatPosition(overall.position);
-                document.getElementById('overallPoints').textContent = overall.totalPoints.toFixed(1);
-                document.getElementById('overallNet').textContent = overall.netPoints.toFixed(1);
-                document.getElementById('overallRaces').textContent = `${overall.completedRaces} races`;
-                document.getElementById('overallClass').textContent = overall.className;
-                
-                this.updateLastUpdateDisplay();
-                
-                this.displaySeriesStandings();
-                
-                this.displayRaceHistory();
-            }
-
-            updateLastUpdateDisplay() {
-                const now = new Date();
-                this.lastUpdateTime = now;
-                document.getElementById('lastUpdateDisplay').textContent = 
-                    now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            }
-
-            displayLatestRaceResults(raceId) {
-                const backElement = document.getElementById('latestRaceBack');
-                if (!backElement) return;
-                
-                const fleetResults = this.raceData.fleetResults[raceId];
-                const raceName = this.raceData.races.find(r => r.id === raceId)?.name || `Race ${raceId}`;
-                const raceData = this.raceData.races.find(r => r.id === raceId);
-                
-                if (!fleetResults || !raceData || !raceData.finished) {
-                    backElement.innerHTML = `
-                        <div style="text-align: center; padding: 2rem; color: rgba(255,255,255,0.6);">
-                            <div style="font-size: 1.2rem; margin-bottom: 1rem;">⛵</div>
-                            <div style="font-size: 0.9rem; margin-bottom: 0.5rem;">${raceName}</div>
-                            <div style="font-size: 0.75rem; line-height: 1.4;">
-                                Results will be posted on<br>
-                                <a href="https://data.orc.org/public/WEV.dll?action=index&eventid=andros2025" 
-                                   target="_blank" 
-                                   style="color: rgba(79, 172, 254, 0.8); text-decoration: none;">
-                                    ORC Event Website
-                                </a>
-                            </div>
-                        </div>
-                    `;
-                    return;
-                }
-                
-                let html = `
-                    <div class="race-results-header">
-                        ${raceName} - Full Fleet Results
-                    </div>
-                    <div class="race-result-row" style="background: rgba(255,255,255,0.1); font-weight: bold; margin-bottom: 0.5rem; grid-template-columns: 0.8fr 2fr 1.2fr 1.2fr 1.2fr;">
-                        <div class="position-cell">Pos</div>
-                        <div class="boat-name-cell">Boat</div>
-                        <div class="time-cell">Finish Time</div>
-                        <div class="time-cell">Elapsed</div>
-                        <div class="time-cell">Corrected</div>
-                    </div>
-                `;
-                
-                fleetResults.forEach((result) => {
-                    const isUserBoat = result.boat === this.config.sailboatName;
-                    const finishTime = result.finishTime || result.elapsedTime;
-                    
-                    html += `
-                        <div class="race-result-row ${isUserBoat ? 'boat-highlight' : ''}" style="grid-template-columns: 0.8fr 2fr 1.2fr 1.2fr 1.2fr;">
-                            <div class="position-cell">${result.position}</div>
-                            <div class="boat-name-cell">${result.boat}</div>
-                            <div class="time-cell">${finishTime}</div>
-                            <div class="time-cell">${result.elapsedTime}</div>
-                            <div class="time-cell">${result.correctedTime}</div>
-                        </div>
-                    `;
-                });
-                
-                backElement.innerHTML = html;
-            }
-
-            displaySeriesStandings() {
-                const backElement = document.getElementById('seriesStandingsBack');
-                if (!backElement || !this.raceData.seriesStandings) return;
-                
-                let html = `
-                    <div class="standings-header">
-                        Andros 2025 - Series Standings
-                    </div>
-                `;
-                
-                // Check if event has started
-                if (this.raceData.overallStanding.completedRaces === 0) {
-                    html += `
-                        <div style="text-align: center; padding: 2rem; color: rgba(255,255,255,0.6);">
-                            <div style="font-size: 1.2rem; margin-bottom: 1rem;">⛵</div>
-                            <div style="font-size: 0.9rem; margin-bottom: 0.5rem;">Event Pending</div>
-                            <div style="font-size: 0.75rem; line-height: 1.4;">
-                                Results will appear here once the<br>
-                                Chios to Andros race begins
-                            </div>
-                        </div>
-                    `;
-                } else {
-                    // Show actual standings when races are completed
-                    html += `
-                        <div class="standings-row" style="background: rgba(255,255,255,0.2); font-weight: bold; margin-bottom: 0.75rem;">
-                            <div class="standings-position">Pos</div>
-                            <div class="standings-boat">Boat Name</div>
-                            <div class="race-points">R1</div>
-                            <div class="standings-points">Total</div>
-                            <div class="standings-points">Net</div>
-                        </div>
-                    `;
-                    
-                    this.raceData.seriesStandings.forEach((standing) => {
-                        const isUserBoat = standing.boat === this.config.sailboatName;
-                        
-                        html += `
-                            <div class="standings-row ${isUserBoat ? 'standings-highlight' : ''}">
-                                <div class="standings-position">${standing.position}</div>
-                                <div class="standings-boat">${standing.boat}</div>
-                                <div class="race-points">${standing.r1}</div>
-                                <div class="standings-points">${standing.total}</div>
-                                <div class="standings-points">${standing.net}</div>
-                            </div>
-                        `;
-                    });
-                }
-                
-                backElement.innerHTML = html;
-            }
-
-            displayRaceHistory() {
-                const historyContainer = document.querySelector('#raceHistory > div:last-child');
-                historyContainer.innerHTML = '';
-                
-                // Display completed races (none for Andros 2025 yet)
-                this.raceData.races.forEach(race => {
-                    if (race.finished) {
-                        const raceCard = document.createElement('div');
-                        raceCard.className = 'race-mini-card';
-                        raceCard.setAttribute('data-race', race.id);
-                        
-                        if (race.isLatest) {
-                            raceCard.className += ' latest-race';
-                            raceCard.style.border = '1px solid rgba(79, 172, 254, 0.6)';
-                            raceCard.style.background = 'rgba(79, 172, 254, 0.1)';
-                        }
-                        
-                        const cardInner = document.createElement('div');
-                        cardInner.className = 'race-card-inner';
-                        
-                        const cardFront = document.createElement('div');
-                        cardFront.className = 'race-card-front';
-                        cardFront.innerHTML = `
-                            <div style="color: rgba(255,255,255,0.6); font-size: 0.7rem;">${race.name}</div>
-                            <div style="color: white; font-weight: 600; font-size: 1.1rem;">${this.formatPosition(race.position)}</div>
-                            <div style="color: rgba(255,255,255,0.5); font-size: 0.7rem;">Finish: ${race.finishTime}</div>
-                            <div style="color: rgba(255,255,255,0.4); font-size: 0.65rem;">
-                                ${race.deltaToAhead ? 
-                                    `<span class="time-delta delta-behind">${race.deltaToAhead} behind</span>` : 
-                                    race.deltaToBehind ? 
-                                    `<span class="time-delta delta-ahead">${race.deltaToBehind} ahead</span>` : 
-                                    '<span class="time-delta">No gap data</span>'
-                                }
-                            </div>
-                        `;
-                        
-                        const cardBack = document.createElement('div');
-                        cardBack.className = 'race-card-back';
-                        cardBack.innerHTML = this.generateFleetResults(race.id);
-                        
-                        cardInner.appendChild(cardFront);
-                        cardInner.appendChild(cardBack);
-                        raceCard.appendChild(cardInner);
-                        
-                        historyContainer.appendChild(raceCard);
-                    }
-                });
-                
-                // Display scheduled races - for Andros 2025, show the upcoming race
-                this.raceData.scheduledRaces.forEach(race => {
-                    const raceCard = document.createElement('div');
-                    raceCard.className = 'race-mini-card upcoming';
-                    raceCard.setAttribute('data-race', race.id);
-                    raceCard.style.border = '1px dashed rgba(255,255,255,0.4)';
-                    raceCard.style.background = 'rgba(79, 172, 254, 0.05)';
-                    raceCard.style.cursor = 'default';
-                    
-                    const cardInner = document.createElement('div');
-                    cardInner.className = 'race-card-inner';
-                    
-                    const cardFront = document.createElement('div');
-                    cardFront.className = 'race-card-front';
-                    cardFront.innerHTML = `
-                        <div style="color: rgba(255,255,255,0.7); font-size: 0.75rem; font-weight: 600;">${race.name}</div>
-                        <div style="color: rgba(79, 172, 254, 0.9); font-weight: 600; font-size: 1.1rem;">Upcoming</div>
-                        <div style="color: rgba(255,255,255,0.6); font-size: 0.7rem;">${race.date}</div>
-                        <div style="color: rgba(255,255,255,0.5); font-size: 0.65rem;">
-                            Check <a href="https://data.orc.org/public/WEV.dll?action=index&eventid=andros2025" 
-                                    target="_blank" 
-                                    style="color: rgba(79, 172, 254, 0.8); text-decoration: none;">
-                                ORC</a> for updates
-                        </div>
-                    `;
-                    
-                    cardInner.appendChild(cardFront);
-                    raceCard.appendChild(cardInner);
-                    
-                    historyContainer.appendChild(raceCard);
-                });
-                
-                // If no races at all, show a placeholder
-                if (this.raceData.races.length === 0 && this.raceData.scheduledRaces.length === 0) {
-                    const placeholderCard = document.createElement('div');
-                    placeholderCard.className = 'race-mini-card';
-                    placeholderCard.style.border = '1px dashed rgba(255,255,255,0.3)';
-                    placeholderCard.style.opacity = '0.6';
-                    placeholderCard.innerHTML = `
-                        <div style="text-align: center; padding: 1rem; color: rgba(255,255,255,0.6);">
-                            <div style="margin-bottom: 0.5rem;">Event Schedule TBD</div>
-                            <div style="font-size: 0.7rem;">Check back for race updates</div>
-                        </div>
-                    `;
-                    historyContainer.appendChild(placeholderCard);
-                }
-            }
-
-            generateFleetResults(raceId) {
-                const fleetResults = this.raceData.fleetResults[raceId];
-                if (!fleetResults) {
-                    return '<div style="color: rgba(255,255,255,0.6); font-size: 0.7rem;">No detailed results available</div>';
-                }
-                
-                let html = `
-                    <div class="race-results-header">
-                        ${this.raceData.races.find(r => r.id === raceId)?.name || `Race R${raceId}`} - Detailed Results
-                    </div>
-                    <div class="race-result-row" style="background: rgba(255,255,255,0.1); font-weight: bold; margin-bottom: 0.5rem; grid-template-columns: 0.6fr 1.8fr 1fr 1fr 1fr;">
-                        <div class="position-cell">Pos</div>
-                        <div class="boat-name-cell">Boat</div>
-                        <div class="time-cell">Finish</div>
-                        <div class="time-cell">Elapsed</div>
-                        <div class="time-cell">Corrected</div>
-                    </div>
-                `;
-                
-                fleetResults.forEach((result, index) => {
-                    const isUserBoat = result.boat === this.config.sailboatName;
-                    const finishTime = result.finishTime || result.elapsedTime;
-                    
-                    html += `
-                        <div class="race-result-row ${isUserBoat ? 'boat-highlight' : ''}" style="grid-template-columns: 0.6fr 1.8fr 1fr 1fr 1fr;">
-                            <div class="position-cell">${result.position}</div>
-                            <div class="boat-name-cell">${result.boat}</div>
-                            <div class="time-cell">${finishTime}</div>
-                            <div class="time-cell">${result.elapsedTime}</div>
-                            <div class="time-cell">${result.correctedTime}</div>
-                        </div>
-                    `;
-                });
-                
-                return html;
-            }
-
-            formatPosition(pos) {
-                const suffix = ['th', 'st', 'nd', 'rd', 'th', 'th', 'th', 'th', 'th', 'th'];
-                return pos + suffix[pos % 10];
-            }
-
-            getCurrentTime() {
-                return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            }
-
-            updateLastRefreshTime() {
-                const now = new Date();
-                document.getElementById('lastUpdateTime').textContent = 
-                    now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            }
-
-            flashUpdatedElements() {
-                const elementsToFlash = ['#latestRace', '#overallStanding'];
-                elementsToFlash.forEach(selector => {
-                    const element = document.querySelector(selector);
-                    if (element) {
-                        element.classList.add('result-updated');
-                        setTimeout(() => {
-                            element.classList.remove('result-updated');
-                        }, 1000);
-                    }
-                });
-            }
-
-            async checkApiConnection() {
-                const savedConfig = localStorage.getItem('sp_api_config');
-                if (savedConfig) {
-                    try {
-                        this.apiConfig = JSON.parse(savedConfig);
-                        this.displayApiStatus();
-                    } catch (e) {
-                        console.log('No saved API configuration');
-                    }
-                }
-            }
-
-            displayApiStatus() {
-                if (this.apiConfig.enabled) {
-                    const statusDiv = document.createElement('div');
-                    statusDiv.className = 'api-status';
-                    statusDiv.innerHTML = `
-                        <div class="glass-card" style="margin-bottom: 1rem; text-align: center;">
-                            <h3 style="color: white; margin-bottom: 0.5rem;">🔗 SailingPerformance.com Connected</h3>
-                            <p style="color: rgba(255,255,255,0.8); font-size: 0.9rem;">
-                                Ready to fetch live analytics from your WebReports
-                            </p>
-                            <button onclick="dashboard.fetchLiveData()" style="
-                                background: rgba(79, 172, 254, 0.8); 
-                                border: none; 
-                                padding: 0.5rem 1rem; 
-                                border-radius: 20px; 
-                                color: white; 
-                                cursor: pointer;
-                                margin-top: 0.5rem;
-                            ">Refresh Live Data</button>
-                        </div>
-                    `;
-                    document.querySelector('.header').appendChild(statusDiv);
-                }
             }
 
             showConfigModal() {
@@ -2447,8 +1880,8 @@
 
             saveConfiguration() {
                 const newConfig = {
-                    sailboatName: document.getElementById('configBoatName').value.trim().toUpperCase() || 'MOAT',
-                    boatClass: document.getElementById('configBoatClass').value.trim() || 'Superyacht Class',
+                    sailboatName: document.getElementById('configBoatName').value.trim().toUpperCase() || 'BURRASCA',
+                    boatClass: document.getElementById('configBoatClass').value.trim() || 'ORC International',
                     ownerName: document.getElementById('configOwnerName').value.trim(),
                     sailNumber: document.getElementById('configSailNumber').value.trim()
                 };
@@ -2472,21 +1905,6 @@
                 
                 this.closeConfigModal();
                 alert(`Configuration saved! Dashboard updated for ${this.config.sailboatName}`);
-            }
-
-            updateBoatSpecificElements() {
-                document.getElementById('currentBoatName').textContent = this.config.sailboatName;
-                document.getElementById('currentBoatClass').textContent = this.config.boatClass;
-                document.getElementById('raceBoatName').textContent = this.config.sailboatName;
-                
-                const orcLink = document.getElementById('orcResultsLink');
-                if (orcLink) {
-                    orcLink.textContent = 'Results on Event Website';
-                }
-                
-                if (this.raceData && this.raceData.races.length > 0) {
-                    this.displayRaceResults();
-                }
             }
 
             showNotification(message) {
@@ -2799,7 +2217,7 @@
                 const url = `https://kndwebreport.azurewebsites.net/Reports/View?idProject=${projectId}&idRegatta=${regattaId}&idRaceReport=${raceReportId}&tab=0`;
                 
                 navigator.clipboard.writeText(url).then(() => {
-                    alert('✅ URL copied to clipboard!');
+                    alert('URL copied to clipboard!');
                 }).catch(() => {
                     const textArea = document.createElement('textarea');
                     textArea.value = url;
@@ -2807,7 +2225,7 @@
                     textArea.select();
                     document.execCommand('copy');
                     document.body.removeChild(textArea);
-                    alert('✅ URL copied to clipboard!');
+                    alert('URL copied to clipboard!');
                 });
             }
 
@@ -2815,20 +2233,20 @@
                 const suggestions = `
                 Data Extraction Options:
 
-                1. **Manual Export:**
+                1. Manual Export:
                    - Log into your WebReports
                    - Look for "Export" or "Download" buttons
                    - Save as CSV/Excel format
                    - Upload to this dashboard
 
-                2. **Browser Developer Tools:**
+                2. Browser Developer Tools:
                    - Press F12 while logged into WebReports
                    - Go to Network tab
                    - Navigate through your reports
                    - Look for API calls containing JSON data
                    - Copy the data URLs for potential automation
 
-                3. **Contact SailingPerformance:**
+                3. Contact SailingPerformance:
                    - Email: info@sailingperformance.com
                    - Ask about API access for WebReports
                    - Request JSON/REST endpoints
@@ -2838,6 +2256,43 @@
                 `;
                 
                 alert(suggestions);
+            }
+
+            async checkApiConnection() {
+                const savedConfig = localStorage.getItem('sp_api_config');
+                if (savedConfig) {
+                    try {
+                        this.apiConfig = JSON.parse(savedConfig);
+                        this.displayApiStatus();
+                    } catch (e) {
+                        console.log('No saved API configuration');
+                    }
+                }
+            }
+
+            displayApiStatus() {
+                if (this.apiConfig.enabled) {
+                    const statusDiv = document.createElement('div');
+                    statusDiv.className = 'api-status';
+                    statusDiv.innerHTML = `
+                        <div class="glass-card" style="margin-bottom: 1rem; text-align: center;">
+                            <h3 style="color: white; margin-bottom: 0.5rem;">SailingPerformance.com Connected</h3>
+                            <p style="color: rgba(255,255,255,0.8); font-size: 0.9rem;">
+                                Ready to fetch live analytics from your WebReports
+                            </p>
+                            <button onclick="dashboard.fetchLiveData()" style="
+                                background: rgba(79, 172, 254, 0.8); 
+                                border: none; 
+                                padding: 0.5rem 1rem; 
+                                border-radius: 20px; 
+                                color: white; 
+                                cursor: pointer;
+                                margin-top: 0.5rem;
+                            ">Refresh Live Data</button>
+                        </div>
+                    `;
+                    document.querySelector('.header').appendChild(statusDiv);
+                }
             }
         }
 
