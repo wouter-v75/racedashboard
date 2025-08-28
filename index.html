@@ -752,16 +752,17 @@
             <p>Real-time performance dashboard for BURRASCA</p>
         </div>
 
-        <!-- Login Card -->
-        <div id="loginCard" class="glass-card" style="margin-bottom: 1rem;">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <div>
-                    <h3 style="color: white; margin: 0; font-size: 1rem;">Access Control</h3>
-                    <p style="color: rgba(255,255,255,0.7); margin: 0.25rem 0 0 0; font-size: 0.85rem;" id="loginStatus">
-                        Not logged in
-                    </p>
-                </div>
-                <div style="display: flex; gap: 0.5rem;">
+        <!-- Login & Configuration Card -->
+        <div id="loginConfigCard" class="glass-card" style="margin-bottom: 1rem;">
+            <!-- Not Logged In State -->
+            <div id="notLoggedInState">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h3 style="color: white; margin: 0; font-size: 1rem;">Access Control</h3>
+                        <p style="color: rgba(255,255,255,0.7); margin: 0.25rem 0 0 0; font-size: 0.85rem;">
+                            Login required to configure sailboat settings
+                        </p>
+                    </div>
                     <button id="loginBtn" onclick="dashboard.showLoginModal()" style="
                         background: rgba(79, 172, 254, 0.8); 
                         border: 1px solid rgba(79, 172, 254, 0.3); 
@@ -773,6 +774,18 @@
                         transition: all 0.3s ease;
                         font-size: 0.8rem;
                     ">Login</button>
+                </div>
+            </div>
+
+            <!-- Logged In State -->
+            <div id="loggedInState" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <div>
+                        <h3 style="color: white; margin: 0; font-size: 1rem;">Sailboat Configuration</h3>
+                        <p style="color: rgba(255,255,255,0.7); margin: 0.25rem 0 0 0; font-size: 0.85rem;" id="loginStatus">
+                            Logged in as <span id="currentUser">demo</span>
+                        </p>
+                    </div>
                     <button id="logoutBtn" onclick="dashboard.logout()" style="
                         background: rgba(255,255,255,0.1); 
                         border: 1px solid rgba(255,255,255,0.3); 
@@ -783,8 +796,76 @@
                         backdrop-filter: blur(10px);
                         transition: all 0.3s ease;
                         font-size: 0.8rem;
-                        display: none;
                     ">Logout</button>
+                </div>
+
+                <!-- Quick Configuration Section -->
+                <div style="background: rgba(255,255,255,0.05); border-radius: 12px; padding: 1rem; margin-bottom: 1rem;">
+                    <div style="display: grid; grid-template-columns: 2fr 2fr 1fr; gap: 1rem; align-items: end;">
+                        <div>
+                            <label style="color: rgba(255,255,255,0.8); display: block; margin-bottom: 0.5rem; font-size: 0.8rem;">
+                                Boat Name
+                            </label>
+                            <input type="text" id="quickBoatName" placeholder="Enter boat name" style="
+                                width: 100%;
+                                padding: 0.6rem;
+                                border-radius: 8px;
+                                border: 1px solid rgba(255,255,255,0.3);
+                                background: rgba(255,255,255,0.1);
+                                color: white;
+                                backdrop-filter: blur(10px);
+                                font-size: 0.85rem;
+                            ">
+                        </div>
+                        <div>
+                            <label style="color: rgba(255,255,255,0.8); display: block; margin-bottom: 0.5rem; font-size: 0.8rem;">
+                                Boat Class
+                            </label>
+                            <input type="text" id="quickBoatClass" placeholder="e.g., ORC International" style="
+                                width: 100%;
+                                padding: 0.6rem;
+                                border-radius: 8px;
+                                border: 1px solid rgba(255,255,255,0.3);
+                                background: rgba(255,255,255,0.1);
+                                color: white;
+                                backdrop-filter: blur(10px);
+                                font-size: 0.85rem;
+                            ">
+                        </div>
+                        <div>
+                            <button onclick="dashboard.saveQuickConfig()" style="
+                                background: rgba(81, 207, 102, 0.8);
+                                border: none;
+                                padding: 0.6rem 1rem;
+                                border-radius: 8px;
+                                color: white;
+                                cursor: pointer;
+                                font-size: 0.8rem;
+                                width: 100%;
+                            ">Update</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Current Configuration Display -->
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <div style="color: rgba(255,255,255,0.6); font-size: 0.75rem; margin-bottom: 0.25rem;">Current Configuration:</div>
+                        <div style="color: white; font-weight: 600;">
+                            <span id="currentBoatName">BURRASCA</span> • <span id="currentBoatClass">ORC International</span>
+                        </div>
+                    </div>
+                    <button onclick="dashboard.showConfigModal()" style="
+                        background: rgba(255,255,255,0.1); 
+                        border: 1px solid rgba(255,255,255,0.3); 
+                        padding: 0.5rem 1rem; 
+                        border-radius: 15px; 
+                        color: white; 
+                        cursor: pointer;
+                        backdrop-filter: blur(10px);
+                        transition: all 0.3s ease;
+                        font-size: 0.8rem;
+                    ">Advanced Settings</button>
                 </div>
             </div>
         </div>
@@ -947,29 +1028,6 @@
                     background: rgba(79, 172, 254, 0.1);
                     transition: all 0.3s ease;
                 " id="orcResultsLink">Andros 2025 Results on ORC</a>
-            </div>
-        </div>
-
-        <!-- Sailboat Configuration Card -->
-        <div id="configCard" class="glass-card" style="margin-bottom: 1rem;">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <div>
-                    <h3 style="color: white; margin: 0; font-size: 1rem;">Sailboat Configuration</h3>
-                    <p style="color: rgba(255,255,255,0.7); margin: 0.25rem 0 0 0; font-size: 0.85rem;">
-                        <span id="currentBoatName">BURRASCA</span> • <span id="currentBoatClass">ORC International</span>
-                    </p>
-                </div>
-                <button onclick="dashboard.showConfigModal()" style="
-                    background: rgba(255,255,255,0.1); 
-                    border: 1px solid rgba(255,255,255,0.3); 
-                    padding: 0.5rem 1rem; 
-                    border-radius: 20px; 
-                    color: white; 
-                    cursor: pointer;
-                    backdrop-filter: blur(10px);
-                    transition: all 0.3s ease;
-                    font-size: 0.8rem;
-                ">Configure</button>
             </div>
         </div>
 
@@ -1394,7 +1452,7 @@
                 
                 <div style="margin-top: 1rem; padding: 1rem; background: rgba(79, 172, 254, 0.1); border-radius: 8px;">
                     <div style="color: rgba(79, 172, 254, 1); font-size: 0.8rem; font-weight: bold;">
-                        🔒 Demo Mode: Use "demo", "burrasca", or "andros2025" as username
+                        🔒 Secure login using Vercel environment variables
                     </div>
                 </div>
             </div>
@@ -1772,18 +1830,22 @@
             }
 
             updateLoginDisplay() {
-                const loginStatus = document.getElementById('loginStatus');
-                const loginBtn = document.getElementById('loginBtn');
-                const logoutBtn = document.getElementById('logoutBtn');
+                const notLoggedInState = document.getElementById('notLoggedInState');
+                const loggedInState = document.getElementById('loggedInState');
+                const currentUser = document.getElementById('currentUser');
                 
                 if (this.loginState.isLoggedIn) {
-                    loginStatus.textContent = `Logged in as ${this.loginState.username}`;
-                    loginBtn.style.display = 'none';
-                    logoutBtn.style.display = 'inline-block';
+                    notLoggedInState.style.display = 'none';
+                    loggedInState.style.display = 'block';
+                    if (currentUser) {
+                        currentUser.textContent = this.loginState.username;
+                    }
+                    // Populate quick config fields
+                    document.getElementById('quickBoatName').value = this.config.sailboatName;
+                    document.getElementById('quickBoatClass').value = this.config.boatClass;
                 } else {
-                    loginStatus.textContent = 'Not logged in';
-                    loginBtn.style.display = 'inline-block';
-                    logoutBtn.style.display = 'none';
+                    notLoggedInState.style.display = 'block';
+                    loggedInState.style.display = 'none';
                 }
             }
 
@@ -1814,7 +1876,7 @@
                 document.getElementById('loginPassword').value = '';
             }
 
-            attemptLogin() {
+            async attemptLogin() {
                 const username = document.getElementById('loginUsername').value.trim();
                 const password = document.getElementById('loginPassword').value.trim();
                 
@@ -1823,21 +1885,47 @@
                     return;
                 }
                 
-                if (username === 'demo' || username.toLowerCase() === 'burrasca' || username.toLowerCase() === 'andros2025') {
-                    this.loginState = {
-                        isLoggedIn: true,
-                        username: username,
-                        lastLoginTime: new Date().toISOString()
-                    };
+                // Show loading state
+                const loginButton = document.querySelector('#loginModal button[onclick="dashboard.attemptLogin()"]');
+                const originalText = loginButton.textContent;
+                loginButton.textContent = 'Authenticating...';
+                loginButton.disabled = true;
+                
+                try {
+                    // Call Vercel serverless function for authentication
+                    const response = await fetch('/api/auth', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ username, password })
+                    });
                     
-                    localStorage.setItem('login_state', JSON.stringify(this.loginState));
-                    this.updateLoginDisplay();
-                    this.closeLoginModal();
-                    alert(`Login successful! Welcome ${username}`);
+                    const result = await response.json();
                     
-                    this.apiConfig.enabled = true;
-                } else {
-                    alert('Invalid credentials. Try "demo", "burrasca", or "andros2025" for demonstration.');
+                    if (response.ok && result.success) {
+                        this.loginState = {
+                            isLoggedIn: true,
+                            username: result.username,
+                            lastLoginTime: new Date().toISOString()
+                        };
+                        
+                        localStorage.setItem('login_state', JSON.stringify(this.loginState));
+                        this.updateLoginDisplay();
+                        this.closeLoginModal();
+                        alert(`Login successful! You can now configure your sailboat settings.`);
+                        
+                        this.apiConfig.enabled = true;
+                    } else {
+                        alert(result.message || 'Invalid credentials. Please try again.');
+                    }
+                } catch (error) {
+                    console.error('Login error:', error);
+                    alert('Login failed. Please check your connection and try again.');
+                } finally {
+                    // Reset button state
+                    loginButton.textContent = originalText;
+                    loginButton.disabled = false;
                 }
             }
 
@@ -1851,10 +1939,61 @@
                 localStorage.removeItem('login_state');
                 this.updateLoginDisplay();
                 this.apiConfig.enabled = false;
-                alert('Logged out successfully');
+                alert('Logged out successfully. Configuration is now locked.');
+            }
+
+            saveQuickConfig() {
+                if (!this.loginState.isLoggedIn) {
+                    alert('Please login first to modify configuration');
+                    return;
+                }
+
+                const newBoatName = document.getElementById('quickBoatName').value.trim().toUpperCase();
+                const newBoatClass = document.getElementById('quickBoatClass').value.trim();
+                
+                if (!newBoatName) {
+                    alert('Boat name is required');
+                    document.getElementById('quickBoatName').focus();
+                    return;
+                }
+
+                if (!newBoatClass) {
+                    alert('Boat class is required');
+                    document.getElementById('quickBoatClass').focus();
+                    return;
+                }
+
+                // Update config
+                this.config.sailboatName = newBoatName;
+                this.config.boatClass = newBoatClass;
+                this.config.displayName = `${newBoatName} Performance Dashboard`;
+                
+                // Save to localStorage
+                localStorage.setItem('sailboat_config', JSON.stringify(this.config));
+                
+                // Update all displays
+                this.updateDashboardBranding();
+                this.updateBoatSpecificElements();
+                this.initializeRaceResults();
+                
+                // Show success feedback
+                const button = event.target;
+                const originalText = button.textContent;
+                button.textContent = 'Updated!';
+                button.style.background = 'rgba(81, 207, 102, 1)';
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.style.background = 'rgba(81, 207, 102, 0.8)';
+                }, 1500);
             }
 
             showConfigModal() {
+                if (!this.loginState.isLoggedIn) {
+                    alert('Please login first to access advanced configuration');
+                    return;
+                }
+                
                 document.getElementById('configBoatName').value = this.config.sailboatName;
                 document.getElementById('configBoatClass').value = this.config.boatClass;
                 document.getElementById('configOwnerName').value = this.config.ownerName || '';
@@ -2234,8 +2373,7 @@
 
                 1. Manual Export:
                    - Log into your WebReports
-                   - Look for "Export" or "Download" buttons
-                   - Save as CSV/Excel format
+                   - Export performance data as CSV/JSON
                    - Upload to this dashboard
 
                 2. Browser Developer Tools:
