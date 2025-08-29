@@ -2009,6 +2009,7 @@
                 // Update race results displays with corrected times
                 this.updateRaceResultsDisplay(raceResults);
                 this.updateSeriesStandingsDisplay(overallResults);
+                this.updateRaceDetailsSection(raceResults, ourBoatRace);
                 
                 // Update last refresh time
                 this.updateLastRefreshTime();
@@ -2016,6 +2017,99 @@
                 // Change status indicators
                 document.querySelector('#racingResultsCard .race-result-section h4 span').textContent = 'Live Results';
                 document.querySelector('#racingResultsCard .race-result-section h4 span').style.background = 'rgba(81, 207, 102, 0.8)';
+            }
+
+            updateRaceDetailsSection(raceResults, ourBoat) {
+                // Update the race history section to show Race 1
+                const historyContainer = document.querySelector('#raceHistory > div:last-child');
+                historyContainer.innerHTML = ''; // Clear existing content
+                
+                // Create Race 1 flippable card
+                const race1Card = document.createElement('div');
+                race1Card.className = 'race-mini-card race1-card';
+                race1Card.style.cssText = 'min-height: 80px; padding: 0; cursor: pointer;';
+                race1Card.setAttribute('title', 'Click to flip card');
+                
+                const ourPosition = ourBoat ? ourBoat.position : '—';
+                const ourCorrectedTime = ourBoat ? (ourBoat.correctedTime || ourBoat.finishTime) : '—';
+                
+                race1Card.innerHTML = `
+                    <div class="race-card-inner">
+                        <!-- Front Side - Race 1 Summary -->
+                        <div class="race-card-front" style="background: rgba(255,255,255,0.05); border-radius: 8px; padding: 0.75rem;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                <span style="color: white; font-weight: 600; font-size: 0.9rem;">Race 1</span>
+                                <span style="color: rgba(255,255,255,0.7); font-size: 0.7rem;">Aug 29</span>
+                            </div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; text-align: center;">
+                                <div>
+                                    <div style="color: rgba(255,255,255,0.6); font-size: 0.65rem;">Position</div>
+                                    <div style="color: white; font-size: 1.1rem; font-weight: 700;">${ourPosition}</div>
+                                </div>
+                                <div>
+                                    <div style="color: rgba(255,255,255,0.6); font-size: 0.65rem;">Corrected</div>
+                                    <div style="color: white; font-size: 0.75rem; font-weight: 600; font-family: monospace;">${ourCorrectedTime}</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Back Side - Full Race 1 Results -->
+                        <div class="race-card-back" id="race1ResultsBack">
+                            <!-- Will be populated with race results -->
+                        </div>
+                    </div>
+                `;
+                
+                historyContainer.appendChild(race1Card);
+                
+                // Populate the back side with full race results
+                this.updateRace1ResultsDisplay(raceResults);
+                
+                // Setup flip functionality for the new card
+                setTimeout(() => {
+                    this.setupFlipCards();
+                }, 100);
+            }
+
+            updateRace1ResultsDisplay(raceResults) {
+                const backSide = document.getElementById('race1ResultsBack');
+                if (!backSide) return;
+                
+                const ourBoatName = this.config.sailboatName.toUpperCase();
+                
+                let html = `
+                    <div class="race-results-header">Race 1 - Andros Course (August 29, 2025)</div>
+                    <div style="font-size: 0.5rem; color: rgba(255,255,255,0.5); margin-bottom: 0.5rem; text-align: center; line-height: 1.2;">
+                        Pos | Yacht Name | Sail | Corrected Time | Pts
+                    </div>
+                `;
+                
+                raceResults.forEach((boat, index) => {
+                    const isOurBoat = boat.name.toUpperCase().includes(ourBoatName) || ourBoatName.includes(boat.name.toUpperCase());
+                    const highlightClass = isOurBoat ? 'boat-highlight' : '';
+                    
+                    const displayTime = boat.correctedTime || boat.finishTime || 'DNF';
+                    const shortSailNo = boat.sailNo ? boat.sailNo.replace('GRE-', '') : '—';
+                    
+                    html += `
+                        <div class="race-result-row ${highlightClass}" style="grid-template-columns: 0.5fr 2fr 0.7fr 1.2fr 0.6fr; font-size: 0.52rem; margin-bottom: 0.2rem;">
+                            <div class="position-cell">${boat.position}</div>
+                            <div class="boat-name-cell" title="${boat.name}" style="font-size: 0.5rem;">${boat.name}</div>
+                            <div class="time-cell">${shortSailNo}</div>
+                            <div class="time-cell" style="font-family: monospace; font-size: 0.48rem;">${displayTime}</div>
+                            <div class="delta-cell">${parseFloat(boat.points || 0).toFixed(1)}</div>
+                        </div>
+                    `;
+                });
+                
+                // Add race info footer
+                html += `
+                    <div style="margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid rgba(255,255,255,0.2); font-size: 0.5rem; color: rgba(255,255,255,0.6); text-align: center;">
+                        ${raceResults.length} boats • Corrected times shown
+                    </div>
+                `;
+                
+                backSide.innerHTML = html;
             }
 
             formatTimeDelta(time1, time2) {
