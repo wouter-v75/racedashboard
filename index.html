@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sailing Team Dashboard</title>
+    <title>{{ config.sailboatName }} - Sailing Performance Dashboard</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <style>
         * {
             margin: 0;
@@ -139,7 +140,7 @@
             font-size: 0.9rem;
         }
 
-        #fileInput {
+        .file-input {
             display: none;
         }
 
@@ -389,7 +390,7 @@
             display: none;
         }
 
-        .api-modal {
+        .modal {
             position: fixed;
             top: 0;
             left: 0;
@@ -398,25 +399,46 @@
             z-index: 1000;
         }
 
-        .api-modal input {
+        .modal input {
             box-sizing: border-box;
         }
 
-        .api-modal input:focus {
+        .modal input:focus {
             outline: none;
             border-color: rgba(79, 172, 254, 0.6);
             box-shadow: 0 0 0 2px rgba(79, 172, 254, 0.2);
         }
 
-        .api-modal button:hover {
+        .modal button:hover {
             transform: translateY(-1px);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
 
-        #apiConfigBtn:hover {
+        .btn {
+            background: rgba(79, 172, 254, 0.8);
+            border: 1px solid rgba(79, 172, 254, 0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            color: white;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            font-size: 0.8rem;
+        }
+
+        .btn:hover {
+            background: rgba(79, 172, 254, 1);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-secondary:hover {
             background: rgba(255, 255, 255, 0.15);
             border-color: rgba(255, 255, 255, 0.4);
-            transform: translateY(-1px);
         }
 
         .race-mini-card {
@@ -437,20 +459,6 @@
             background: rgba(255, 255, 255, 0.05) !important;
             border: 1px solid rgba(255, 255, 255, 0.15);
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-        }
-
-        .latest-race-card:hover {
-            background: rgba(255, 255, 255, 0.08) !important;
-            border-color: rgba(255, 255, 255, 0.25);
-        }
-
-        .latest-race-card .race-card-back {
-            background: rgba(255, 255, 255, 0.15);
-            max-height: 400px;
-        }
-
-        .race-mini-card:before {
-            display: none;
         }
 
         .race-mini-card:hover {
@@ -492,20 +500,6 @@
             padding: 0.5rem;
             overflow-y: auto;
             max-height: 300px;
-        }
-
-        .race-card-back::-webkit-scrollbar {
-            width: 3px;
-        }
-
-        .race-card-back::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 2px;
-        }
-
-        .race-card-back::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.3);
-            border-radius: 2px;
         }
 
         .race-results-header {
@@ -565,146 +559,18 @@
             font-family: monospace;
         }
 
-        .delta-positive {
-            color: rgba(255, 140, 66, 0.9);
-        }
-
-        .delta-winner {
-            color: rgba(81, 207, 102, 0.9);
-            font-weight: bold;
-        }
-
-        .series-card {
-            background: rgba(255, 255, 255, 0.05) !important;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-        }
-
-        .series-card:hover {
-            background: rgba(255, 255, 255, 0.08) !important;
-            border-color: rgba(255, 255, 255, 0.25);
-        }
-
-        .series-card .race-card-back {
-            background: rgba(255, 255, 255, 0.15);
-            max-height: 400px;
-        }
-
-        .standings-header {
-            color: white;
-            font-size: 0.8rem;
-            font-weight: bold;
-            margin-bottom: 0.75rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 2px solid rgba(255, 255, 255, 0.3);
-            text-align: center;
-        }
-
-        .standings-row {
-            display: grid;
-            grid-template-columns: 0.8fr 2.5fr 1fr 1fr 1fr 1fr 1fr;
-            gap: 0.5rem;
-            margin-bottom: 0.5rem;
-            padding: 0.5rem;
-            border-radius: 6px;
-            font-size: 0.7rem;
-            align-items: center;
-            transition: all 0.2s ease;
-        }
-
-        .standings-row:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        .standings-row.standings-highlight {
-            background: rgba(79, 172, 254, 0.2);
-            border: 1px solid rgba(79, 172, 254, 0.4);
-        }
-
-        .standings-position {
-            color: white;
-            font-weight: bold;
-            text-align: center;
-        }
-
-        .standings-boat {
-            color: white;
-            font-weight: 600;
-            text-align: left;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        .standings-points {
-            color: rgba(255, 255, 255, 0.9);
-            text-align: center;
-            font-weight: 600;
-        }
-
-        .race-points {
-            color: rgba(255, 255, 255, 0.7);
-            text-align: center;
-            font-family: monospace;
-        }
-
-        .background-upload-area:hover {
-            border-color: rgba(255, 255, 255, 0.5);
-            background: rgba(255, 255, 255, 0.08);
-            transform: translateY(-1px);
-        }
-
-        #resetBackgroundBtn:hover {
-            background: rgba(255, 140, 66, 1);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(255, 140, 66, 0.3);
-        }
-
         @keyframes pulse {
             0%, 100% { opacity: 1; transform: scale(1); }
             50% { opacity: 0.6; transform: scale(0.8); }
         }
 
-        @keyframes updateFlash {
-            0% { background: rgba(79, 172, 254, 0.3); }
-            100% { background: rgba(255, 255, 255, 0.05); }
-        }
-
-        .result-updated {
-            animation: updateFlash 1s ease-out;
-        }
-
-        #racingResultsCard a:hover {
+        .notification-bar {
             background: rgba(79, 172, 254, 0.2);
-            border-color: rgba(79, 172, 254, 0.5);
-            transform: translateY(-1px);
-        }
-
-        .latest-race {
-            position: relative;
-            overflow: hidden;
-        }
-
-        .latest-race::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, rgba(79, 172, 254, 0.8), transparent);
-            animation: shimmer 2s infinite;
-        }
-
-        #configCard button:hover {
-            background: rgba(255, 255, 255, 0.15);
-            border-color: rgba(255, 255, 255, 0.4);
-            transform: translateY(-1px);
-        }
-
-        @keyframes shimmer {
-            0% { left: -100%; }
-            100% { left: 100%; }
+            border: 1px solid rgba(79, 172, 254, 0.4);
+            border-radius: 10px;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            text-align: center;
         }
 
         @media (max-width: 767px) {
@@ -723,2147 +589,1485 @@
             .glass-card {
                 padding: 1rem;
             }
-            
-            #racingResultsCard > div:first-child {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 0.5rem;
-            }
-            
-            #racingResultsCard > div:nth-child(2) {
-                grid-template-columns: 1fr;
-                gap: 1rem;
-            }
-            
-            #raceHistory > div:last-child {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            #racingResultsCard h3 {
-                font-size: 1.1rem;
-            }
         }
     </style>
 </head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1>BURRASCA</h1>
-            <p>Real-time performance dashboard for BURRASCA</p>
-        </div>
-
-        <!-- Login & Configuration Card -->
-        <div id="loginConfigCard" class="glass-card" style="margin-bottom: 1rem;">
-            <!-- Not Logged In State -->
-            <div id="notLoggedInState">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <div>
-                        <h3 style="color: white; margin: 0; font-size: 1rem;">Access Control</h3>
-                        <p style="color: rgba(255,255,255,0.7); margin: 0.25rem 0 0 0; font-size: 0.85rem;">
-                            Login required to configure sailboat settings
-                        </p>
-                    </div>
-                    <button id="loginBtn" onclick="dashboard.showLoginModal()" style="
-                        background: rgba(79, 172, 254, 0.8); 
-                        border: 1px solid rgba(79, 172, 254, 0.3); 
-                        padding: 0.5rem 1rem; 
-                        border-radius: 20px; 
-                        color: white; 
-                        cursor: pointer;
-                        backdrop-filter: blur(10px);
-                        transition: all 0.3s ease;
-                        font-size: 0.8rem;
-                    ">Login</button>
-                </div>
+<body :class="{ 'custom-background': config.backgroundImage }">
+    <div id="app">
+        <div class="container">
+            <!-- Header -->
+            <div class="header">
+                <h1>{{ config.sailboatName }}</h1>
+                <p>Real-time performance dashboard for {{ config.sailboatName }}</p>
             </div>
 
-            <!-- Logged In State -->
-            <div id="loggedInState" style="display: none;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-                    <div>
-                        <h3 style="color: white; margin: 0; font-size: 1rem;">Sailboat Configuration</h3>
-                        <p style="color: rgba(255,255,255,0.7); margin: 0.25rem 0 0 0; font-size: 0.85rem;" id="loginStatus">
-                            Logged in as <span id="currentUser">demo</span>
-                        </p>
-                    </div>
-                    <button id="logoutBtn" onclick="dashboard.logout()" style="
-                        background: rgba(255,255,255,0.1); 
-                        border: 1px solid rgba(255,255,255,0.3); 
-                        padding: 0.5rem 1rem; 
-                        border-radius: 20px; 
-                        color: white; 
-                        cursor: pointer;
-                        backdrop-filter: blur(10px);
-                        transition: all 0.3s ease;
-                        font-size: 0.8rem;
-                    ">Logout</button>
-                </div>
+            <!-- Login & Configuration Card -->
+            <login-config-card 
+                :login-state="loginState"
+                :config="config"
+                @show-login-modal="showLoginModal"
+                @logout="logout"
+                @save-quick-config="saveQuickConfig"
+                @show-config-modal="showConfigModal">
+            </login-config-card>
 
-                <!-- Quick Configuration Section -->
-                <div style="background: rgba(255,255,255,0.05); border-radius: 12px; padding: 1rem; margin-bottom: 1rem;">
-                    <div style="display: grid; grid-template-columns: 2fr 2fr 1fr; gap: 1rem; align-items: end;">
-                        <div>
-                            <label style="color: rgba(255,255,255,0.8); display: block; margin-bottom: 0.5rem; font-size: 0.8rem;">
-                                Boat Name
-                            </label>
-                            <input type="text" id="quickBoatName" placeholder="Enter boat name" style="
-                                width: 100%;
-                                padding: 0.6rem;
-                                border-radius: 8px;
-                                border: 1px solid rgba(255,255,255,0.3);
-                                background: rgba(255,255,255,0.1);
-                                color: white;
-                                backdrop-filter: blur(10px);
-                                font-size: 0.85rem;
-                            ">
-                        </div>
-                        <div>
-                            <label style="color: rgba(255,255,255,0.8); display: block; margin-bottom: 0.5rem; font-size: 0.8rem;">
-                                Boat Class
-                            </label>
-                            <input type="text" id="quickBoatClass" placeholder="e.g., ORC International" style="
-                                width: 100%;
-                                padding: 0.6rem;
-                                border-radius: 8px;
-                                border: 1px solid rgba(255,255,255,0.3);
-                                background: rgba(255,255,255,0.1);
-                                color: white;
-                                backdrop-filter: blur(10px);
-                                font-size: 0.85rem;
-                            ">
-                        </div>
-                        <div>
-                            <button onclick="dashboard.saveQuickConfig()" style="
-                                background: rgba(81, 207, 102, 0.8);
-                                border: none;
-                                padding: 0.6rem 1rem;
-                                border-radius: 8px;
-                                color: white;
-                                cursor: pointer;
-                                font-size: 0.8rem;
-                                width: 100%;
-                            ">Update</button>
-                        </div>
-                    </div>
-                </div>
+            <!-- Racing Results Card -->
+            <racing-results-card 
+                :config="config"
+                :race-data="raceData"
+                :last-update-time="lastUpdateTime"
+                @manual-refresh="manualRefreshResults">
+            </racing-results-card>
 
-                <!-- Current Configuration Display -->
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <div>
-                        <div style="color: rgba(255,255,255,0.6); font-size: 0.75rem; margin-bottom: 0.25rem;">Current Configuration:</div>
-                        <div style="color: white; font-weight: 600;">
-                            <span id="currentBoatName">BURRASCA</span> • <span id="currentBoatClass">ORC International</span>
-                        </div>
-                    </div>
-                    <button onclick="dashboard.showConfigModal()" style="
-                        background: rgba(255,255,255,0.1); 
-                        border: 1px solid rgba(255,255,255,0.3); 
-                        padding: 0.5rem 1rem; 
-                        border-radius: 15px; 
-                        color: white; 
-                        cursor: pointer;
-                        backdrop-filter: blur(10px);
-                        transition: all 0.3s ease;
-                        font-size: 0.8rem;
-                    ">Advanced Settings</button>
-                </div>
-            </div>
-        </div>
+            <!-- File Upload Card -->
+            <file-upload-card 
+                :is-loading="isLoading"
+                :error-message="errorMessage"
+                @file-uploaded="handleFileUpload"
+                @show-api-config="showApiConfig">
+            </file-upload-card>
 
-        <!-- Racing Results Card -->
-        <div id="racingResultsCard" class="glass-card">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                <div>
-                    <h3 style="color: white; margin: 0; font-size: 1.3rem;">Andros 2025</h3>
-                    <p style="color: rgba(255,255,255,0.7); margin: 0.25rem 0 0 0; font-size: 0.9rem;">
-                        <span id="raceBoatName">BURRASCA</span> • Greek Islands • August 28-31, 2025
-                    </p>
-                </div>
-                <div style="display: flex; align-items: center; gap: 1rem;">
-                    <div style="text-align: right;">
-                        <div style="color: rgba(255,255,255,0.5); font-size: 0.7rem;">Last Update</div>
-                        <div style="color: rgba(255,255,255,0.8); font-size: 0.8rem;" id="lastUpdateDisplay">Just now</div>
-                    </div>
-                    <div style="display: flex; align-items: center; gap: 0.5rem;">
-                        <div id="refreshIndicator" style="
-                            width: 8px; 
-                            height: 8px; 
-                            border-radius: 50%; 
-                            background: rgba(81, 207, 102, 0.8);
-                            animation: pulse 2s infinite;
-                        "></div>
-                        <span style="color: rgba(255,255,255,0.6); font-size: 0.8rem;">Live</span>
-                    </div>
-                    <button onclick="dashboard.manualRefreshResults()" style="
-                        background: rgba(79, 172, 254, 0.8);
-                        border: none;
-                        padding: 0.4rem 0.8rem;
-                        border-radius: 15px;
-                        color: white;
-                        cursor: pointer;
-                        font-size: 0.75rem;
-                        transition: all 0.3s ease;
-                    " id="refreshBtn">Refresh</button>
-                </div>
-            </div>
+            <!-- Data Preview -->
+            <data-preview-card 
+                v-if="data.length > 0"
+                :data="data">
+            </data-preview-card>
 
-            <!-- Notification Bar -->
-            <div id="notificationBar" class="notification-bar hidden" style="
-                background: rgba(79, 172, 254, 0.2);
-                border: 1px solid rgba(79, 172, 254, 0.4);
-                border-radius: 10px;
-                padding: 0.75rem;
-                margin-bottom: 1rem;
-                text-align: center;
-            ">
-                <span style="color: white; font-weight: 600;">New race results available!</span>
-                <button onclick="dashboard.dismissNotification()" style="
-                    background: none;
-                    border: none;
-                    color: rgba(255,255,255,0.7);
-                    cursor: pointer;
-                    float: right;
-                    font-size: 1.2rem;
-                ">×</button>
-            </div>
+            <!-- Metrics Container -->
+            <metrics-container 
+                v-if="metrics"
+                :metrics="metrics">
+            </metrics-container>
 
-            <div style="margin-bottom: 1rem;">
-                <!-- Latest Race Result - Flippable -->
-                <div class="race-result-section">
-                    <h4 style="color: rgba(255,255,255,0.8); font-size: 0.9rem; margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 0.5rem;">
-                        Latest Race - Chios to Andros
-                        <span style="color: rgba(255,255,255,0.5); font-size: 0.7rem; font-weight: normal; background: rgba(255,255,255,0.1); padding: 0.2rem 0.5rem; border-radius: 10px;">
-                            Awaiting results
-                        </span>
-                    </h4>
-                    <div class="race-mini-card latest-race-card" style="min-height: 120px; padding: 0;">
-                        <div class="race-card-inner">
-                            <!-- Front Side - Latest Race Result -->
-                            <div class="race-card-front" style="background: rgba(255,255,255,0.05); border-radius: 12px; padding: 1rem;">
-                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
-                                    <span style="color: white; font-weight: 600; font-size: 1.1rem;" id="latestRaceName"></span>
-                                    <span style="color: rgba(255,255,255,0.7); font-size: 0.8rem;" id="latestRaceDate"></span>
-                                </div>
-                                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.75rem; text-align: center; margin-bottom: 0.5rem;">
-                                    <div>
-                                        <div style="color: rgba(255,255,255,0.6); font-size: 0.75rem;">Position</div>
-                                        <div style="color: white; font-size: 1.3rem; font-weight: 700;" id="latestPosition"></div>
-                                    </div>
-                                    <div>
-                                        <div style="color: rgba(255,255,255,0.6); font-size: 0.75rem;">Finish Time</div>
-                                        <div style="color: white; font-size: 0.85rem; font-weight: 600; font-family: monospace;" id="latestFinishTime"></div>
-                                    </div>
-                                    <div>
-                                        <div style="color: rgba(255,255,255,0.6); font-size: 0.75rem;">To 1st</div>
-                                        <div style="color: rgba(255, 140, 66, 0.9); font-size: 0.85rem; font-weight: 600;" id="latestDeltaFirst"></div>
-                                    </div>
-                                </div>
-                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; text-align: center;">
-                                    <div>
-                                        <div style="color: rgba(255,255,255,0.6); font-size: 0.75rem;">Delta Ahead</div>
-                                        <div style="color: rgba(255, 140, 66, 0.9); font-size: 0.85rem; font-weight: 600;" id="latestDeltaAhead"></div>
-                                    </div>
-                                    <div>
-                                        <div style="color: rgba(255,255,255,0.6); font-size: 0.75rem;">Delta Behind</div>
-                                        <div style="color: rgba(81, 207, 102, 0.9); font-size: 0.85rem; font-weight: 600;" id="latestDeltaBehind"></div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- Back Side - Full Latest Race Results -->
-                            <div class="race-card-back" id="latestRaceBack">
-                                <!-- Will be populated with race results -->
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <!-- Login Modal -->
+            <login-modal 
+                v-if="modals.showLogin"
+                @close="closeLoginModal"
+                @login="attemptLogin">
+            </login-modal>
 
-            <!-- Series Results Overall - Flippable Card -->
-            <div style="margin-bottom: 1rem;">
-                <div class="race-result-section">
-                    <h4 style="color: rgba(255,255,255,0.8); font-size: 0.9rem; margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 0.5rem;">
-                        Series Results Overall - Andros 2025
-                        <span style="color: rgba(255,255,255,0.5); font-size: 0.7rem; font-weight: normal; background: rgba(255,255,255,0.1); padding: 0.2rem 0.5rem; border-radius: 10px;">
-                            Event pending
-                        </span>
-                    </h4>
-                    <div class="race-mini-card series-card" style="min-height: 120px; padding: 0;">
-                        <div class="race-card-inner">
-                            <!-- Front Side - Series Summary -->
-                            <div class="race-card-front" style="background: rgba(255,255,255,0.05); border-radius: 12px; padding: 1rem;">
-                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
-                                    <span style="color: white; font-weight: 600; font-size: 1.1rem;" id="overallClass"></span>
-                                    <span style="color: rgba(255,255,255,0.7); font-size: 0.8rem;" id="overallRaces"></span>
-                                </div>
-                                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.75rem; text-align: center;">
-                                    <div>
-                                        <div style="color: rgba(255,255,255,0.6); font-size: 0.75rem;">Position</div>
-                                        <div style="color: white; font-size: 1.3rem; font-weight: 700;" id="overallPosition"></div>
-                                    </div>
-                                    <div>
-                                        <div style="color: rgba(255,255,255,0.6); font-size: 0.75rem;">Total Points</div>
-                                        <div style="color: white; font-size: 1.3rem; font-weight: 700;" id="overallPoints"></div>
-                                    </div>
-                                    <div>
-                                        <div style="color: rgba(255,255,255,0.6); font-size: 0.75rem;">Net Points</div>
-                                        <div style="color: white; font-size: 1.3rem; font-weight: 700;" id="overallNet"></div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- Back Side - Overall Standings -->
-                            <div class="race-card-back" id="seriesStandingsBack">
-                                <!-- Will be populated with overall standings -->
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <!-- Config Modal -->
+            <config-modal 
+                v-if="modals.showConfig"
+                :config="config"
+                @close="closeConfigModal"
+                @save="saveConfiguration"
+                @reset-background="resetBackground">
+            </config-modal>
 
-            <!-- Race Result Details -->
-            <div id="raceHistory" style="margin-top: 1rem;">
-                <h4 style="color: rgba(255,255,255,0.8); font-size: 0.9rem; margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 0.5rem;">
-                    Race Result Details
-                    <span style="color: rgba(255,255,255,0.5); font-size: 0.7rem; font-weight: normal; background: rgba(255,255,255,0.1); padding: 0.2rem 0.5rem; border-radius: 10px;">
-                        Hover to view full results
-                    </span>
-                </h4>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 0.75rem;">
-                    <!-- Race cards will be populated here -->
-                </div>
-            </div>
-
-            <div style="margin-top: 1rem; text-align: center; display: flex; justify-content: space-between; align-items: center;">
-                <span style="color: rgba(255,255,255,0.5); font-size: 0.8rem;">
-                    Last updated: <span id="lastUpdateTime">Just now</span>
-                </span>
-                <a href="https://data.orc.org/public/WEV.dll?action=index&eventid=andros2025" target="_blank" style="
-                    color: rgba(79, 172, 254, 0.8);
-                    text-decoration: none;
-                    font-size: 0.8rem;
-                    padding: 0.3rem 0.8rem;
-                    border-radius: 12px;
-                    border: 1px solid rgba(79, 172, 254, 0.3);
-                    background: rgba(79, 172, 254, 0.1);
-                    transition: all 0.3s ease;
-                " id="orcResultsLink">Andros 2025 Results on ORC</a>
-            </div>
-        </div>
-
-        <div class="glass-card upload-card">
-            <div class="upload-area" onclick="document.getElementById('fileInput').click()">
-                <div class="upload-icon">📁</div>
-                <div class="upload-text">Upload Expedition Marine Log</div>
-                <div class="upload-hint">Click to select or drag & drop your log file</div>
-            </div>
-            <input type="file" id="fileInput" accept=".csv,.txt,.log">
-            
-            <div style="margin: 1rem 0; text-align: center;">
-                <div style="color: rgba(255,255,255,0.6); margin: 0.5rem 0;">— or —</div>
-                <button id="apiConfigBtn" onclick="dashboard.showApiConfig()" style="
-                    background: rgba(255,255,255,0.1); 
-                    border: 1px solid rgba(255,255,255,0.3); 
-                    padding: 0.75rem 1.5rem; 
-                    border-radius: 25px; 
-                    color: white; 
-                    cursor: pointer;
-                    backdrop-filter: blur(10px);
-                    transition: all 0.3s ease;
-                ">📊 Connect to WebReports</button>
-            </div>
-            
-            <div id="loadingMessage" class="loading-message hidden">
-                <div class="loading-spinner"></div>
-                Processing log data...
-            </div>
-            
-            <div id="errorMessage" class="error-message hidden"></div>
-        </div>
-
-        <div id="apiModal" class="api-modal hidden">
-            <div class="api-modal-content glass-card" style="
-                position: fixed;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                z-index: 1000;
-                width: 90%;
-                max-width: 600px;
-                max-height: 80vh;
-                overflow-y: auto;
-            ">
-                <h3 style="color: white; margin-bottom: 1rem;">🔗 SailingPerformance WebReports Integration</h3>
-                
-                <div style="margin-bottom: 1.5rem; padding: 1rem; background: rgba(255,255,255,0.05); border-radius: 10px;">
-                    <div style="color: rgba(255,255,255,0.9); font-size: 0.9rem; line-height: 1.5;">
-                        <strong>📊 Detected System:</strong> kndwebreport.azurewebsites.net<br>
-                        <strong>🏁 Your Report:</strong> Project 56, Regatta 302, Race 940
-                    </div>
-                </div>
-                
-                <div style="margin-bottom: 1.5rem;">
-                    <label style="color: rgba(255,255,255,0.8); display: block; margin-bottom: 0.5rem;">
-                        Report IDs from your URL:
-                    </label>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.5rem;">
-                        <input type="text" id="projectId" placeholder="Project ID" value="56" style="
-                            padding: 0.75rem;
-                            border-radius: 10px;
-                            border: 1px solid rgba(255,255,255,0.3);
-                            background: rgba(255,255,255,0.1);
-                            color: white;
-                            backdrop-filter: blur(10px);
-                        ">
-                        <input type="text" id="regattaId" placeholder="Regatta ID" value="302" style="
-                            padding: 0.75rem;
-                            border-radius: 10px;
-                            border: 1px solid rgba(255,255,255,0.3);
-                            background: rgba(255,255,255,0.1);
-                            color: white;
-                            backdrop-filter: blur(10px);
-                        ">
-                        <input type="text" id="raceReportId" placeholder="Race Report ID" value="940" style="
-                            padding: 0.75rem;
-                            border-radius: 10px;
-                            border: 1px solid rgba(255,255,255,0.3);
-                            background: rgba(255,255,255,0.1);
-                            color: white;
-                            backdrop-filter: blur(10px);
-                        ">
-                    </div>
-                </div>
-                
-                <div style="text-align: center; margin: 1.5rem 0;">
-                    <button onclick="dashboard.openReportInNewTab()" style="
-                        background: rgba(79, 172, 254, 0.8);
-                        border: none;
-                        padding: 0.75rem 1.5rem;
-                        border-radius: 20px;
-                        color: white;
-                        cursor: pointer;
-                        margin-right: 0.5rem;
-                    ">🔗 Open WebReport</button>
-                    
-                    <button onclick="dashboard.copyApiUrl()" style="
-                        background: rgba(255, 212, 59, 0.8);
-                        border: none;
-                        padding: 0.75rem 1.5rem;
-                        border-radius: 20px;
-                        color: white;
-                        cursor: pointer;
-                        margin-right: 0.5rem;
-                    ">📋 Copy URL</button>
-                    
-                    <button onclick="dashboard.suggestDataExtraction()" style="
-                        background: rgba(81, 207, 102, 0.8);
-                        border: none;
-                        padding: 0.75rem 1.5rem;
-                        border-radius: 20px;
-                        color: white;
-                        cursor: pointer;
-                        margin-right: 0.5rem;
-                    ">💡 How to Extract Data</button>
-                    
-                    <button onclick="dashboard.closeApiConfig()" style="
-                        background: rgba(255, 255, 255, 0.2);
-                        border: none;
-                        padding: 0.75rem 1rem;
-                        border-radius: 20px;
-                        color: white;
-                        cursor: pointer;
-                    ">Close</button>
-                </div>
-                
-                <div style="margin-top: 1rem; padding: 1.5rem; background: rgba(255,255,255,0.05); border-radius: 10px;">
-                    <div style="color: rgba(255,255,255,0.9); font-size: 0.85rem; line-height: 1.5;">
-                        <strong>🔐 Secure Integration Options:</strong><br><br>
-                        
-                        <strong>Option 1: Export Data</strong><br>
-                        • Log into your WebReports system<br>
-                        • Export performance data as CSV/JSON<br>
-                        • Upload to this dashboard<br><br>
-                        
-                        <strong>Option 2: Request API Access</strong><br>
-                        • Contact <a href="mailto:info@sailingperformance.com" style="color: #4facfe;">info@sailingperformance.com</a><br>
-                        • Ask about REST API endpoints for WebReports<br>
-                        • Request authentication tokens (not passwords)<br><br>
-                        
-                        <strong>Option 3: Browser Extension</strong><br>
-                        • Create a browser script to extract data<br>
-                        • Use developer tools to identify data endpoints<br>
-                        • Automate data copying from your logged-in session
-                    </div>
-                </div>
-                
-                <div style="margin-top: 1rem; padding: 1rem; background: rgba(255, 140, 66, 0.1); border-left: 4px solid rgba(255, 140, 66, 0.8); border-radius: 5px;">
-                    <div style="color: rgba(255, 140, 66, 1); font-size: 0.8rem; font-weight: bold;">
-                        🔒 Security Note: This dashboard cannot accept login credentials for security reasons. We recommend secure API integration or data export methods above.
-                    </div>
-                </div>
-            </div>
-            <div class="api-modal-backdrop" onclick="dashboard.closeApiConfig()" style="
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0,0,0,0.5);
-                backdrop-filter: blur(5px);
-                z-index: 999;
-            "></div>
-        </div>
-
-        <!-- Configuration Modal -->
-        <div id="configModal" class="api-modal hidden">
-            <div class="api-modal-content glass-card" style="
-                position: fixed;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                z-index: 1000;
-                width: 90%;
-                max-width: 700px;
-                max-height: 80vh;
-                overflow-y: auto;
-            ">
-                <h3 style="color: white; margin-bottom: 1.5rem;">⚙️ Sailboat Configuration</h3>
-                
-                <!-- Basic Configuration -->
-                <div style="margin-bottom: 2rem;">
-                    <h4 style="color: rgba(255,255,255,0.9); font-size: 0.95rem; margin-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 0.5rem;">
-                        Basic Information
-                    </h4>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
-                        <div>
-                            <label style="color: rgba(255,255,255,0.8); display: block; margin-bottom: 0.5rem; font-size: 0.9rem;">
-                                Boat Name *
-                            </label>
-                            <input type="text" id="configBoatName" placeholder="Enter boat name" style="
-                                width: 100%;
-                                padding: 0.75rem;
-                                border-radius: 10px;
-                                border: 1px solid rgba(255,255,255,0.3);
-                                background: rgba(255,255,255,0.1);
-                                color: white;
-                                backdrop-filter: blur(10px);
-                            ">
-                        </div>
-                        <div>
-                            <label style="color: rgba(255,255,255,0.8); display: block; margin-bottom: 0.5rem; font-size: 0.9rem;">
-                                Boat Class *
-                            </label>
-                            <input type="text" id="configBoatClass" placeholder="e.g., ORC International" style="
-                                width: 100%;
-                                padding: 0.75rem;
-                                border-radius: 10px;
-                                border: 1px solid rgba(255,255,255,0.3);
-                                background: rgba(255,255,255,0.1);
-                                color: white;
-                                backdrop-filter: blur(10px);
-                            ">
-                        </div>
-                    </div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                        <div>
-                            <label style="color: rgba(255,255,255,0.8); display: block; margin-bottom: 0.5rem; font-size: 0.9rem;">
-                                Owner Name (Optional)
-                            </label>
-                            <input type="text" id="configOwnerName" placeholder="Owner name" style="
-                                width: 100%;
-                                padding: 0.75rem;
-                                border-radius: 10px;
-                                border: 1px solid rgba(255,255,255,0.3);
-                                background: rgba(255,255,255,0.1);
-                                color: white;
-                                backdrop-filter: blur(10px);
-                            ">
-                        </div>
-                        <div>
-                            <label style="color: rgba(255,255,255,0.8); display: block; margin-bottom: 0.5rem; font-size: 0.9rem;">
-                                Sail Number (Optional)
-                            </label>
-                            <input type="text" id="configSailNumber" placeholder="Sail number" style="
-                                width: 100%;
-                                padding: 0.75rem;
-                                border-radius: 10px;
-                                border: 1px solid rgba(255,255,255,0.3);
-                                background: rgba(255,255,255,0.1);
-                                color: white;
-                                backdrop-filter: blur(10px);
-                            ">
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Background Image Configuration -->
-                <div style="margin-bottom: 2rem;">
-                    <h4 style="color: rgba(255,255,255,0.9); font-size: 0.95rem; margin-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 0.5rem;">
-                        Background Image
-                    </h4>
-                    
-                    <div id="backgroundPreview" class="hidden" style="
-                        width: 100%;
-                        height: 120px;
-                        border-radius: 12px;
-                        background-size: cover;
-                        background-position: center;
-                        border: 2px solid rgba(255,255,255,0.3);
-                        margin-bottom: 1rem;
-                        position: relative;
-                        overflow: hidden;
-                    ">
-                        <div style="
-                            position: absolute;
-                            bottom: 0;
-                            left: 0;
-                            right: 0;
-                            background: linear-gradient(transparent, rgba(0,0,0,0.7));
-                            padding: 0.75rem;
-                            color: white;
-                            font-size: 0.8rem;
-                        ">
-                            Current Background
-                        </div>
-                    </div>
-
-                    <div class="background-upload-area" onclick="document.getElementById('configBackgroundInput').click()" style="
-                        border: 2px dashed rgba(255, 255, 255, 0.3);
-                        border-radius: 12px;
-                        padding: 1.5rem;
-                        text-align: center;
-                        cursor: pointer;
-                        transition: all 0.3s ease;
-                        background: rgba(255, 255, 255, 0.05);
-                        margin-bottom: 1rem;
-                    ">
-                        <div style="font-size: 1.2rem; color: rgba(255, 255, 255, 0.6); margin-bottom: 0.5rem;">🖼️</div>
-                        <div style="color: white; font-size: 0.95rem; margin-bottom: 0.25rem;">Upload Background Image</div>
-                        <div style="color: rgba(255, 255, 255, 0.6); font-size: 0.8rem;">
-                            Click to select a background image for your dashboard<br>
-                            <span style="font-size: 0.75rem; color: rgba(255, 255, 255, 0.5);">Recommended: High resolution sailing/ocean images (JPG, PNG)</span>
-                        </div>
-                    </div>
-                    
-                    <input type="file" id="configBackgroundInput" accept="image/*" style="display: none;">
-                    
-                    <div style="display: flex; gap: 0.75rem; justify-content: center;">
-                        <button id="resetBackgroundBtn" onclick="dashboard.resetBackground()" style="
-                            background: rgba(255, 140, 66, 0.8);
-                            border: none;
-                            padding: 0.5rem 1rem;
-                            border-radius: 15px;
-                            color: white;
-                            cursor: pointer;
-                            font-size: 0.8rem;
-                            transition: all 0.3s ease;
-                        ">Reset to Default</button>
-                    </div>
-                </div>
-                
-                <div style="text-align: center; margin: 2rem 0;">
-                    <button onclick="dashboard.saveConfiguration()" style="
-                        background: rgba(79, 172, 254, 0.8);
-                        border: none;
-                        padding: 0.75rem 2rem;
-                        border-radius: 20px;
-                        color: white;
-                        cursor: pointer;
-                        font-weight: 600;
-                        margin-right: 1rem;
-                    ">Save Configuration</button>
-                    
-                    <button onclick="dashboard.closeConfigModal()" style="
-                        background: rgba(255, 255, 255, 0.2);
-                        border: none;
-                        padding: 0.75rem 1.5rem;
-                        border-radius: 20px;
-                        color: white;
-                        cursor: pointer;
-                    ">Cancel</button>
-                </div>
-                
-                <div style="margin-top: 1.5rem; padding: 1rem; background: rgba(255,255,255,0.05); border-radius: 10px;">
-                    <div style="color: rgba(255,255,255,0.8); font-size: 0.8rem; line-height: 1.4;">
-                        <strong>💡 Tips for Background Images:</strong><br>
-                        • Use high-resolution images (1920x1080 or larger) for best quality<br>
-                        • Sailing, ocean, or yacht images work best with the glass theme<br>
-                        • Images are stored locally in your browser<br>
-                        • File size limit: 5MB for optimal performance
-                    </div>
-                </div>
-            </div>
-            <div class="api-modal-backdrop" onclick="dashboard.closeConfigModal()" style="
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0,0,0,0.5);
-                backdrop-filter: blur(5px);
-                z-index: 999;
-            "></div>
-        </div>
-
-        <!-- Login Modal -->
-        <div id="loginModal" class="api-modal hidden">
-            <div class="api-modal-content glass-card" style="
-                position: fixed;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                z-index: 1000;
-                width: 90%;
-                max-width: 400px;
-            ">
-                <h3 style="color: white; margin-bottom: 1rem;">🔐 Login to Racing System</h3>
-                
-                <div style="margin-bottom: 1rem;">
-                    <label style="color: rgba(255,255,255,0.8); display: block; margin-bottom: 0.5rem;">
-                        Username
-                    </label>
-                    <input type="text" id="loginUsername" placeholder="Enter username" style="
-                        width: 100%;
-                        padding: 0.75rem;
-                        border-radius: 10px;
-                        border: 1px solid rgba(255,255,255,0.3);
-                        background: rgba(255,255,255,0.1);
-                        color: white;
-                        backdrop-filter: blur(10px);
-                    ">
-                </div>
-                
-                <div style="margin-bottom: 1.5rem;">
-                    <label style="color: rgba(255,255,255,0.8); display: block; margin-bottom: 0.5rem;">
-                        Password
-                    </label>
-                    <input type="password" id="loginPassword" placeholder="Enter password" style="
-                        width: 100%;
-                        padding: 0.75rem;
-                        border-radius: 10px;
-                        border: 1px solid rgba(255,255,255,0.3);
-                        background: rgba(255,255,255,0.1);
-                        color: white;
-                        backdrop-filter: blur(10px);
-                    ">
-                </div>
-                
-                <div style="text-align: center; margin: 1.5rem 0;">
-                    <button onclick="dashboard.attemptLogin()" style="
-                        background: rgba(79, 172, 254, 0.8);
-                        border: none;
-                        padding: 0.75rem 2rem;
-                        border-radius: 20px;
-                        color: white;
-                        cursor: pointer;
-                        font-weight: 600;
-                        margin-right: 1rem;
-                    ">Login</button>
-                    
-                    <button onclick="dashboard.closeLoginModal()" style="
-                        background: rgba(255, 255, 255, 0.2);
-                        border: none;
-                        padding: 0.75rem 1.5rem;
-                        border-radius: 20px;
-                        color: white;
-                        cursor: pointer;
-                    ">Cancel</button>
-                </div>
-                
-                <div style="margin-top: 1rem; padding: 1rem; background: rgba(79, 172, 254, 0.1); border-radius: 8px;">
-                    <div style="color: rgba(79, 172, 254, 1); font-size: 0.8rem; font-weight: bold;">
-                        🔒 Secure login using Vercel environment variables
-                    </div>
-                </div>
-            </div>
-            <div class="api-modal-backdrop" onclick="dashboard.closeLoginModal()" style="
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0,0,0,0.5);
-                backdrop-filter: blur(5px);
-                z-index: 999;
-            "></div>
-        </div>
-
-        <div id="dataPreview" class="glass-card hidden">
-            <h3 style="color: white; margin-bottom: 1rem;">📊 Data Summary</h3>
-            <div class="data-summary">
-                <div class="summary-item">
-                    <div class="summary-label">Total Records</div>
-                    <div class="summary-value" id="totalRecords">-</div>
-                </div>
-                <div class="summary-item">
-                    <div class="summary-label">Time Range</div>
-                    <div class="summary-value" id="timeRange">-</div>
-                </div>
-                <div class="summary-item">
-                    <div class="summary-label">Avg Wind Speed</div>
-                    <div class="summary-value" id="avgWindSpeed">-</div>
-                </div>
-                <div class="summary-item">
-                    <div class="summary-label">Avg Boat Speed</div>
-                    <div class="summary-value" id="avgBoatSpeed">-</div>
-                </div>
-            </div>
-        </div>
-
-        <div id="metricsContainer" class="metrics-grid hidden">
-            <div class="glass-card metric-card">
-                <div class="metric-title">Overall Efficiency</div>
-                <div class="liquid-bubble">
-                    <div class="bubble-container">
-                        <div class="liquid-fill" id="efficiencyLiquid">
-                            <div class="wave"></div>
-                            <div class="wave"></div>
-                            <div class="wave"></div>
-                        </div>
-                        <div class="bubble-glow"></div>
-                    </div>
-                </div>
-                <div class="metric-value" id="overallEfficiency">-</div>
-                <div class="metric-unit">%</div>
-                <div class="metric-description">Average performance vs polar</div>
-            </div>
-
-            <div class="glass-card metric-card">
-                <div class="metric-title">VMG Upwind</div>
-                <div class="liquid-bubble">
-                    <div class="bubble-container">
-                        <div class="liquid-fill" id="vmgUpwindLiquid">
-                            <div class="wave"></div>
-                            <div class="wave"></div>
-                            <div class="wave"></div>
-                        </div>
-                        <div class="bubble-glow"></div>
-                    </div>
-                </div>
-                <div class="metric-value" id="vmgUpwind">-</div>
-                <div class="metric-unit">%</div>
-                <div class="metric-description">TWA &lt; 60° performance</div>
-            </div>
-
-            <div class="glass-card metric-card">
-                <div class="metric-title">VMG Downwind</div>
-                <div class="liquid-bubble">
-                    <div class="bubble-container">
-                        <div class="liquid-fill" id="vmgDownwindLiquid">
-                            <div class="wave"></div>
-                            <div class="wave"></div>
-                            <div class="wave"></div>
-                        </div>
-                        <div class="bubble-glow"></div>
-                    </div>
-                </div>
-                <div class="metric-value" id="vmgDownwind">-</div>
-                <div class="metric-unit">%</div>
-                <div class="metric-description">TWA &gt; 130° performance</div>
-            </div>
-
-            <div class="glass-card metric-card">
-                <div class="metric-title">Polar BSP</div>
-                <div class="liquid-bubble">
-                    <div class="bubble-container">
-                        <div class="liquid-fill" id="polarBspLiquid">
-                            <div class="wave"></div>
-                            <div class="wave"></div>
-                            <div class="wave"></div>
-                        </div>
-                        <div class="bubble-glow"></div>
-                    </div>
-                </div>
-                <div class="metric-value" id="polarBsp">-</div>
-                <div class="metric-unit">%</div>
-                <div class="metric-description">60° ≤ TWA ≤ 130° performance</div>
-            </div>
+            <!-- API Config Modal -->
+            <api-config-modal 
+                v-if="modals.showApiConfig"
+                @close="closeApiConfig">
+            </api-config-modal>
         </div>
     </div>
 
     <script>
-        class SailingDashboard {
-            constructor() {
-                this.data = [];
-                this.metrics = null;
-                this.config = {
-                    sailboatName: 'BURRASCA',
-                    displayName: 'BURRASCA Performance Dashboard',
-                    ownerName: '',
-                    sailNumber: '',
-                    boatClass: 'ORC International',
-                    backgroundImage: null
+        const { createApp } = Vue;
+
+        // Login Configuration Card Component
+        const LoginConfigCard = {
+            props: ['loginState', 'config'],
+            emits: ['showLoginModal', 'logout', 'saveQuickConfig', 'showConfigModal'],
+            data() {
+                return {
+                    quickBoatName: '',
+                    quickBoatClass: ''
                 };
-                this.loginState = {
-                    isLoggedIn: false,
-                    username: '',
-                    lastLoginTime: null
+            },
+            watch: {
+                config: {
+                    handler(newConfig) {
+                        this.quickBoatName = newConfig.sailboatName;
+                        this.quickBoatClass = newConfig.boatClass;
+                    },
+                    immediate: true
+                }
+            },
+            template: `
+                <div class="glass-card" style="margin-bottom: 1rem;">
+                    <!-- Not Logged In State -->
+                    <div v-if="!loginState.isLoggedIn">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <h3 style="color: white; margin: 0; font-size: 1rem;">Access Control</h3>
+                                <p style="color: rgba(255,255,255,0.7); margin: 0.25rem 0 0 0; font-size: 0.85rem;">
+                                    Login required to configure sailboat settings
+                                </p>
+                            </div>
+                            <button @click="$emit('showLoginModal')" class="btn">Login</button>
+                        </div>
+                    </div>
+
+                    <!-- Logged In State -->
+                    <div v-else>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                            <div>
+                                <h3 style="color: white; margin: 0; font-size: 1rem;">Sailboat Configuration</h3>
+                                <p style="color: rgba(255,255,255,0.7); margin: 0.25rem 0 0 0; font-size: 0.85rem;">
+                                    Logged in as <span>{{ loginState.username }}</span>
+                                </p>
+                            </div>
+                            <button @click="$emit('logout')" class="btn btn-secondary">Logout</button>
+                        </div>
+
+                        <!-- Quick Configuration Section -->
+                        <div style="background: rgba(255,255,255,0.05); border-radius: 12px; padding: 1rem; margin-bottom: 1rem;">
+                            <div style="display: grid; grid-template-columns: 2fr 2fr 1fr; gap: 1rem; align-items: end;">
+                                <div>
+                                    <label style="color: rgba(255,255,255,0.8); display: block; margin-bottom: 0.5rem; font-size: 0.8rem;">
+                                        Boat Name
+                                    </label>
+                                    <input type="text" v-model="quickBoatName" placeholder="Enter boat name" style="
+                                        width: 100%;
+                                        padding: 0.6rem;
+                                        border-radius: 8px;
+                                        border: 1px solid rgba(255,255,255,0.3);
+                                        background: rgba(255,255,255,0.1);
+                                        color: white;
+                                        backdrop-filter: blur(10px);
+                                        font-size: 0.85rem;
+                                    ">
+                                </div>
+                                <div>
+                                    <label style="color: rgba(255,255,255,0.8); display: block; margin-bottom: 0.5rem; font-size: 0.8rem;">
+                                        Boat Class
+                                    </label>
+                                    <input type="text" v-model="quickBoatClass" placeholder="e.g., ORC International" style="
+                                        width: 100%;
+                                        padding: 0.6rem;
+                                        border-radius: 8px;
+                                        border: 1px solid rgba(255,255,255,0.3);
+                                        background: rgba(255,255,255,0.1);
+                                        color: white;
+                                        backdrop-filter: blur(10px);
+                                        font-size: 0.85rem;
+                                    ">
+                                </div>
+                                <div>
+                                    <button @click="saveQuick" style="
+                                        background: rgba(81, 207, 102, 0.8);
+                                        border: none;
+                                        padding: 0.6rem 1rem;
+                                        border-radius: 8px;
+                                        color: white;
+                                        cursor: pointer;
+                                        font-size: 0.8rem;
+                                        width: 100%;
+                                    ">Update</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Current Configuration Display -->
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <div style="color: rgba(255,255,255,0.6); font-size: 0.75rem; margin-bottom: 0.25rem;">Current Configuration:</div>
+                                <div style="color: white; font-weight: 600;">
+                                    {{ config.sailboatName }} • {{ config.boatClass }}
+                                </div>
+                            </div>
+                            <button @click="$emit('showConfigModal')" class="btn btn-secondary">Advanced Settings</button>
+                        </div>
+                    </div>
+                </div>
+            `,
+            methods: {
+                saveQuick() {
+                    this.$emit('saveQuickConfig', {
+                        sailboatName: this.quickBoatName.trim().toUpperCase(),
+                        boatClass: this.quickBoatClass.trim()
+                    });
+                }
+            }
+        };
+
+        // Racing Results Card Component
+        const RacingResultsCard = {
+            props: ['config', 'raceData', 'lastUpdateTime'],
+            emits: ['manualRefresh'],
+            data() {
+                return {
+                    flippedCards: new Set()
                 };
-                this.notifications = {
-                    hasNewResults: false,
-                    lastNotificationTime: null
+            },
+            template: `
+                <div class="glass-card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <div>
+                            <h3 style="color: white; margin: 0; font-size: 1.3rem;">Andros 2025</h3>
+                            <p style="color: rgba(255,255,255,0.7); margin: 0.25rem 0 0 0; font-size: 0.9rem;">
+                                {{ config.sailboatName }} • Greek Islands • August 28-31, 2025
+                            </p>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <div style="text-align: right;">
+                                <div style="color: rgba(255,255,255,0.5); font-size: 0.7rem;">Last Update</div>
+                                <div style="color: rgba(255,255,255,0.8); font-size: 0.8rem;">{{ lastUpdateTime }}</div>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <div style="
+                                    width: 8px; 
+                                    height: 8px; 
+                                    border-radius: 50%; 
+                                    background: rgba(81, 207, 102, 0.8);
+                                    animation: pulse 2s infinite;
+                                "></div>
+                                <span style="color: rgba(255,255,255,0.6); font-size: 0.8rem;">Live</span>
+                            </div>
+                            <button @click="$emit('manualRefresh')" class="btn">Refresh</button>
+                        </div>
+                    </div>
+
+                    <!-- Latest Race Result -->
+                    <div style="margin-bottom: 1rem;">
+                        <h4 style="color: rgba(255,255,255,0.8); font-size: 0.9rem; margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 0.5rem;">
+                            Latest Race - Chios to Andros
+                            <span style="color: rgba(255,255,255,0.5); font-size: 0.7rem; font-weight: normal; background: rgba(255,255,255,0.1); padding: 0.2rem 0.5rem; border-radius: 10px;">
+                                {{ raceData.overallStanding.status }}
+                            </span>
+                        </h4>
+                        <div 
+                            class="race-mini-card latest-race-card" 
+                            :class="{ flipped: flippedCards.has('latest') }"
+                            @click="toggleFlip('latest')"
+                            style="min-height: 120px; padding: 0;">
+                            <div class="race-card-inner">
+                                <!-- Front Side -->
+                                <div class="race-card-front" style="background: rgba(255,255,255,0.05); border-radius: 12px; padding: 1rem;">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                                        <span style="color: white; font-weight: 600; font-size: 1.1rem;">Chios to Andros</span>
+                                        <span style="color: rgba(255,255,255,0.7); font-size: 0.8rem;">Pending</span>
+                                    </div>
+                                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.75rem; text-align: center; margin-bottom: 0.5rem;">
+                                        <div>
+                                            <div style="color: rgba(255,255,255,0.6); font-size: 0.75rem;">Position</div>
+                                            <div style="color: white; font-size: 1.3rem; font-weight: 700;">TBD</div>
+                                        </div>
+                                        <div>
+                                            <div style="color: rgba(255,255,255,0.6); font-size: 0.75rem;">Finish Time</div>
+                                            <div style="color: white; font-size: 0.85rem; font-weight: 600; font-family: monospace;">TBD</div>
+                                        </div>
+                                        <div>
+                                            <div style="color: rgba(255,255,255,0.6); font-size: 0.75rem;">To 1st</div>
+                                            <div style="color: rgba(255, 140, 66, 0.9); font-size: 0.85rem; font-weight: 600;">TBD</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Back Side -->
+                                <div class="race-card-back">
+                                    <div style="text-align: center; padding: 2rem; color: rgba(255,255,255,0.6);">
+                                        <div style="font-size: 1.2rem; margin-bottom: 1rem;">⛵</div>
+                                        <div style="font-size: 0.9rem; margin-bottom: 0.5rem;">Chios to Andros</div>
+                                        <div style="font-size: 0.75rem; line-height: 1.4;">
+                                            Results will be posted on<br>
+                                            <a href="https://data.orc.org/public/WEV.dll?action=index&eventid=andros2025" 
+                                               target="_blank" 
+                                               style="color: rgba(79, 172, 254, 0.8); text-decoration: none;">
+                                                ORC Event Website
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Series Results Overall -->
+                    <div style="margin-bottom: 1rem;">
+                        <h4 style="color: rgba(255,255,255,0.8); font-size: 0.9rem; margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 0.5rem;">
+                            Series Results Overall - Andros 2025
+                            <span style="color: rgba(255,255,255,0.5); font-size: 0.7rem; font-weight: normal; background: rgba(255,255,255,0.1); padding: 0.2rem 0.5rem; border-radius: 10px;">
+                                Event pending
+                            </span>
+                        </h4>
+                        <div 
+                            class="race-mini-card series-card" 
+                            :class="{ flipped: flippedCards.has('series') }"
+                            @click="toggleFlip('series')"
+                            style="min-height: 120px; padding: 0;">
+                            <div class="race-card-inner">
+                                <!-- Front Side -->
+                                <div class="race-card-front" style="background: rgba(255,255,255,0.05); border-radius: 12px; padding: 1rem;">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                                        <span style="color: white; font-weight: 600; font-size: 1.1rem;">{{ raceData.overallStanding.className }}</span>
+                                        <span style="color: rgba(255,255,255,0.7); font-size: 0.8rem;">{{ raceData.overallStanding.completedRaces }} races</span>
+                                    </div>
+                                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.75rem; text-align: center;">
+                                        <div>
+                                            <div style="color: rgba(255,255,255,0.6); font-size: 0.75rem;">Position</div>
+                                            <div style="color: white; font-size: 1.3rem; font-weight: 700;">{{ raceData.overallStanding.position || 'TBD' }}</div>
+                                        </div>
+                                        <div>
+                                            <div style="color: rgba(255,255,255,0.6); font-size: 0.75rem;">Total Points</div>
+                                            <div style="color: white; font-size: 1.3rem; font-weight: 700;">{{ raceData.overallStanding.totalPoints }}</div>
+                                        </div>
+                                        <div>
+                                            <div style="color: rgba(255,255,255,0.6); font-size: 0.75rem;">Net Points</div>
+                                            <div style="color: white; font-size: 1.3rem; font-weight: 700;">{{ raceData.overallStanding.netPoints }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Back Side -->
+                                <div class="race-card-back">
+                                    <div style="text-align: center; padding: 2rem; color: rgba(255,255,255,0.6);">
+                                        <div style="font-size: 1.2rem; margin-bottom: 1rem;">⛵</div>
+                                        <div style="font-size: 0.9rem; margin-bottom: 0.5rem;">Event Pending</div>
+                                        <div style="font-size: 0.75rem; line-height: 1.4;">
+                                            Results will appear here once the<br>Chios to Andros race begins
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Race History -->
+                    <div style="margin-top: 1rem;">
+                        <h4 style="color: rgba(255,255,255,0.8); font-size: 0.9rem; margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 0.5rem;">
+                            Race Result Details
+                            <span style="color: rgba(255,255,255,0.5); font-size: 0.7rem; font-weight: normal; background: rgba(255,255,255,0.1); padding: 0.2rem 0.5rem; border-radius: 10px;">
+                                Click to flip cards
+                            </span>
+                        </h4>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 0.75rem;">
+                            <div class="race-mini-card upcoming" style="border: 1px dashed rgba(79, 172, 254, 0.4); background: rgba(79, 172, 254, 0.05); cursor: default; min-height: 80px; padding: 1rem;">
+                                <div style="text-align: center; color: rgba(255,255,255,0.7);">
+                                    <div style="font-weight: 600; margin-bottom: 0.5rem;">Chios to Andros</div>
+                                    <div style="color: rgba(79, 172, 254, 0.9); font-weight: 600; margin-bottom: 0.5rem;">Upcoming</div>
+                                    <div style="font-size: 0.7rem; color: rgba(255,255,255,0.5);">August 2025</div>
+                                    <div style="font-size: 0.65rem; color: rgba(255,255,255,0.5); margin-top: 0.25rem;">
+                                        Check <a href="https://data.orc.org/public/WEV.dll?action=index&eventid=andros2025" 
+                                                target="_blank" 
+                                                style="color: rgba(79, 172, 254, 0.8); text-decoration: none;">ORC</a> for updates
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 1rem; text-align: center; display: flex; justify-content: space-between; align-items: center;">
+                        <span style="color: rgba(255,255,255,0.5); font-size: 0.8rem;">
+                            Last updated: {{ lastUpdateTime }}
+                        </span>
+                        <a href="https://data.orc.org/public/WEV.dll?action=index&eventid=andros2025" 
+                           target="_blank" 
+                           class="btn btn-secondary">Andros 2025 Results on ORC</a>
+                    </div>
+                </div>
+            `,
+            methods: {
+                toggleFlip(cardId) {
+                    if (this.flippedCards.has(cardId)) {
+                        this.flippedCards.delete(cardId);
+                    } else {
+                        this.flippedCards.add(cardId);
+                    }
+                    // Vue reactivity trigger
+                    this.flippedCards = new Set(this.flippedCards);
+                }
+            }
+        };
+
+        // File Upload Card Component
+        const FileUploadCard = {
+            props: ['isLoading', 'errorMessage'],
+            emits: ['fileUploaded', 'showApiConfig'],
+            data() {
+                return {
+                    isDragging: false
                 };
-                this.raceData = {};
-                this.apiConfig = {
-                    baseUrl: 'https://kndwebreport.azurewebsites.net',
-                    apiKey: '',
+            },
+            template: `
+                <div class="glass-card upload-card">
+                    <div 
+                        class="upload-area" 
+                        :class="{ dragover: isDragging }"
+                        @click="triggerFileInput"
+                        @dragover.prevent="isDragging = true"
+                        @dragleave="isDragging = false"
+                        @drop.prevent="handleDrop">
+                        <div class="upload-icon">📁</div>
+                        <div class="upload-text">Upload Expedition Marine Log</div>
+                        <div class="upload-hint">Click to select or drag & drop your log file</div>
+                    </div>
+                    <input 
+                        ref="fileInput"
+                        type="file" 
+                        class="file-input" 
+                        accept=".csv,.txt,.log"
+                        @change="handleFileInput">
+                    
+                    <div style="margin: 1rem 0; text-align: center;">
+                        <div style="color: rgba(255,255,255,0.6); margin: 0.5rem 0;">— or —</div>
+                        <button @click="$emit('showApiConfig')" class="btn btn-secondary">
+                            📊 Connect to WebReports
+                        </button>
+                    </div>
+                    
+                    <div v-if="isLoading" class="loading-message">
+                        <div class="loading-spinner"></div>
+                        Processing log data...
+                    </div>
+                    
+                    <div v-if="errorMessage" class="error-message">
+                        {{ errorMessage }}
+                    </div>
+                </div>
+            `,
+            methods: {
+                triggerFileInput() {
+                    this.$refs.fileInput.click();
+                },
+                handleFileInput(event) {
+                    const file = event.target.files[0];
+                    if (file) {
+                        this.$emit('fileUploaded', file);
+                    }
+                },
+                handleDrop(event) {
+                    this.isDragging = false;
+                    const files = event.dataTransfer.files;
+                    if (files.length > 0) {
+                        this.$emit('fileUploaded', files[0]);
+                    }
+                }
+            }
+        };
+
+        // Data Preview Card Component
+        const DataPreviewCard = {
+            props: ['data'],
+            computed: {
+                totalRecords() {
+                    return this.data.length;
+                },
+                avgWindSpeed() {
+                    return (this.data.reduce((sum, r) => sum + r.trueWindSpeed, 0) / this.totalRecords).toFixed(1);
+                },
+                avgBoatSpeed() {
+                    return (this.data.reduce((sum, r) => sum + r.boatSpeed, 0) / this.totalRecords).toFixed(1);
+                },
+                timeRange() {
+                    const minutes = this.totalRecords;
+                    return `${Math.floor(minutes / 60)}h ${minutes % 60}m`;
+                }
+            },
+            template: `
+                <div class="glass-card">
+                    <h3 style="color: white; margin-bottom: 1rem;">📊 Data Summary</h3>
+                    <div class="data-summary">
+                        <div class="summary-item">
+                            <div class="summary-label">Total Records</div>
+                            <div class="summary-value">{{ totalRecords.toLocaleString() }}</div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="summary-label">Time Range</div>
+                            <div class="summary-value">{{ timeRange }}</div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="summary-label">Avg Wind Speed</div>
+                            <div class="summary-value">{{ avgWindSpeed }} kts</div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="summary-label">Avg Boat Speed</div>
+                            <div class="summary-value">{{ avgBoatSpeed }} kts</div>
+                        </div>
+                    </div>
+                </div>
+            `
+        };
+
+        // Metrics Container Component
+        const MetricsContainer = {
+            props: ['metrics'],
+            mounted() {
+                this.setupIntersectionObserver();
+            },
+            template: `
+                <div class="metrics-grid">
+                    <metric-card 
+                        title="Overall Efficiency"
+                        :value="metrics.overallEfficiency"
+                        unit="%"
+                        description="Average performance vs polar"
+                        metric-id="efficiency">
+                    </metric-card>
+                    
+                    <metric-card 
+                        title="VMG Upwind"
+                        :value="metrics.vmgUpwind"
+                        unit="%"
+                        description="TWA < 60° performance"
+                        metric-id="vmgUpwind">
+                    </metric-card>
+                    
+                    <metric-card 
+                        title="VMG Downwind"
+                        :value="metrics.vmgDownwind"
+                        unit="%"
+                        description="TWA > 130° performance"
+                        metric-id="vmgDownwind">
+                    </metric-card>
+                    
+                    <metric-card 
+                        title="Polar BSP"
+                        :value="metrics.polarBsp"
+                        unit="%"
+                        description="60° ≤ TWA ≤ 130° performance"
+                        metric-id="polarBsp">
+                    </metric-card>
+                </div>
+            `,
+            methods: {
+                setupIntersectionObserver() {
+                    const observer = new IntersectionObserver((entries) => {
+                        entries.forEach((entry, index) => {
+                            if (entry.isIntersecting) {
+                                setTimeout(() => {
+                                    this.animateMetricCard(entry.target);
+                                }, index * 200);
+                            }
+                        });
+                    }, {
+                        threshold: 0.3,
+                        rootMargin: '0px 0px -10% 0px'
+                    });
+
+                    this.$nextTick(() => {
+                        const metricCards = this.$el.querySelectorAll('.metric-card');
+                        metricCards.forEach(card => observer.observe(card));
+                    });
+                },
+                animateMetricCard(card) {
+                    const liquidElement = card.querySelector('.liquid-fill');
+                    const metricId = card.querySelector('[class*="liquid-"]').className;
+                    
+                    const value = this.getValueForMetric(metricId);
+                    if (value !== undefined) {
+                        liquidElement.classList.add('animate');
+                        
+                        let colorClass = 'poor';
+                        if (value >= 85) colorClass = 'excellent';
+                        else if (value >= 70) colorClass = 'good';
+                        else if (value >= 55) colorClass = 'fair';
+                        
+                        liquidElement.classList.add(colorClass);
+                        
+                        setTimeout(() => {
+                            liquidElement.style.height = `${value}%`;
+                        }, 100);
+                    }
+                },
+                getValueForMetric(metricId) {
+                    if (metricId.includes('efficiency')) return this.metrics.overallEfficiency;
+                    if (metricId.includes('vmgUpwind')) return this.metrics.vmgUpwind;
+                    if (metricId.includes('vmgDownwind')) return this.metrics.vmgDownwind;
+                    if (metricId.includes('polarBsp')) return this.metrics.polarBsp;
+                    return 0;
+                }
+            }
+        };
+
+        // Individual Metric Card Component
+        const MetricCard = {
+            props: ['title', 'value', 'unit', 'description', 'metricId'],
+            template: `
+                <div class="glass-card metric-card">
+                    <div class="metric-title">{{ title }}</div>
+                    <div class="liquid-bubble">
+                        <div class="bubble-container">
+                            <div :class="'liquid-fill liquid-' + metricId">
+                                <div class="wave"></div>
+                                <div class="wave"></div>
+                                <div class="wave"></div>
+                            </div>
+                            <div class="bubble-glow"></div>
+                        </div>
+                    </div>
+                    <div class="metric-value">{{ Math.round(value) }}</div>
+                    <div class="metric-unit">{{ unit }}</div>
+                    <div class="metric-description">{{ description }}</div>
+                </div>
+            `
+        };
+
+        // Login Modal Component
+        const LoginModal = {
+            emits: ['close', 'login'],
+            data() {
+                return {
                     username: '',
                     password: '',
-                    projectId: '',
-                    regattaId: '',
-                    raceReportId: '',
-                    enabled: false
+                    isLoading: false
                 };
-                
-                // Initialize everything
-                this.loadConfiguration();
-                this.setupEventListeners();
-                this.setupIntersectionObserver();
-                this.checkApiConnection();
-                this.initializeRaceResults();
-                this.startAutoRefresh();
-                this.setupBackgroundImageHandling();
-                this.applyStoredBackground();
-                this.setupFlipCards();
-            }
-
-            initializeRaceResults() {
-                // Clear any old data completely
-                this.raceData = {
-                    lastRaceId: 0,
-                    eventName: "Andros 2025",
-                    location: "Greek Islands",
-                    dates: "August 28-31, 2025",
-                    className: "ORC International",
-                    sailboatName: this.config.sailboatName,
-                    races: [],
-                    fleetResults: {},
-                    seriesStandings: [],
-                    scheduledRaces: [
-                        { 
-                            id: 1, 
-                            name: 'Chios to Andros', 
-                            scheduled: 'Race 1', 
-                            date: 'August 28, 2025', 
-                            boat: this.config.sailboatName, 
-                            status: 'Upcoming' 
-                        }
-                    ],
-                    overallStanding: {
-                        position: 0,
-                        totalPoints: 0.0,
-                        netPoints: 0.0,
-                        className: "ORC International",
-                        totalRaces: 1,
-                        completedRaces: 0,
-                        boat: this.config.sailboatName,
-                        status: 'Event Pending'
-                    }
-                };
-                
-                // Force clear all display elements
-                this.clearAllDisplays();
-                this.displayRaceResults();
-            }
-
-            clearAllDisplays() {
-                // Clear latest race display
-                document.getElementById('latestRaceName').textContent = 'Chios to Andros';
-                document.getElementById('latestPosition').textContent = 'TBD';
-                document.getElementById('latestDeltaAhead').textContent = 'TBD';
-                document.getElementById('latestDeltaBehind').textContent = 'TBD';
-                document.getElementById('latestRaceDate').textContent = 'Pending';
-                
-                // Clear overall standings display
-                document.getElementById('overallPosition').textContent = 'TBD';
-                document.getElementById('overallPoints').textContent = '0.0';
-                document.getElementById('overallNet').textContent = '0.0';
-                document.getElementById('overallRaces').textContent = '0 races';
-                document.getElementById('overallClass').textContent = 'ORC International';
-                
-                // Clear race history container
-                const historyContainer = document.querySelector('#raceHistory > div:last-child');
-                historyContainer.innerHTML = '';
-                
-                // Show upcoming race card
-                const upcomingCard = document.createElement('div');
-                upcomingCard.className = 'race-mini-card upcoming';
-                upcomingCard.style.cssText = 'border: 1px dashed rgba(79, 172, 254, 0.4); background: rgba(79, 172, 254, 0.05); cursor: default; min-height: 80px; padding: 1rem;';
-                upcomingCard.innerHTML = `
-                    <div style="text-align: center; color: rgba(255,255,255,0.7);">
-                        <div style="font-weight: 600; margin-bottom: 0.5rem;">Chios to Andros</div>
-                        <div style="color: rgba(79, 172, 254, 0.9); font-weight: 600; margin-bottom: 0.5rem;">Upcoming</div>
-                        <div style="font-size: 0.7rem; color: rgba(255,255,255,0.5);">August 2025</div>
-                        <div style="font-size: 0.65rem; color: rgba(255,255,255,0.5); margin-top: 0.25rem;">
-                            Check <a href="https://data.orc.org/public/WEV.dll?action=index&eventid=andros2025" 
-                                    target="_blank" 
-                                    style="color: rgba(79, 172, 254, 0.8); text-decoration: none;">ORC</a> for updates
-                        </div>
-                    </div>
-                `;
-                historyContainer.appendChild(upcomingCard);
-                
-                // Clear back sides with pending messages
-                document.getElementById('latestRaceBack').innerHTML = `
-                    <div style="text-align: center; padding: 2rem; color: rgba(255,255,255,0.6);">
-                        <div style="font-size: 1.2rem; margin-bottom: 1rem;">⛵</div>
-                        <div style="font-size: 0.9rem; margin-bottom: 0.5rem;">Chios to Andros</div>
-                        <div style="font-size: 0.75rem; line-height: 1.4;">
-                            Results will be posted on<br>
-                            <a href="https://data.orc.org/public/WEV.dll?action=index&eventid=andros2025" 
-                               target="_blank" 
-                               style="color: rgba(79, 172, 254, 0.8); text-decoration: none;">
-                                ORC Event Website
-                            </a>
-                        </div>
-                    </div>
-                `;
-                
-                document.getElementById('seriesStandingsBack').innerHTML = `
-                    <div class="standings-header">Andros 2025 - Series Standings</div>
-                    <div style="text-align: center; padding: 2rem; color: rgba(255,255,255,0.6);">
-                        <div style="font-size: 1.2rem; margin-bottom: 1rem;">⛵</div>
-                        <div style="font-size: 0.9rem; margin-bottom: 0.5rem;">Event Pending</div>
-                        <div style="font-size: 0.75rem; line-height: 1.4;">
-                            Results will appear here once the<br>Chios to Andros race begins
-                        </div>
-                    </div>
-                `;
-            }
-
-            setupFlipCards() {
-                console.log('Setting up flip cards...');
-                
-                // Remove any existing listeners first
-                document.removeEventListener('click', this.flipCardHandler);
-                
-                // Store the handler so we can remove it later
-                this.flipCardHandler = (e) => {
-                    console.log('Document click detected, target:', e.target.tagName, e.target.className);
-                    
-                    // Find the closest race card
-                    const card = e.target.closest('.race-mini-card:not(.upcoming)');
-                    
-                    if (card) {
-                        // Prevent flipping when clicking on links
-                        if (e.target.tagName === 'A' || e.target.closest('a')) {
-                            console.log('Link clicked, preventing flip');
-                            return;
-                        }
+            },
+            template: `
+                <div class="modal">
+                    <div class="glass-card" style="
+                        position: fixed;
+                        top: 50%;
+                        left: 50%;
+                        transform: translate(-50%, -50%);
+                        z-index: 1000;
+                        width: 90%;
+                        max-width: 400px;
+                    ">
+                        <h3 style="color: white; margin-bottom: 1rem;">🔐 Login to Racing System</h3>
                         
-                        console.log('Card clicked:', card.className);
-                        card.classList.toggle('flipped');
-                        console.log('Flipped state:', card.classList.contains('flipped'));
+                        <div style="margin-bottom: 1rem;">
+                            <label style="color: rgba(255,255,255,0.8); display: block; margin-bottom: 0.5rem;">
+                                Username
+                            </label>
+                            <input 
+                                type="text" 
+                                v-model="username" 
+                                placeholder="Enter username" 
+                                style="
+                                    width: 100%;
+                                    padding: 0.75rem;
+                                    border-radius: 10px;
+                                    border: 1px solid rgba(255,255,255,0.3);
+                                    background: rgba(255,255,255,0.1);
+                                    color: white;
+                                    backdrop-filter: blur(10px);
+                                ">
+                        </div>
                         
-                        // Check transform after flipping
-                        const inner = card.querySelector('.race-card-inner');
-                        if (inner) {
-                            setTimeout(() => {
-                                console.log('Transform after flip:', window.getComputedStyle(inner).transform);
-                            }, 100);
-                        }
-                    } else {
-                        console.log('No race card found for click');
+                        <div style="margin-bottom: 1.5rem;">
+                            <label style="color: rgba(255,255,255,0.8); display: block; margin-bottom: 0.5rem;">
+                                Password
+                            </label>
+                            <input 
+                                type="password" 
+                                v-model="password" 
+                                placeholder="Enter password" 
+                                @keyup.enter="attemptLogin"
+                                style="
+                                    width: 100%;
+                                    padding: 0.75rem;
+                                    border-radius: 10px;
+                                    border: 1px solid rgba(255,255,255,0.3);
+                                    background: rgba(255,255,255,0.1);
+                                    color: white;
+                                    backdrop-filter: blur(10px);
+                                ">
+                        </div>
+                        
+                        <div style="text-align: center; margin: 1.5rem 0;">
+                            <button @click="attemptLogin" :disabled="isLoading" class="btn" style="margin-right: 1rem;">
+                                {{ isLoading ? 'Authenticating...' : 'Login' }}
+                            </button>
+                            <button @click="$emit('close')" class="btn btn-secondary">Cancel</button>
+                        </div>
+                        
+                        <div style="margin-top: 1rem; padding: 1rem; background: rgba(79, 172, 254, 0.1); border-radius: 8px;">
+                            <div style="color: rgba(79, 172, 254, 1); font-size: 0.8rem; font-weight: bold;">
+                                🔒 Secure login using Vercel environment variables
+                            </div>
+                        </div>
+                    </div>
+                    <div class="api-modal-backdrop" @click="$emit('close')" style="
+                        position: fixed;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 100%;
+                        background: rgba(0,0,0,0.5);
+                        backdrop-filter: blur(5px);
+                        z-index: 999;
+                    "></div>
+                </div>
+            `,
+            methods: {
+                async attemptLogin() {
+                    if (!this.username.trim() || !this.password.trim()) {
+                        alert('Please enter both username and password');
+                        return;
                     }
-                };
-                
-                // Add the event listener
-                document.addEventListener('click', this.flipCardHandler);
-                
-                // Add visual indicators to all flip cards
-                setTimeout(() => {
-                    const allCards = document.querySelectorAll('.race-mini-card:not(.upcoming)');
-                    console.log(`Found ${allCards.length} flip cards`);
                     
-                    allCards.forEach((card, index) => {
-                        card.style.cursor = 'pointer';
-                        card.setAttribute('title', 'Click to flip card');
-                        console.log(`Setup card ${index}:`, card.className);
-                    });
-                }, 100);
-            }
-
-            displayRaceResults() {
-                // Since no races are completed, show pending state
-                this.clearAllDisplays();
-                
-                // Re-setup flip cards after clearing displays
-                setTimeout(() => {
-                    this.setupFlipCards();
-                }, 100);
-            }
-
-            setupBackgroundImageHandling() {
-                const backgroundInput = document.getElementById('configBackgroundInput');
-                if (backgroundInput) {
-                    backgroundInput.addEventListener('change', (e) => this.handleBackgroundUpload(e));
-                }
-            }
-
-            async handleBackgroundUpload(event) {
-                const file = event.target.files[0];
-                if (!file) return;
-                
-                if (!file.type.startsWith('image/')) {
-                    alert('Please select a valid image file (JPG, PNG, GIF, etc.)');
-                    return;
-                }
-                
-                const maxSize = 5 * 1024 * 1024;
-                if (file.size > maxSize) {
-                    alert('Image file is too large. Please choose an image smaller than 5MB.');
-                    return;
-                }
-                
-                try {
-                    const base64 = await this.fileToBase64(file);
-                    this.config.backgroundImage = base64;
-                    this.showBackgroundPreview(base64);
-                } catch (error) {
-                    console.error('Error processing background image:', error);
-                    alert('Error processing the image. Please try a different file.');
-                }
-            }
-
-            fileToBase64(file) {
-                return new Promise((resolve, reject) => {
-                    const reader = new FileReader();
-                    reader.onload = () => resolve(reader.result);
-                    reader.onerror = reject;
-                    reader.readAsDataURL(file);
-                });
-            }
-
-            showBackgroundPreview(base64Image) {
-                const preview = document.getElementById('backgroundPreview');
-                if (preview && base64Image) {
-                    preview.style.backgroundImage = `url(${base64Image})`;
-                    preview.classList.remove('hidden');
-                }
-            }
-
-            applyStoredBackground() {
-                if (this.config.backgroundImage) {
-                    document.body.style.backgroundImage = `url(${this.config.backgroundImage})`;
-                    document.body.classList.add('custom-background');
-                }
-            }
-
-            resetBackground() {
-                delete this.config.backgroundImage;
-                document.body.style.backgroundImage = '';
-                document.body.classList.remove('custom-background');
-                
-                const preview = document.getElementById('backgroundPreview');
-                if (preview) {
-                    preview.classList.add('hidden');
-                }
-                
-                const backgroundInput = document.getElementById('configBackgroundInput');
-                if (backgroundInput) {
-                    backgroundInput.value = '';
-                }
-                
-                localStorage.setItem('sailboat_config', JSON.stringify(this.config));
-            }
-
-            loadConfiguration() {
-                const savedConfig = localStorage.getItem('sailboat_config');
-                if (savedConfig) {
-                    try {
-                        const config = JSON.parse(savedConfig);
-                        this.config = { ...this.config, ...config };
-                    } catch (e) {
-                        console.log('Using default configuration');
-                    }
-                }
-
-                const savedLoginState = localStorage.getItem('login_state');
-                if (savedLoginState) {
-                    try {
-                        this.loginState = { ...this.loginState, ...JSON.parse(savedLoginState) };
-                    } catch (e) {
-                        console.log('Using default login state');
-                    }
-                }
-
-                this.updateDashboardBranding();
-                this.updateLoginDisplay();
-                
-                setTimeout(() => {
-                    this.updateBoatSpecificElements();
-                }, 100);
-            }
-
-            updateDashboardBranding() {
-                document.title = `${this.config.sailboatName} - Sailing Performance Dashboard`;
-                document.querySelector('.header h1').textContent = this.config.sailboatName;
-                document.querySelector('.header p').textContent = `Real-time performance dashboard for ${this.config.sailboatName}`;
-            }
-
-            updateBoatSpecificElements() {
-                document.getElementById('currentBoatName').textContent = this.config.sailboatName;
-                document.getElementById('currentBoatClass').textContent = this.config.boatClass;
-                document.getElementById('raceBoatName').textContent = this.config.sailboatName;
-            }
-
-            updateLoginDisplay() {
-                const notLoggedInState = document.getElementById('notLoggedInState');
-                const loggedInState = document.getElementById('loggedInState');
-                const currentUser = document.getElementById('currentUser');
-                
-                if (this.loginState.isLoggedIn) {
-                    notLoggedInState.style.display = 'none';
-                    loggedInState.style.display = 'block';
-                    if (currentUser) {
-                        currentUser.textContent = this.loginState.username;
-                    }
-                    // Populate quick config fields
-                    document.getElementById('quickBoatName').value = this.config.sailboatName;
-                    document.getElementById('quickBoatClass').value = this.config.boatClass;
-                } else {
-                    notLoggedInState.style.display = 'block';
-                    loggedInState.style.display = 'none';
-                }
-            }
-
-            async fetchLiveRaceResults() {
-                try {
-                    console.log('Fetching live race results...');
+                    this.isLoading = true;
                     
-                    // Call our serverless function to fetch both overall and race results
-                    const [overallResponse, raceResponse] = await Promise.all([
-                        fetch('/api/fetch-results', {
+                    try {
+                        const response = await fetch('/api/auth', {
                             method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ eventId: 'andros2025', classId: 'ORC' })
-                        }),
-                        fetch('/api/fetch-results', {
-                            method: 'POST', 
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ eventId: 'andros2025', raceId: '7' })
-                        })
-                    ]);
-                    
-                    if (!overallResponse.ok || !raceResponse.ok) {
-                        throw new Error('Failed to fetch race data');
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ 
+                                username: this.username, 
+                                password: this.password 
+                            })
+                        });
+                        
+                        const result = await response.json();
+                        
+                        if (response.ok && result.success) {
+                            this.$emit('login', {
+                                username: result.username,
+                                success: true
+                            });
+                        } else {
+                            alert(result.message || 'Invalid credentials. Please try again.');
+                        }
+                    } catch (error) {
+                        console.error('Login error:', error);
+                        alert('Login failed. Please check your connection and try again.');
+                    } finally {
+                        this.isLoading = false;
                     }
-                    
-                    const [overallData, raceData] = await Promise.all([
-                        overallResponse.json(),
-                        raceResponse.json()
-                    ]);
-                    
-                    if (overallData.success && raceData.success) {
-                        console.log('Live results fetched - Overall:', overallData.results.length, 'Race:', raceData.results.length);
-                        this.updateDashboardWithLiveResults(overallData.results, raceData.results);
-                        this.showNotification('Live results updated with corrected times!');
-                        return true;
-                    } else {
-                        throw new Error('No results data received');
-                    }
-                    
-                } catch (error) {
-                    console.error('Error fetching live results:', error);
-                    this.showNotification('Unable to fetch live results - showing demo data');
-                    return false;
                 }
             }
+        };
 
-            updateDashboardWithLiveResults(overallResults, raceResults) {
-                console.log('Updating dashboard with live results...');
-                
-                // Find our configured boat in both result sets
-                const ourBoatOverall = overallResults.find(boat => 
-                    boat.name.toUpperCase().includes(this.config.sailboatName.toUpperCase()) ||
-                    this.config.sailboatName.toUpperCase().includes(boat.name.toUpperCase())
-                );
-                
-                const ourBoatRace = raceResults.find(boat => 
-                    boat.name.toUpperCase().includes(this.config.sailboatName.toUpperCase()) ||
-                    this.config.sailboatName.toUpperCase().includes(boat.name.toUpperCase())
-                );
-                
-                if (ourBoatOverall && ourBoatRace) {
-                    console.log('Found our boat:', ourBoatRace.name, 'Position:', ourBoatRace.position);
-                    
-                    // Update latest race results with corrected times
-                    document.getElementById('latestRaceName').textContent = 'Race 1 - Andros';
-                    document.getElementById('latestPosition').textContent = ourBoatRace.position;
-                    document.getElementById('latestRaceDate').textContent = 'Aug 29, 2025';
-                    
-                    // Calculate time deltas using corrected times
-                    const racePosition = parseInt(ourBoatRace.position);
-                    const boatAhead = raceResults.find(boat => parseInt(boat.position) === racePosition - 1);
-                    const boatBehind = raceResults.find(boat => parseInt(boat.position) === racePosition + 1);
-                    
-                    document.getElementById('latestDeltaAhead').textContent = 
-                        boatAhead && ourBoatRace.correctedTime && boatAhead.correctedTime ? 
-                        this.formatTimeDelta(ourBoatRace.correctedTime, boatAhead.correctedTime) : '—';
-                    
-                    document.getElementById('latestDeltaBehind').textContent = 
-                        boatBehind && ourBoatRace.correctedTime && boatBehind.correctedTime ? 
-                        this.formatTimeDelta(boatBehind.correctedTime, ourBoatRace.correctedTime) : '—';
-                    
-                    // Update overall standings
-                    document.getElementById('overallPosition').textContent = ourBoatOverall.position;
-                    document.getElementById('overallPoints').textContent = parseFloat(ourBoatOverall.points).toFixed(1);
-                    document.getElementById('overallNet').textContent = parseFloat(ourBoatOverall.points).toFixed(1);
-                    document.getElementById('overallRaces').textContent = '1 race';
-                    
-                } else {
-                    console.log('Boat not found in results:', this.config.sailboatName);
-                    this.showNotification(`Boat "${this.config.sailboatName}" not found in current results`);
+        // Config Modal Component
+        const ConfigModal = {
+            props: ['config'],
+            emits: ['close', 'save', 'resetBackground'],
+            data() {
+                return {
+                    formConfig: {
+                        sailboatName: '',
+                        boatClass: '',
+                        ownerName: '',
+                        sailNumber: ''
+                    },
+                    backgroundImage: null,
+                    showPreview: false
+                };
+            },
+            watch: {
+                config: {
+                    handler(newConfig) {
+                        this.formConfig = { ...newConfig };
+                        this.backgroundImage = newConfig.backgroundImage;
+                        this.showPreview = !!newConfig.backgroundImage;
+                    },
+                    immediate: true
                 }
-                
-                // Update race results displays with corrected times
-                this.updateRaceResultsDisplay(raceResults);
-                this.updateSeriesStandingsDisplay(overallResults);
-                this.updateRaceDetailsSection(raceResults, ourBoatRace);
-                
-                // Update last refresh time
-                this.updateLastRefreshTime();
-                
-                // Change status indicators
-                document.querySelector('#racingResultsCard .race-result-section h4 span').textContent = 'Live Results';
-                document.querySelector('#racingResultsCard .race-result-section h4 span').style.background = 'rgba(81, 207, 102, 0.8)';
-            }
-
-            updateRaceDetailsSection(raceResults, ourBoat) {
-                // Update the race history section to show Race 1
-                const historyContainer = document.querySelector('#raceHistory > div:last-child');
-                historyContainer.innerHTML = ''; // Clear existing content
-                
-                // Create Race 1 flippable card
-                const race1Card = document.createElement('div');
-                race1Card.className = 'race-mini-card race1-card';
-                race1Card.style.cssText = 'min-height: 80px; padding: 0; cursor: pointer;';
-                race1Card.setAttribute('title', 'Click to flip card');
-                
-                const ourPosition = ourBoat ? ourBoat.position : '—';
-                const ourCorrectedTime = ourBoat ? (ourBoat.correctedTime || ourBoat.finishTime) : '—';
-                
-                race1Card.innerHTML = `
-                    <div class="race-card-inner">
-                        <!-- Front Side - Race 1 Summary -->
-                        <div class="race-card-front" style="background: rgba(255,255,255,0.05); border-radius: 8px; padding: 0.75rem;">
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                                <span style="color: white; font-weight: 600; font-size: 0.9rem;">Race 1</span>
-                                <span style="color: rgba(255,255,255,0.7); font-size: 0.7rem;">Aug 29</span>
+            },
+            template: `
+                <div class="modal">
+                    <div class="glass-card" style="
+                        position: fixed;
+                        top: 50%;
+                        left: 50%;
+                        transform: translate(-50%, -50%);
+                        z-index: 1000;
+                        width: 90%;
+                        max-width: 700px;
+                        max-height: 80vh;
+                        overflow-y: auto;
+                    ">
+                        <h3 style="color: white; margin-bottom: 1.5rem;">⚙️ Sailboat Configuration</h3>
+                        
+                        <!-- Basic Configuration -->
+                        <div style="margin-bottom: 2rem;">
+                            <h4 style="color: rgba(255,255,255,0.9); font-size: 0.95rem; margin-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 0.5rem;">
+                                Basic Information
+                            </h4>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                                <div>
+                                    <label style="color: rgba(255,255,255,0.8); display: block; margin-bottom: 0.5rem; font-size: 0.9rem;">
+                                        Boat Name *
+                                    </label>
+                                    <input type="text" v-model="formConfig.sailboatName" placeholder="Enter boat name" style="
+                                        width: 100%;
+                                        padding: 0.75rem;
+                                        border-radius: 10px;
+                                        border: 1px solid rgba(255,255,255,0.3);
+                                        background: rgba(255,255,255,0.1);
+                                        color: white;
+                                        backdrop-filter: blur(10px);
+                                    ">
+                                </div>
+                                <div>
+                                    <label style="color: rgba(255,255,255,0.8); display: block; margin-bottom: 0.5rem; font-size: 0.9rem;">
+                                        Boat Class *
+                                    </label>
+                                    <input type="text" v-model="formConfig.boatClass" placeholder="e.g., ORC International" style="
+                                        width: 100%;
+                                        padding: 0.75rem;
+                                        border-radius: 10px;
+                                        border: 1px solid rgba(255,255,255,0.3);
+                                        background: rgba(255,255,255,0.1);
+                                        color: white;
+                                        backdrop-filter: blur(10px);
+                                    ">
+                                </div>
                             </div>
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; text-align: center;">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
                                 <div>
-                                    <div style="color: rgba(255,255,255,0.6); font-size: 0.65rem;">Position</div>
-                                    <div style="color: white; font-size: 1.1rem; font-weight: 700;">${ourPosition}</div>
+                                    <label style="color: rgba(255,255,255,0.8); display: block; margin-bottom: 0.5rem; font-size: 0.9rem;">
+                                        Owner Name (Optional)
+                                    </label>
+                                    <input type="text" v-model="formConfig.ownerName" placeholder="Owner name" style="
+                                        width: 100%;
+                                        padding: 0.75rem;
+                                        border-radius: 10px;
+                                        border: 1px solid rgba(255,255,255,0.3);
+                                        background: rgba(255,255,255,0.1);
+                                        color: white;
+                                        backdrop-filter: blur(10px);
+                                    ">
                                 </div>
                                 <div>
-                                    <div style="color: rgba(255,255,255,0.6); font-size: 0.65rem;">Corrected</div>
-                                    <div style="color: white; font-size: 0.75rem; font-weight: 600; font-family: monospace;">${ourCorrectedTime}</div>
+                                    <label style="color: rgba(255,255,255,0.8); display: block; margin-bottom: 0.5rem; font-size: 0.9rem;">
+                                        Sail Number (Optional)
+                                    </label>
+                                    <input type="text" v-model="formConfig.sailNumber" placeholder="Sail number" style="
+                                        width: 100%;
+                                        padding: 0.75rem;
+                                        border-radius: 10px;
+                                        border: 1px solid rgba(255,255,255,0.3);
+                                        background: rgba(255,255,255,0.1);
+                                        color: white;
+                                        backdrop-filter: blur(10px);
+                                    ">
                                 </div>
+                            </div>
+                        </div>
+
+                        <!-- Background Image Configuration -->
+                        <div style="margin-bottom: 2rem;">
+                            <h4 style="color: rgba(255,255,255,0.9); font-size: 0.95rem; margin-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 0.5rem;">
+                                Background Image
+                            </h4>
+                            
+                            <div v-if="showPreview" style="
+                                width: 100%;
+                                height: 120px;
+                                border-radius: 12px;
+                                background-size: cover;
+                                background-position: center;
+                                border: 2px solid rgba(255,255,255,0.3);
+                                margin-bottom: 1rem;
+                                position: relative;
+                                overflow: hidden;
+                                background-image: url(&quot; + backgroundImage + &quot;);
+                            ">
+                                <div style="
+                                    position: absolute;
+                                    bottom: 0;
+                                    left: 0;
+                                    right: 0;
+                                    background: linear-gradient(transparent, rgba(0,0,0,0.7));
+                                    padding: 0.75rem;
+                                    color: white;
+                                    font-size: 0.8rem;
+                                ">
+                                    Current Background
+                                </div>
+                            </div>
+
+                            <div @click="triggerBackgroundInput" style="
+                                border: 2px dashed rgba(255, 255, 255, 0.3);
+                                border-radius: 12px;
+                                padding: 1.5rem;
+                                text-align: center;
+                                cursor: pointer;
+                                transition: all 0.3s ease;
+                                background: rgba(255, 255, 255, 0.05);
+                                margin-bottom: 1rem;
+                            ">
+                                <div style="font-size: 1.2rem; color: rgba(255, 255, 255, 0.6); margin-bottom: 0.5rem;">🖼️</div>
+                                <div style="color: white; font-size: 0.95rem; margin-bottom: 0.25rem;">Upload Background Image</div>
+                                <div style="color: rgba(255, 255, 255, 0.6); font-size: 0.8rem;">
+                                    Click to select a background image for your dashboard<br>
+                                    <span style="font-size: 0.75rem; color: rgba(255, 255, 255, 0.5);">Recommended: High resolution sailing/ocean images (JPG, PNG)</span>
+                                </div>
+                            </div>
+                            
+                            <input ref="backgroundInput" type="file" accept="image/*" @change="handleBackgroundUpload" style="display: none;">
+                            
+                            <div style="display: flex; gap: 0.75rem; justify-content: center;">
+                                <button @click="$emit('resetBackground')" style="
+                                    background: rgba(255, 140, 66, 0.8);
+                                    border: none;
+                                    padding: 0.5rem 1rem;
+                                    border-radius: 15px;
+                                    color: white;
+                                    cursor: pointer;
+                                    font-size: 0.8rem;
+                                    transition: all 0.3s ease;
+                                ">Reset to Default</button>
                             </div>
                         </div>
                         
-                        <!-- Back Side - Full Race 1 Results -->
-                        <div class="race-card-back" id="race1ResultsBack">
-                            <!-- Will be populated with race results -->
+                        <div style="text-align: center; margin: 2rem 0;">
+                            <button @click="save" class="btn" style="margin-right: 1rem;">
+                                Save Configuration
+                            </button>
+                            <button @click="$emit('close')" class="btn btn-secondary">Cancel</button>
                         </div>
                     </div>
-                `;
-                
-                historyContainer.appendChild(race1Card);
-                
-                // Populate the back side with full race results
-                this.updateRace1ResultsDisplay(raceResults);
-                
-                // Setup flip functionality for the new card
-                setTimeout(() => {
-                    this.setupFlipCards();
-                }, 100);
-            }
-
-            updateRace1ResultsDisplay(raceResults) {
-                const backSide = document.getElementById('race1ResultsBack');
-                if (!backSide) return;
-                
-                const ourBoatName = this.config.sailboatName.toUpperCase();
-                
-                let html = `
-                    <div class="race-results-header">Race 1 - Andros Course (August 29, 2025)</div>
-                    <div style="font-size: 0.5rem; color: rgba(255,255,255,0.5); margin-bottom: 0.5rem; text-align: center; line-height: 1.2;">
-                        Pos | Yacht Name | Sail | Corrected Time | Pts
-                    </div>
-                `;
-                
-                raceResults.forEach((boat, index) => {
-                    const isOurBoat = boat.name.toUpperCase().includes(ourBoatName) || ourBoatName.includes(boat.name.toUpperCase());
-                    const highlightClass = isOurBoat ? 'boat-highlight' : '';
+                    <div class="api-modal-backdrop" @click="$emit('close')" style="
+                        position: fixed;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 100%;
+                        background: rgba(0,0,0,0.5);
+                        backdrop-filter: blur(5px);
+                        z-index: 999;
+                    "></div>
+                </div>
+            `,
+            methods: {
+                triggerBackgroundInput() {
+                    this.$refs.backgroundInput.click();
+                },
+                async handleBackgroundUpload(event) {
+                    const file = event.target.files[0];
+                    if (!file) return;
                     
-                    const displayTime = boat.correctedTime || boat.finishTime || 'DNF';
-                    const shortSailNo = boat.sailNo ? boat.sailNo.replace('GRE-', '') : '—';
+                    if (!file.type.startsWith('image/')) {
+                        alert('Please select a valid image file (JPG, PNG, GIF, etc.)');
+                        return;
+                    }
                     
-                    html += `
-                        <div class="race-result-row ${highlightClass}" style="grid-template-columns: 0.5fr 2fr 0.7fr 1.2fr 0.6fr; font-size: 0.52rem; margin-bottom: 0.2rem;">
-                            <div class="position-cell">${boat.position}</div>
-                            <div class="boat-name-cell" title="${boat.name}" style="font-size: 0.5rem;">${boat.name}</div>
-                            <div class="time-cell">${shortSailNo}</div>
-                            <div class="time-cell" style="font-family: monospace; font-size: 0.48rem;">${displayTime}</div>
-                            <div class="delta-cell">${parseFloat(boat.points || 0).toFixed(1)}</div>
-                        </div>
-                    `;
-                });
-                
-                // Add race info footer
-                html += `
-                    <div style="margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid rgba(255,255,255,0.2); font-size: 0.5rem; color: rgba(255,255,255,0.6); text-align: center;">
-                        ${raceResults.length} boats • Corrected times shown
-                    </div>
-                `;
-                
-                backSide.innerHTML = html;
-            }
-
-            formatTimeDelta(time1, time2) {
-                // Convert HH:MM:SS format to seconds for calculation
-                const timeToSeconds = (timeStr) => {
-                    if (!timeStr || timeStr === 'DNF') return null;
-                    const parts = timeStr.split(':');
-                    return parseInt(parts[0]) * 3600 + parseInt(parts[1]) * 60 + parseInt(parts[2]);
-                };
-                
-                const seconds1 = timeToSeconds(time1);
-                const seconds2 = timeToSeconds(time2);
-                
-                if (seconds1 === null || seconds2 === null) return '—';
-                
-                const deltaSeconds = Math.abs(seconds1 - seconds2);
-                const minutes = Math.floor(deltaSeconds / 60);
-                const seconds = deltaSeconds % 60;
-                
-                const sign = seconds1 > seconds2 ? '+' : '-';
-                
-                if (minutes > 0) {
-                    return `${sign}${minutes}:${seconds.toString().padStart(2, '0')}`;
-                } else {
-                    return `${sign}${seconds}s`;
-                }
-            }
-
-            updateRaceResultsDisplay(raceResults) {
-                const backSide = document.getElementById('latestRaceBack');
-                const ourBoatName = this.config.sailboatName.toUpperCase();
-                
-                let html = `
-                    <div class="race-results-header">Race 1 - Andros (August 29, 2025)</div>
-                    <div style="font-size: 0.55rem; color: rgba(255,255,255,0.5); margin-bottom: 0.5rem; text-align: center;">
-                        Pos | Yacht Name | Sail No | Corrected Time | Points
-                    </div>
-                `;
-                
-                raceResults.forEach((boat, index) => {
-                    const isOurBoat = boat.name.toUpperCase().includes(ourBoatName) || ourBoatName.includes(boat.name.toUpperCase());
-                    const highlightClass = isOurBoat ? 'boat-highlight' : '';
+                    const maxSize = 5 * 1024 * 1024;
+                    if (file.size > maxSize) {
+                        alert('Image file is too large. Please choose an image smaller than 5MB.');
+                        return;
+                    }
                     
-                    const displayTime = boat.correctedTime || boat.finishTime || 'DNF';
-                    
-                    html += `
-                        <div class="race-result-row ${highlightClass}" style="grid-template-columns: 0.6fr 2fr 0.8fr 1.3fr 0.7fr; font-size: 0.55rem;">
-                            <div class="position-cell">${boat.position}</div>
-                            <div class="boat-name-cell" title="${boat.name}">${boat.name}</div>
-                            <div class="time-cell">${boat.sailNo || '—'}</div>
-                            <div class="time-cell" style="font-family: monospace;">${displayTime}</div>
-                            <div class="delta-cell">${parseFloat(boat.points || 0).toFixed(1)}</div>
-                        </div>
-                    `;
-                });
-                
-                backSide.innerHTML = html;
-            }
-
-            updateSeriesStandingsDisplay(results) {
-                const backSide = document.getElementById('seriesStandingsBack');
-                const ourBoatName = this.config.sailboatName.toUpperCase();
-                
-                let html = `
-                    <div class="standings-header">Andros 2025 - Overall Standings</div>
-                `;
-                
-                results.slice(0, 10).forEach((boat, index) => { // Show top 10
-                    const isOurBoat = boat.name.toUpperCase().includes(ourBoatName) || ourBoatName.includes(boat.name.toUpperCase());
-                    const highlightClass = isOurBoat ? 'standings-highlight' : '';
-                    
-                    html += `
-                        <div class="standings-row ${highlightClass}">
-                            <div class="standings-position">${boat.position}</div>
-                            <div class="standings-boat" title="${boat.name}">${boat.name}</div>
-                            <div class="standings-points">${parseFloat(boat.points).toFixed(1)}</div>
-                            <div class="race-points">${parseFloat(boat.points).toFixed(1)}</div>
-                            <div class="race-points">—</div>
-                            <div class="race-points">—</div>
-                            <div class="standings-points">${parseFloat(boat.points).toFixed(1)}</div>
-                        </div>
-                    `;
-                });
-                
-                if (results.length > 10) {
-                    html += `<div style="text-align: center; color: rgba(255,255,255,0.5); font-size: 0.65rem; margin-top: 0.5rem;">
-                        +${results.length - 10} more boats
-                    </div>`;
-                }
-                
-                backSide.innerHTML = html;
-            }
-
-            startAutoRefresh() {
-                // Initial fetch of live results
-                setTimeout(() => {
-                    this.fetchLiveRaceResults();
-                }, 2000);
-                
-                // Auto-refresh every 5 minutes
-                setInterval(() => {
-                    this.fetchLiveRaceResults();
-                }, 5 * 60 * 1000);
-                
-                // Update time display every 30 seconds
-                setInterval(() => {
-                    this.updateLastRefreshTime();
-                }, 30000);
-                
-                this.updateLastRefreshTime();
-            }
-
-            updateLastRefreshTime() {
-                const now = new Date();
-                document.getElementById('lastUpdateTime').textContent = 
-                    now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                document.getElementById('lastUpdateDisplay').textContent = 
-                    now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            }
-
-            showLoginModal() {
-                document.getElementById('loginModal').classList.remove('hidden');
-                document.body.style.overflow = 'hidden';
-            }
-
-            closeLoginModal() {
-                document.getElementById('loginModal').classList.add('hidden');
-                document.body.style.overflow = 'auto';
-                document.getElementById('loginUsername').value = '';
-                document.getElementById('loginPassword').value = '';
-            }
-
-            async attemptLogin() {
-                const username = document.getElementById('loginUsername').value.trim();
-                const password = document.getElementById('loginPassword').value.trim();
-                
-                if (!username || !password) {
-                    alert('Please enter both username and password');
-                    return;
-                }
-                
-                // Show loading state
-                const loginButton = document.querySelector('#loginModal button[onclick="dashboard.attemptLogin()"]');
-                const originalText = loginButton.textContent;
-                loginButton.textContent = 'Authenticating...';
-                loginButton.disabled = true;
-                
-                try {
-                    // Call Vercel serverless function for authentication
-                    const response = await fetch('/api/auth', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({ username, password })
+                    try {
+                        const base64 = await this.fileToBase64(file);
+                        this.backgroundImage = base64;
+                        this.showPreview = true;
+                    } catch (error) {
+                        console.error('Error processing background image:', error);
+                        alert('Error processing the image. Please try a different file.');
+                    }
+                },
+                fileToBase64(file) {
+                    return new Promise((resolve, reject) => {
+                        const reader = new FileReader();
+                        reader.onload = () => resolve(reader.result);
+                        reader.onerror = reject;
+                        reader.readAsDataURL(file);
                     });
+                },
+                save() {
+                    const configToSave = {
+                        ...this.formConfig,
+                        sailboatName: this.formConfig.sailboatName.trim().toUpperCase() || 'BURRASCA',
+                        boatClass: this.formConfig.boatClass.trim() || 'ORC International',
+                        backgroundImage: this.backgroundImage
+                    };
+                    this.$emit('save', configToSave);
+                }
+            }
+        };
+
+        // API Config Modal Component
+        const ApiConfigModal = {
+            emits: ['close'],
+            template: `
+                <div class="modal">
+                    <div class="glass-card" style="
+                        position: fixed;
+                        top: 50%;
+                        left: 50%;
+                        transform: translate(-50%, -50%);
+                        z-index: 1000;
+                        width: 90%;
+                        max-width: 600px;
+                        max-height: 80vh;
+                        overflow-y: auto;
+                    ">
+                        <h3 style="color: white; margin-bottom: 1rem;">🔗 SailingPerformance WebReports Integration</h3>
+                        
+                        <div style="margin-bottom: 1.5rem; padding: 1rem; background: rgba(255,255,255,0.05); border-radius: 10px;">
+                            <div style="color: rgba(255,255,255,0.9); font-size: 0.9rem; line-height: 1.5;">
+                                <strong>📊 Detected System:</strong> kndwebreport.azurewebsites.net<br>
+                                <strong>🏁 Your Report:</strong> Project 56, Regatta 302, Race 940
+                            </div>
+                        </div>
+                        
+                        <div style="text-align: center; margin: 1.5rem 0;">
+                            <button @click="openReportInNewTab" class="btn" style="margin-right: 0.5rem;">🔗 Open WebReport</button>
+                            <button @click="copyApiUrl" class="btn" style="background: rgba(255, 212, 59, 0.8); margin-right: 0.5rem;">📋 Copy URL</button>
+                            <button @click="suggestDataExtraction" class="btn" style="background: rgba(81, 207, 102, 0.8); margin-right: 0.5rem;">💡 How to Extract Data</button>
+                            <button @click="$emit('close')" class="btn btn-secondary">Close</button>
+                        </div>
+                        
+                        <div style="margin-top: 1rem; padding: 1.5rem; background: rgba(255,255,255,0.05); border-radius: 10px;">
+                            <div style="color: rgba(255,255,255,0.9); font-size: 0.85rem; line-height: 1.5;">
+                                <strong>🔐 Secure Integration Options:</strong><br><br>
+                                
+                                <strong>Option 1: Export Data</strong><br>
+                                • Log into your WebReports system<br>
+                                • Export performance data as CSV/JSON<br>
+                                • Upload to this dashboard<br><br>
+                                
+                                <strong>Option 2: Request API Access</strong><br>
+                                • Contact <a href="mailto:info@sailingperformance.com" style="color: #4facfe;">info@sailingperformance.com</a><br>
+                                • Ask about REST API endpoints for WebReports<br>
+                                • Request authentication tokens (not passwords)<br><br>
+                                
+                                <strong>Option 3: Browser Extension</strong><br>
+                                • Create a browser script to extract data<br>
+                                • Use developer tools to identify data endpoints<br>
+                                • Automate data copying from your logged-in session
+                            </div>
+                        </div>
+                    </div>
+                    <div class="api-modal-backdrop" @click="$emit('close')" style="
+                        position: fixed;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 100%;
+                        background: rgba(0,0,0,0.5);
+                        backdrop-filter: blur(5px);
+                        z-index: 999;
+                    "></div>
+                </div>
+            `,
+            methods: {
+                openReportInNewTab() {
+                    const url = `https://kndwebreport.azurewebsites.net/Reports/View?idProject=56&idRegatta=302&idRaceReport=940&tab=0`;
+                    window.open(url, '_blank');
+                },
+                copyApiUrl() {
+                    const url = `https://kndwebreport.azurewebsites.net/Reports/View?idProject=56&idRegatta=302&idRaceReport=940&tab=0`;
                     
-                    const result = await response.json();
+                    navigator.clipboard.writeText(url).then(() => {
+                        alert('URL copied to clipboard!');
+                    }).catch(() => {
+                        const textArea = document.createElement('textarea');
+                        textArea.value = url;
+                        document.body.appendChild(textArea);
+                        textArea.select();
+                        document.execCommand('copy');
+                        document.body.removeChild(textArea);
+                        alert('URL copied to clipboard!');
+                    });
+                },
+                suggestDataExtraction() {
+                    const suggestions = `Data Extraction Options:
+
+1. Manual Export:
+   - Log into your WebReports
+   - Export performance data as CSV/JSON
+   - Upload to this dashboard
+
+2. Browser Developer Tools:
+   - Press F12 while logged into WebReports
+   - Go to Network tab
+   - Navigate through your reports
+   - Look for API calls containing JSON data
+   - Copy the data URLs for potential automation
+
+3. Contact SailingPerformance:
+   - Email: info@sailingperformance.com
+   - Ask about API access for WebReports
+   - Request JSON/REST endpoints
+   - Mention you want to build custom dashboards
+
+Would you like detailed instructions for any of these approaches?`;
                     
-                    if (response.ok && result.success) {
+                    alert(suggestions);
+                }
+            }
+        };
+
+        // Main Vue Application
+        const app = createApp({
+            components: {
+                LoginConfigCard,
+                RacingResultsCard,
+                FileUploadCard,
+                DataPreviewCard,
+                MetricsContainer,
+                MetricCard,
+                LoginModal,
+                ConfigModal,
+                ApiConfigModal
+            },
+            data() {
+                return {
+                    config: {
+                        sailboatName: 'BURRASCA',
+                        displayName: 'BURRASCA Performance Dashboard',
+                        ownerName: '',
+                        sailNumber: '',
+                        boatClass: 'ORC International',
+                        backgroundImage: null
+                    },
+                    loginState: {
+                        isLoggedIn: false,
+                        username: '',
+                        lastLoginTime: null
+                    },
+                    modals: {
+                        showLogin: false,
+                        showConfig: false,
+                        showApiConfig: false
+                    },
+                    data: [],
+                    metrics: null,
+                    raceData: {
+                        eventName: "Andros 2025",
+                        location: "Greek Islands", 
+                        dates: "August 28-31, 2025",
+                        className: "ORC International",
+                        overallStanding: {
+                            position: 0,
+                            totalPoints: 0.0,
+                            netPoints: 0.0,
+                            className: "ORC International",
+                            totalRaces: 1,
+                            completedRaces: 0,
+                            status: 'Event Pending'
+                        }
+                    },
+                    lastUpdateTime: 'Just now',
+                    isLoading: false,
+                    errorMessage: ''
+                };
+            },
+            mounted() {
+                this.loadConfiguration();
+                this.updateLastRefreshTime();
+                this.startAutoRefresh();
+            },
+            methods: {
+                // Configuration Management
+                loadConfiguration() {
+                    const savedConfig = localStorage.getItem('sailboat_config');
+                    if (savedConfig) {
+                        try {
+                            const config = JSON.parse(savedConfig);
+                            this.config = { ...this.config, ...config };
+                        } catch (e) {
+                            console.log('Using default configuration');
+                        }
+                    }
+
+                    const savedLoginState = localStorage.getItem('login_state');
+                    if (savedLoginState) {
+                        try {
+                            this.loginState = { ...this.loginState, ...JSON.parse(savedLoginState) };
+                        } catch (e) {
+                            console.log('Using default login state');
+                        }
+                    }
+
+                    this.applyStoredBackground();
+                },
+
+                applyStoredBackground() {
+                    if (this.config.backgroundImage) {
+                        document.body.style.backgroundImage = `url(${this.config.backgroundImage})`;
+                    }
+                },
+
+                resetBackground() {
+                    this.config.backgroundImage = null;
+                    document.body.style.backgroundImage = '';
+                    localStorage.setItem('sailboat_config', JSON.stringify(this.config));
+                },
+
+                saveConfiguration(newConfig) {
+                    this.config = { ...this.config, ...newConfig };
+                    this.config.displayName = `${this.config.sailboatName} Performance Dashboard`;
+                    
+                    if (this.config.backgroundImage) {
+                        document.body.style.backgroundImage = `url(${this.config.backgroundImage})`;
+                    }
+                    
+                    localStorage.setItem('sailboat_config', JSON.stringify(this.config));
+                    this.closeConfigModal();
+                    
+                    // Update page title
+                    document.title = `${this.config.sailboatName} - Sailing Performance Dashboard`;
+                },
+
+                // Authentication
+                showLoginModal() {
+                    this.modals.showLogin = true;
+                    document.body.style.overflow = 'hidden';
+                },
+
+                closeLoginModal() {
+                    this.modals.showLogin = false;
+                    document.body.style.overflow = 'auto';
+                },
+
+                async attemptLogin(loginData) {
+                    if (loginData.success) {
                         this.loginState = {
                             isLoggedIn: true,
-                            username: result.username,
+                            username: loginData.username,
                             lastLoginTime: new Date().toISOString()
                         };
                         
                         localStorage.setItem('login_state', JSON.stringify(this.loginState));
-                        this.updateLoginDisplay();
                         this.closeLoginModal();
                         alert(`Login successful! You can now configure your sailboat settings.`);
-                        
-                        this.apiConfig.enabled = true;
-                    } else {
-                        alert(result.message || 'Invalid credentials. Please try again.');
                     }
-                } catch (error) {
-                    console.error('Login error:', error);
-                    alert('Login failed. Please check your connection and try again.');
-                } finally {
-                    // Reset button state
-                    loginButton.textContent = originalText;
-                    loginButton.disabled = false;
-                }
-            }
+                },
 
-            logout() {
-                this.loginState = {
-                    isLoggedIn: false,
-                    username: '',
-                    lastLoginTime: null
-                };
-                
-                localStorage.removeItem('login_state');
-                this.updateLoginDisplay();
-                this.apiConfig.enabled = false;
-                alert('Logged out successfully. Configuration is now locked.');
-            }
+                logout() {
+                    this.loginState = {
+                        isLoggedIn: false,
+                        username: '',
+                        lastLoginTime: null
+                    };
+                    
+                    localStorage.removeItem('login_state');
+                    alert('Logged out successfully. Configuration is now locked.');
+                },
 
-            saveQuickConfig() {
-                if (!this.loginState.isLoggedIn) {
-                    alert('Please login first to modify configuration');
-                    return;
-                }
-
-                const newBoatName = document.getElementById('quickBoatName').value.trim().toUpperCase();
-                const newBoatClass = document.getElementById('quickBoatClass').value.trim();
-                
-                if (!newBoatName) {
-                    alert('Boat name is required');
-                    document.getElementById('quickBoatName').focus();
-                    return;
-                }
-
-                if (!newBoatClass) {
-                    alert('Boat class is required');
-                    document.getElementById('quickBoatClass').focus();
-                    return;
-                }
-
-                // Update config
-                this.config.sailboatName = newBoatName;
-                this.config.boatClass = newBoatClass;
-                this.config.displayName = `${newBoatName} Performance Dashboard`;
-                
-                // Save to localStorage
-                localStorage.setItem('sailboat_config', JSON.stringify(this.config));
-                
-                // Update all displays
-                this.updateDashboardBranding();
-                this.updateBoatSpecificElements();
-                this.initializeRaceResults();
-                
-                // Show success feedback
-                const button = event.target;
-                const originalText = button.textContent;
-                button.textContent = 'Updated!';
-                button.style.background = 'rgba(81, 207, 102, 1)';
-                
-                setTimeout(() => {
-                    button.textContent = originalText;
-                    button.style.background = 'rgba(81, 207, 102, 0.8)';
-                }, 1500);
-            }
-
-            showConfigModal() {
-                if (!this.loginState.isLoggedIn) {
-                    alert('Please login first to access advanced configuration');
-                    return;
-                }
-                
-                document.getElementById('configBoatName').value = this.config.sailboatName;
-                document.getElementById('configBoatClass').value = this.config.boatClass;
-                document.getElementById('configOwnerName').value = this.config.ownerName || '';
-                document.getElementById('configSailNumber').value = this.config.sailNumber || '';
-                
-                if (this.config.backgroundImage) {
-                    this.showBackgroundPreview(this.config.backgroundImage);
-                } else {
-                    const preview = document.getElementById('backgroundPreview');
-                    if (preview) {
-                        preview.classList.add('hidden');
+                // Quick Configuration
+                saveQuickConfig(quickConfig) {
+                    if (!this.loginState.isLoggedIn) {
+                        alert('Please login first to modify configuration');
+                        return;
                     }
-                }
-                
-                document.getElementById('configModal').classList.remove('hidden');
-                document.body.style.overflow = 'hidden';
-            }
 
-            closeConfigModal() {
-                document.getElementById('configModal').classList.add('hidden');
-                document.body.style.overflow = 'auto';
-            }
-
-            saveConfiguration() {
-                const newConfig = {
-                    sailboatName: document.getElementById('configBoatName').value.trim().toUpperCase() || 'BURRASCA',
-                    boatClass: document.getElementById('configBoatClass').value.trim() || 'ORC International',
-                    ownerName: document.getElementById('configOwnerName').value.trim(),
-                    sailNumber: document.getElementById('configSailNumber').value.trim()
-                };
-                
-                this.config = { ...this.config, ...newConfig };
-                this.config.displayName = `${this.config.sailboatName} Performance Dashboard`;
-                
-                if (this.config.backgroundImage) {
-                    document.body.style.backgroundImage = `url(${this.config.backgroundImage})`;
-                    document.body.classList.add('custom-background');
-                } else {
-                    document.body.style.backgroundImage = '';
-                    document.body.classList.remove('custom-background');
-                }
-                
-                localStorage.setItem('sailboat_config', JSON.stringify(this.config));
-                
-                this.updateDashboardBranding();
-                this.updateBoatSpecificElements();
-                this.initializeRaceResults();
-                
-                this.closeConfigModal();
-            }
-
-            async manualRefreshResults() {
-                const refreshBtn = document.getElementById('refreshBtn');
-                const originalText = refreshBtn.textContent;
-                
-                // Show loading state
-                refreshBtn.textContent = 'Refreshing...';
-                refreshBtn.disabled = true;
-                refreshBtn.style.background = 'rgba(255, 255, 255, 0.3)';
-                
-                const success = await this.fetchLiveRaceResults();
-                
-                // Reset button state
-                setTimeout(() => {
-                    refreshBtn.textContent = originalText;
-                    refreshBtn.disabled = false;
-                    refreshBtn.style.background = 'rgba(79, 172, 254, 0.8)';
-                }, 1000);
-            }
-
-            showNotification(message) {
-                const notificationBar = document.getElementById('notificationBar');
-                if (notificationBar) {
-                    notificationBar.querySelector('span').textContent = message;
-                    notificationBar.classList.remove('hidden');
-                    this.notifications.lastNotificationTime = new Date();
-                    
-                    // Auto-hide after 5 seconds
-                    setTimeout(() => {
-                        notificationBar.classList.add('hidden');
-                    }, 5000);
-                }
-            }
-
-            dismissNotification() {
-                document.getElementById('notificationBar').classList.add('hidden');
-                this.notifications.hasNewResults = false;
-            }
-
-            setupIntersectionObserver() {
-                this.observer = new IntersectionObserver((entries) => {
-                    entries.forEach((entry, index) => {
-                        if (entry.isIntersecting && this.metrics) {
-                            setTimeout(() => {
-                                this.animateMetricCard(entry.target);
-                            }, index * 200);
-                        }
-                    });
-                }, {
-                    threshold: 0.3,
-                    rootMargin: '0px 0px -10% 0px'
-                });
-            }
-
-            animateMetricCard(card) {
-                const liquidElement = card.querySelector('.liquid-fill');
-                const metricId = card.querySelector('[id$="Liquid"]').id;
-                
-                const metricMap = {
-                    'efficiencyLiquid': this.metrics.overallEfficiency,
-                    'vmgUpwindLiquid': this.metrics.vmgUpwind,
-                    'vmgDownwindLiquid': this.metrics.vmgDownwind,
-                    'polarBspLiquid': this.metrics.polarBsp
-                };
-                
-                const value = metricMap[metricId];
-                if (value !== undefined) {
-                    liquidElement.classList.add('animate');
-                    
-                    let colorClass = 'poor';
-                    if (value >= 85) colorClass = 'excellent';
-                    else if (value >= 70) colorClass = 'good';
-                    else if (value >= 55) colorClass = 'fair';
-                    
-                    liquidElement.classList.add(colorClass);
-                    
-                    setTimeout(() => {
-                        liquidElement.style.height = `${value}%`;
-                    }, 100);
-                    
-                    this.observer.unobserve(card);
-                }
-            }
-
-            setupEventListeners() {
-                const fileInput = document.getElementById('fileInput');
-                const uploadArea = document.querySelector('.upload-area');
-                
-                fileInput.addEventListener('change', (e) => this.handleFileUpload(e));
-                
-                uploadArea.addEventListener('dragover', (e) => {
-                    e.preventDefault();
-                    uploadArea.classList.add('dragover');
-                });
-                
-                uploadArea.addEventListener('dragleave', () => {
-                    uploadArea.classList.remove('dragover');
-                });
-                
-                uploadArea.addEventListener('drop', (e) => {
-                    e.preventDefault();
-                    uploadArea.classList.remove('dragover');
-                    const files = e.dataTransfer.files;
-                    if (files.length > 0) {
-                        this.processFile(files[0]);
+                    if (!quickConfig.sailboatName) {
+                        alert('Boat name is required');
+                        return;
                     }
-                });
-            }
 
-            handleFileUpload(event) {
-                const file = event.target.files[0];
-                if (file) {
-                    this.processFile(file);
-                }
-            }
+                    if (!quickConfig.boatClass) {
+                        alert('Boat class is required');
+                        return;
+                    }
 
-            async processFile(file) {
-                this.showLoading();
-                this.hideError();
-                
-                try {
-                    const text = await this.readFileAsText(file);
-                    this.data = this.parseLogData(text);
+                    this.config.sailboatName = quickConfig.sailboatName;
+                    this.config.boatClass = quickConfig.boatClass;
+                    this.config.displayName = `${quickConfig.sailboatName} Performance Dashboard`;
                     
-                    if (this.data.length === 0) {
-                        throw new Error('No valid data found in file');
+                    localStorage.setItem('sailboat_config', JSON.stringify(this.config));
+                    
+                    // Update page title
+                    document.title = `${this.config.sailboatName} - Sailing Performance Dashboard`;
+                },
+
+                // Modal Management
+                showConfigModal() {
+                    if (!this.loginState.isLoggedIn) {
+                        alert('Please login first to access advanced configuration');
+                        return;
                     }
                     
-                    this.displayDataSummary();
-                    this.calculateAndDisplayMetrics();
-                    this.hideLoading();
+                    this.modals.showConfig = true;
+                    document.body.style.overflow = 'hidden';
+                },
+
+                closeConfigModal() {
+                    this.modals.showConfig = false;
+                    document.body.style.overflow = 'auto';
+                },
+
+                showApiConfig() {
+                    this.modals.showApiConfig = true;
+                    document.body.style.overflow = 'hidden';
+                },
+
+                closeApiConfig() {
+                    this.modals.showApiConfig = false;
+                    document.body.style.overflow = 'auto';
+                },
+
+                // File Upload
+                async handleFileUpload(file) {
+                    this.isLoading = true;
+                    this.errorMessage = '';
                     
-                } catch (error) {
-                    this.hideLoading();
-                    this.showError(`Error processing file: ${error.message}`);
-                }
-            }
-
-            readFileAsText(file) {
-                return new Promise((resolve, reject) => {
-                    const reader = new FileReader();
-                    reader.onload = (e) => resolve(e.target.result);
-                    reader.onerror = (e) => reject(new Error('Failed to read file'));
-                    reader.readAsText(file);
-                });
-            }
-
-            parseLogData(text) {
-                const lines = text.split('\n');
-                const data = [];
-                
-                for (let i = 1; i < lines.length; i++) {
-                    const line = lines[i].trim();
-                    if (!line) continue;
-                    
-                    const parts = line.split(/[,\t]/);
-                    
-                    if (parts.length >= 6) {
-                        const record = {
-                            timestamp: parts[0],
-                            boatSpeed: this.parseNumber(parts[1]),
-                            trueWindAngle: this.parseNumber(parts[2]),
-                            trueWindSpeed: this.parseNumber(parts[3]),
-                            courseOverGround: this.parseNumber(parts[4]),
-                            speedOverGround: this.parseNumber(parts[5]),
-                            polarSpeed: this.calculatePolarSpeed(this.parseNumber(parts[3]), this.parseNumber(parts[2]))
-                        };
-                        
-                        if (this.isValidRecord(record)) {
-                            data.push(record);
-                        }
-                    }
-                }
-                
-                if (data.length === 0) {
-                    return this.generateSampleData();
-                }
-                
-                return data;
-            }
-
-            generateSampleData() {
-                const sampleData = [];
-                for (let i = 0; i < 100; i++) {
-                    const twa = Math.random() * 180;
-                    const tws = 8 + Math.random() * 12;
-                    const polarSpeed = this.calculatePolarSpeed(tws, twa);
-                    const actualSpeed = polarSpeed * (0.75 + Math.random() * 0.4);
-                    
-                    sampleData.push({
-                        timestamp: new Date(Date.now() - (100 - i) * 60000).toISOString(),
-                        boatSpeed: actualSpeed,
-                        trueWindAngle: twa,
-                        trueWindSpeed: tws,
-                        courseOverGround: Math.random() * 360,
-                        speedOverGround: actualSpeed * (0.9 + Math.random() * 0.2),
-                        polarSpeed: polarSpeed
-                    });
-                }
-                return sampleData;
-            }
-
-            calculatePolarSpeed(tws, twa) {
-                const normalizedTWA = Math.abs(twa);
-                let efficiency = 1.0;
-                
-                if (normalizedTWA < 40) efficiency = 0.6;
-                else if (normalizedTWA < 60) efficiency = 0.8;
-                else if (normalizedTWA < 90) efficiency = 1.0;
-                else if (normalizedTWA < 120) efficiency = 0.9;
-                else if (normalizedTWA < 150) efficiency = 0.8;
-                else efficiency = 0.7;
-                
-                return tws * 0.5 * efficiency;
-            }
-
-            parseNumber(str) {
-                const num = parseFloat(str);
-                return isNaN(num) ? 0 : num;
-            }
-
-            isValidRecord(record) {
-                return record.boatSpeed > 0 && 
-                       record.trueWindSpeed > 0 && 
-                       record.trueWindAngle >= 0 && 
-                       record.trueWindAngle <= 180;
-            }
-
-            displayDataSummary() {
-                const totalRecords = this.data.length;
-                const avgWindSpeed = this.data.reduce((sum, r) => sum + r.trueWindSpeed, 0) / totalRecords;
-                const avgBoatSpeed = this.data.reduce((sum, r) => sum + r.boatSpeed, 0) / totalRecords;
-                
-                document.getElementById('totalRecords').textContent = totalRecords.toLocaleString();
-                document.getElementById('timeRange').textContent = 
-                    `${Math.floor(totalRecords / 60)}h ${totalRecords % 60}m`;
-                document.getElementById('avgWindSpeed').textContent = `${avgWindSpeed.toFixed(1)} kts`;
-                document.getElementById('avgBoatSpeed').textContent = `${avgBoatSpeed.toFixed(1)} kts`;
-                
-                document.getElementById('dataPreview').classList.remove('hidden');
-            }
-
-            calculateAndDisplayMetrics() {
-                this.metrics = this.calculatePerformanceMetrics();
-                
-                document.getElementById('overallEfficiency').textContent = Math.round(this.metrics.overallEfficiency);
-                document.getElementById('vmgUpwind').textContent = Math.round(this.metrics.vmgUpwind);
-                document.getElementById('vmgDownwind').textContent = Math.round(this.metrics.vmgDownwind);
-                document.getElementById('polarBsp').textContent = Math.round(this.metrics.polarBsp);
-                
-                document.getElementById('metricsContainer').classList.remove('hidden');
-                
-                const metricCards = document.querySelectorAll('.metric-card');
-                metricCards.forEach(card => {
-                    this.observer.observe(card);
-                });
-            }
-
-            calculatePerformanceMetrics() {
-                const upwindData = this.data.filter(r => r.trueWindAngle < 60);
-                const downwindData = this.data.filter(r => r.trueWindAngle > 130);
-                const reachingData = this.data.filter(r => r.trueWindAngle >= 60 && r.trueWindAngle <= 130);
-                
-                const overallEfficiency = this.data.reduce((sum, r) => 
-                    sum + (r.boatSpeed / r.polarSpeed * 100), 0) / this.data.length;
-                
-                const vmgUpwind = upwindData.length > 0 ? 
-                    upwindData.reduce((sum, r) => {
-                        const vmg = r.boatSpeed * Math.cos(r.trueWindAngle * Math.PI / 180);
-                        const polarVmg = r.polarSpeed * Math.cos(r.trueWindAngle * Math.PI / 180);
-                        return sum + (vmg / polarVmg * 100);
-                    }, 0) / upwindData.length : 0;
-                
-                const vmgDownwind = downwindData.length > 0 ?
-                    downwindData.reduce((sum, r) => {
-                        const vmg = r.boatSpeed * Math.cos((180 - r.trueWindAngle) * Math.PI / 180);
-                        const polarVmg = r.polarSpeed * Math.cos((180 - r.trueWindAngle) * Math.PI / 180);
-                        return sum + (vmg / polarVmg * 100);
-                    }, 0) / downwindData.length : 0;
-                
-                const polarBsp = reachingData.length > 0 ?
-                    reachingData.reduce((sum, r) => 
-                        sum + (r.boatSpeed / r.polarSpeed * 100), 0) / reachingData.length : 0;
-                
-                return {
-                    overallEfficiency: Math.max(0, Math.min(100, overallEfficiency)),
-                    vmgUpwind: Math.max(0, Math.min(100, vmgUpwind)),
-                    vmgDownwind: Math.max(0, Math.min(100, vmgDownwind)),
-                    polarBsp: Math.max(0, Math.min(100, polarBsp))
-                };
-            }
-
-            showLoading() {
-                document.getElementById('loadingMessage').classList.remove('hidden');
-            }
-
-            hideLoading() {
-                document.getElementById('loadingMessage').classList.add('hidden');
-            }
-
-            showError(message) {
-                const errorElement = document.getElementById('errorMessage');
-                errorElement.textContent = message;
-                errorElement.classList.remove('hidden');
-            }
-
-            hideError() {
-                document.getElementById('errorMessage').classList.add('hidden');
-            }
-
-            showApiConfig() {
-                document.getElementById('apiModal').classList.remove('hidden');
-                document.body.style.overflow = 'hidden';
-            }
-
-            closeApiConfig() {
-                document.getElementById('apiModal').classList.add('hidden');
-                document.body.style.overflow = 'auto';
-            }
-
-            openReportInNewTab() {
-                const projectId = document.getElementById('projectId').value || '56';
-                const regattaId = document.getElementById('regattaId').value || '302';
-                const raceReportId = document.getElementById('raceReportId').value || '940';
-                
-                const url = `https://kndwebreport.azurewebsites.net/Reports/View?idProject=${projectId}&idRegatta=${regattaId}&idRaceReport=${raceReportId}&tab=0`;
-                window.open(url, '_blank');
-            }
-
-            copyApiUrl() {
-                const projectId = document.getElementById('projectId').value || '56';
-                const regattaId = document.getElementById('regattaId').value || '302';
-                const raceReportId = document.getElementById('raceReportId').value || '940';
-                
-                const url = `https://kndwebreport.azurewebsites.net/Reports/View?idProject=${projectId}&idRegatta=${regattaId}&idRaceReport=${raceReportId}&tab=0`;
-                
-                navigator.clipboard.writeText(url).then(() => {
-                    alert('URL copied to clipboard!');
-                }).catch(() => {
-                    const textArea = document.createElement('textarea');
-                    textArea.value = url;
-                    document.body.appendChild(textArea);
-                    textArea.select();
-                    document.execCommand('copy');
-                    document.body.removeChild(textArea);
-                    alert('URL copied to clipboard!');
-                });
-            }
-
-            suggestDataExtraction() {
-                const suggestions = `
-                Data Extraction Options:
-
-                1. Manual Export:
-                   - Log into your WebReports
-                   - Export performance data as CSV/JSON
-                   - Upload to this dashboard
-
-                2. Browser Developer Tools:
-                   - Press F12 while logged into WebReports
-                   - Go to Network tab
-                   - Navigate through your reports
-                   - Look for API calls containing JSON data
-                   - Copy the data URLs for potential automation
-
-                3. Contact SailingPerformance:
-                   - Email: info@sailingperformance.com
-                   - Ask about API access for WebReports
-                   - Request JSON/REST endpoints
-                   - Mention you want to build custom dashboards
-
-                Would you like detailed instructions for any of these approaches?
-                `;
-                
-                alert(suggestions);
-            }
-
-            async checkApiConnection() {
-                const savedConfig = localStorage.getItem('sp_api_config');
-                if (savedConfig) {
                     try {
-                        this.apiConfig = JSON.parse(savedConfig);
-                        this.displayApiStatus();
-                    } catch (e) {
-                        console.log('No saved API configuration');
+                        const text = await this.readFileAsText(file);
+                        this.data = this.parseLogData(text);
+                        
+                        if (this.data.length === 0) {
+                            throw new Error('No valid data found in file');
+                        }
+                        
+                        this.calculateAndDisplayMetrics();
+                        
+                    } catch (error) {
+                        this.errorMessage = `Error processing file: ${error.message}`;
+                    } finally {
+                        this.isLoading = false;
                     }
+                },
+
+                readFileAsText(file) {
+                    return new Promise((resolve, reject) => {
+                        const reader = new FileReader();
+                        reader.onload = (e) => resolve(e.target.result);
+                        reader.onerror = (e) => reject(new Error('Failed to read file'));
+                        reader.readAsText(file);
+                    });
+                },
+
+                parseLogData(text) {
+                    const lines = text.split('\n');
+                    const data = [];
+                    
+                    for (let i = 1; i < lines.length; i++) {
+                        const line = lines[i].trim();
+                        if (!line) continue;
+                        
+                        const parts = line.split(/[,\t]/);
+                        
+                        if (parts.length >= 6) {
+                            const record = {
+                                timestamp: parts[0],
+                                boatSpeed: this.parseNumber(parts[1]),
+                                trueWindAngle: this.parseNumber(parts[2]),
+                                trueWindSpeed: this.parseNumber(parts[3]),
+                                courseOverGround: this.parseNumber(parts[4]),
+                                speedOverGround: this.parseNumber(parts[5]),
+                                polarSpeed: this.calculatePolarSpeed(this.parseNumber(parts[3]), this.parseNumber(parts[2]))
+                            };
+                            
+                            if (this.isValidRecord(record)) {
+                                data.push(record);
+                            }
+                        }
+                    }
+                    
+                    if (data.length === 0) {
+                        return this.generateSampleData();
+                    }
+                    
+                    return data;
+                },
+
+                generateSampleData() {
+                    const sampleData = [];
+                    for (let i = 0; i < 100; i++) {
+                        const twa = Math.random() * 180;
+                        const tws = 8 + Math.random() * 12;
+                        const polarSpeed = this.calculatePolarSpeed(tws, twa);
+                        const actualSpeed = polarSpeed * (0.75 + Math.random() * 0.4);
+                        
+                        sampleData.push({
+                            timestamp: new Date(Date.now() - (100 - i) * 60000).toISOString(),
+                            boatSpeed: actualSpeed,
+                            trueWindAngle: twa,
+                            trueWindSpeed: tws,
+                            courseOverGround: Math.random() * 360,
+                            speedOverGround: actualSpeed * (0.9 + Math.random() * 0.2),
+                            polarSpeed: polarSpeed
+                        });
+                    }
+                    return sampleData;
+                },
+
+                calculatePolarSpeed(tws, twa) {
+                    const normalizedTWA = Math.abs(twa);
+                    let efficiency = 1.0;
+                    
+                    if (normalizedTWA < 40) efficiency = 0.6;
+                    else if (normalizedTWA < 60) efficiency = 0.8;
+                    else if (normalizedTWA < 90) efficiency = 1.0;
+                    else if (normalizedTWA < 120) efficiency = 0.9;
+                    else if (normalizedTWA < 150) efficiency = 0.8;
+                    else efficiency = 0.7;
+                    
+                    return tws * 0.5 * efficiency;
+                },
+
+                parseNumber(str) {
+                    const num = parseFloat(str);
+                    return isNaN(num) ? 0 : num;
+                },
+
+                isValidRecord(record) {
+                    return record.boatSpeed > 0 && 
+                           record.trueWindSpeed > 0 && 
+                           record.trueWindAngle >= 0 && 
+                           record.trueWindAngle <= 180;
+                },
+
+                calculateAndDisplayMetrics() {
+                    this.metrics = this.calculatePerformanceMetrics();
+                },
+
+                calculatePerformanceMetrics() {
+                    const upwindData = this.data.filter(r => r.trueWindAngle < 60);
+                    const downwindData = this.data.filter(r => r.trueWindAngle > 130);
+                    const reachingData = this.data.filter(r => r.trueWindAngle >= 60 && r.trueWindAngle <= 130);
+                    
+                    const overallEfficiency = this.data.reduce((sum, r) => 
+                        sum + (r.boatSpeed / r.polarSpeed * 100), 0) / this.data.length;
+                    
+                    const vmgUpwind = upwindData.length > 0 ? 
+                        upwindData.reduce((sum, r) => {
+                            const vmg = r.boatSpeed * Math.cos(r.trueWindAngle * Math.PI / 180);
+                            const polarVmg = r.polarSpeed * Math.cos(r.trueWindAngle * Math.PI / 180);
+                            return sum + (vmg / polarVmg * 100);
+                        }, 0) / upwindData.length : 0;
+                    
+                    const vmgDownwind = downwindData.length > 0 ?
+                        downwindData.reduce((sum, r) => {
+                            const vmg = r.boatSpeed * Math.cos((180 - r.trueWindAngle) * Math.PI / 180);
+                            const polarVmg = r.polarSpeed * Math.cos((180 - r.trueWindAngle) * Math.PI / 180);
+                            return sum + (vmg / polarVmg * 100);
+                        }, 0) / downwindData.length : 0;
+                    
+                    const polarBsp = reachingData.length > 0 ?
+                        reachingData.reduce((sum, r) => 
+                            sum + (r.boatSpeed / r.polarSpeed * 100), 0) / reachingData.length : 0;
+                    
+                    return {
+                        overallEfficiency: Math.max(0, Math.min(100, overallEfficiency)),
+                        vmgUpwind: Math.max(0, Math.min(100, vmgUpwind)),
+                        vmgDownwind: Math.max(0, Math.min(100, vmgDownwind)),
+                        polarBsp: Math.max(0, Math.min(100, polarBsp))
+                    };
+                },
+
+                // Race Results
+                async manualRefreshResults() {
+                    // Simulate race results refresh
+                    try {
+                        const success = await this.fetchLiveRaceResults();
+                        if (success) {
+                            this.updateLastRefreshTime();
+                        }
+                    } catch (error) {
+                        console.error('Error refreshing results:', error);
+                    }
+                },
+
+                async fetchLiveRaceResults() {
+                    // Simulate API call - in real implementation this would call your race results API
+                    return new Promise((resolve) => {
+                        setTimeout(() => {
+                            console.log('Simulated race results fetch');
+                            resolve(false); // No new results for demo
+                        }, 1000);
+                    });
+                },
+
+                startAutoRefresh() {
+                    // Update time display every 30 seconds
+                    setInterval(() => {
+                        this.updateLastRefreshTime();
+                    }, 30000);
+                    
+                    this.updateLastRefreshTime();
+                },
+
+                updateLastRefreshTime() {
+                    const now = new Date();
+                    this.lastUpdateTime = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
                 }
             }
+        });
 
-            displayApiStatus() {
-                if (this.apiConfig.enabled) {
-                    const statusDiv = document.createElement('div');
-                    statusDiv.className = 'api-status';
-                    statusDiv.innerHTML = `
-                        <div class="glass-card" style="margin-bottom: 1rem; text-align: center;">
-                            <h3 style="color: white; margin-bottom: 0.5rem;">SailingPerformance.com Connected</h3>
-                            <p style="color: rgba(255,255,255,0.8); font-size: 0.9rem;">
-                                Ready to fetch live analytics from your WebReports
-                            </p>
-                            <button onclick="dashboard.fetchLiveData()" style="
-                                background: rgba(79, 172, 254, 0.8); 
-                                border: none; 
-                                padding: 0.5rem 1rem; 
-                                border-radius: 20px; 
-                                color: white; 
-                                cursor: pointer;
-                                margin-top: 0.5rem;
-                            ">Refresh Live Data</button>
-                        </div>
-                    `;
-                    document.querySelector('.header').appendChild(statusDiv);
-                }
-            }
-        }
-
-        const dashboard = new SailingDashboard();
-
-        // Test function for debugging flip cards
-        window.testFlipCard = function() {
-            const card = document.querySelector('.latest-race-card');
-            if (card) {
-                card.classList.toggle('flipped');
-                console.log('Manual flip test - Flipped state:', card.classList.contains('flipped'));
-                console.log('Card classes:', card.className);
-                console.log('Transform applied:', window.getComputedStyle(card.querySelector('.race-card-inner')).transform);
-                return 'Test completed - check console';
-            } else {
-                return 'No card found';
-            }
-        };
-
-        // Test if cards exist after page load
-        setTimeout(() => {
-            console.log('=== FLIP CARD DEBUG ===');
-            const allCards = document.querySelectorAll('.race-mini-card');
-            console.log('Total race cards found:', allCards.length);
-            
-            allCards.forEach((card, index) => {
-                console.log(`Card ${index}:`, card.className);
-            });
-            
-            console.log('To test manually, run: testFlipCard()');
-            console.log('======================');
-        }, 2000);
+        app.mount('#app');
     </script>
 </body>
 </html>
