@@ -894,6 +894,16 @@
                         "></div>
                         <span style="color: rgba(255,255,255,0.6); font-size: 0.8rem;">Live</span>
                     </div>
+                    <button onclick="dashboard.manualRefreshResults()" style="
+                        background: rgba(79, 172, 254, 0.8);
+                        border: none;
+                        padding: 0.4rem 0.8rem;
+                        border-radius: 15px;
+                        color: white;
+                        cursor: pointer;
+                        font-size: 0.75rem;
+                        transition: all 0.3s ease;
+                    " id="refreshBtn">Refresh</button>
                 </div>
             </div>
 
@@ -1907,10 +1917,171 @@
                 }
             }
 
+            async fetchLiveRaceResults() {
+                try {
+                    console.log('Fetching live race results...');
+                    
+                    // Call our serverless function to fetch ORC results
+                    const response = await fetch('/api/fetch-results', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            eventId: 'andros2025',
+                            classId: 'ORC'
+                        })
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    
+                    const data = await response.json();
+                    
+                    if (data.success && data.results) {
+                        console.log('Live results fetched:', data.results.length, 'boats');
+                        this.updateDashboardWithLiveResults(data.results);
+                        this.showNotification('Live results updated!');
+                        return true;
+                    } else {
+                        throw new Error(data.message || 'No results data received');
+                    }
+                    
+                } catch (error) {
+                    console.error('Error fetching live results:', error);
+                    this.showNotification('Unable to fetch live results - showing demo data');
+                    return false;
+                }
+            }
+
+            updateDashboardWithLiveResults(results) {
+                console.log('Updating dashboard with live results...');
+                
+                // Find our configured boat in the results
+                const ourBoat = results.find(boat => 
+                    boat.name.toUpperCase().includes(this.config.sailboatName.toUpperCase()) ||
+                    this.config.sailboatName.toUpperCase().includes(boat.name.toUpperCase())
+                );
+                
+                if (ourBoat) {
+                    console.log('Found our boat:', ourBoat.name, 'Position:', ourBoat.position);
+                    
+                    // Update latest race results
+                    document.getElementById('latestRaceName').textContent = 'Race 1 - Andros';
+                    document.getElementById('latestPosition').textContent = ourBoat.position;
+                    document.getElementById('latestRaceDate').textContent = 'Aug 29, 2025';
+                    
+                    // Calculate deltas
+                    const boatAhead = results.find(boat => parseInt(boat.position) === parseInt(ourBoat.position) - 1);
+                    const boatBehind = results.find(boat => parseInt(boat.position) === parseInt(ourBoat.position) + 1);
+                    
+                    document.getElementById('latestDeltaAhead').textContent = 
+                        boatAhead ? `+${(parseFloat(ourBoat.points) - parseFloat(boatAhead.points)).toFixed(1)}` : '—';
+                    document.getElementById('latestDeltaBehind').textContent = 
+                        boatBehind ? `-${(parseFloat(boatBehind.points) - parseFloat(ourBoat.points)).toFixed(1)}` : '—';
+                    
+                    // Update overall standings
+                    document.getElementById('overallPosition').textContent = ourBoat.position;
+                    document.getElementById('overallPoints').textContent = parseFloat(ourBoat.points).toFixed(1);
+                    document.getElementById('overallNet').textContent = parseFloat(ourBoat.points).toFixed(1);
+                    document.getElementById('overallRaces').textContent = '1 race';
+                    
+                } else {
+                    console.log('Boat not found in results:', this.config.sailboatName);
+                    this.showNotification(`Boat "${this.config.sailboatName}" not found in current results`);
+                }
+                
+                // Update race results back sides with full results
+                this.updateRaceResultsDisplay(results);
+                this.updateSeriesStandingsDisplay(results);
+                
+                // Update last refresh time
+                this.updateLastRefreshTime();
+                
+                // Change status indicators
+                document.querySelector('#racingResultsCard .race-result-section h4 span').textContent = 'Live Results';
+                document.querySelector('#racingResultsCard .race-result-section h4 span').style.background = 'rgba(81, 207, 102, 0.8)';
+            }
+
+            updateRaceResultsDisplay(results) {
+                const backSide = document.getElementById('latestRaceBack');
+                const ourBoatName = this.config.sailboatName.toUpperCase();
+                
+                let html = `
+                    <div class="race-results-header">Race 1 - Andros (August 29, 2025)</div>
+                    <div style="font-size: 0.6rem; color: rgba(255,255,255,0.5); margin-bottom: 0.5rem; text-align: center;">
+                        Pos | Yacht Name | Sail No | Points
+                    </div>
+                `;
+                
+                results.forEach((boat, index) => {
+                    const isOurBoat = boat.name.toUpperCase().includes(ourBoatName) || ourBoatName.includes(boat.name.toUpperCase());
+                    const highlightClass = isOurBoat ? 'boat-highlight' : '';
+                    
+                    html += `
+                        <div class="race-result-row ${highlightClass}" style="grid-template-columns: 0.8fr 2.5fr 1fr 1fr; font-size: 0.6rem;">
+                            <div class="position-cell">${boat.position}</div>
+                            <div class="boat-name-cell" title="${boat.name}">${boat.name}</div>
+                            <div class="time-cell">${boat.sailNo || '—'}</div>
+                            <div class="delta-cell">${parseFloat(boat.points).toFixed(1)}</div>
+                        </div>
+                    `;
+                });
+                
+                backSide.innerHTML = html;
+            }
+
+            updateSeriesStandingsDisplay(results) {
+                const backSide = document.getElementById('seriesStandingsBack');
+                const ourBoatName = this.config.sailboatName.toUpperCase();
+                
+                let html = `
+                    <div class="standings-header">Andros 2025 - Overall Standings</div>
+                `;
+                
+                results.slice(0, 10).forEach((boat, index) => { // Show top 10
+                    const isOurBoat = boat.name.toUpperCase().includes(ourBoatName) || ourBoatName.includes(boat.name.toUpperCase());
+                    const highlightClass = isOurBoat ? 'standings-highlight' : '';
+                    
+                    html += `
+                        <div class="standings-row ${highlightClass}">
+                            <div class="standings-position">${boat.position}</div>
+                            <div class="standings-boat" title="${boat.name}">${boat.name}</div>
+                            <div class="standings-points">${parseFloat(boat.points).toFixed(1)}</div>
+                            <div class="race-points">${parseFloat(boat.points).toFixed(1)}</div>
+                            <div class="race-points">—</div>
+                            <div class="race-points">—</div>
+                            <div class="standings-points">${parseFloat(boat.points).toFixed(1)}</div>
+                        </div>
+                    `;
+                });
+                
+                if (results.length > 10) {
+                    html += `<div style="text-align: center; color: rgba(255,255,255,0.5); font-size: 0.65rem; margin-top: 0.5rem;">
+                        +${results.length - 10} more boats
+                    </div>`;
+                }
+                
+                backSide.innerHTML = html;
+            }
+
             startAutoRefresh() {
+                // Initial fetch of live results
+                setTimeout(() => {
+                    this.fetchLiveRaceResults();
+                }, 2000);
+                
+                // Auto-refresh every 5 minutes
+                setInterval(() => {
+                    this.fetchLiveRaceResults();
+                }, 5 * 60 * 1000);
+                
+                // Update time display every 30 seconds
                 setInterval(() => {
                     this.updateLastRefreshTime();
                 }, 30000);
+                
                 this.updateLastRefreshTime();
             }
 
@@ -2103,11 +2274,37 @@
                 this.closeConfigModal();
             }
 
+            async manualRefreshResults() {
+                const refreshBtn = document.getElementById('refreshBtn');
+                const originalText = refreshBtn.textContent;
+                
+                // Show loading state
+                refreshBtn.textContent = 'Refreshing...';
+                refreshBtn.disabled = true;
+                refreshBtn.style.background = 'rgba(255, 255, 255, 0.3)';
+                
+                const success = await this.fetchLiveRaceResults();
+                
+                // Reset button state
+                setTimeout(() => {
+                    refreshBtn.textContent = originalText;
+                    refreshBtn.disabled = false;
+                    refreshBtn.style.background = 'rgba(79, 172, 254, 0.8)';
+                }, 1000);
+            }
+
             showNotification(message) {
                 const notificationBar = document.getElementById('notificationBar');
-                notificationBar.querySelector('span').textContent = message;
-                notificationBar.classList.remove('hidden');
-                this.notifications.lastNotificationTime = new Date();
+                if (notificationBar) {
+                    notificationBar.querySelector('span').textContent = message;
+                    notificationBar.classList.remove('hidden');
+                    this.notifications.lastNotificationTime = new Date();
+                    
+                    // Auto-hide after 5 seconds
+                    setTimeout(() => {
+                        notificationBar.classList.add('hidden');
+                    }, 5000);
+                }
             }
 
             dismissNotification() {
