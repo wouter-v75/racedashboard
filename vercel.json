@@ -2,6 +2,9 @@
   "functions": {
     "api/auth.js": {
       "maxDuration": 10
+    },
+    "api/fetch-results.js": {
+      "maxDuration": 30
     }
   },
   "headers": [
