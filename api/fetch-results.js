@@ -13,11 +13,17 @@ export default async function handler(req, res) {
     return res.status(405).json({ success: false, message: 'Method not allowed' });
   }
 
-  const { eventId, classId } = req.body;
+  const { eventId, classId, raceId } = req.body;
 
   try {
-    // Fetch results from ORC website
-    const orcUrl = `https://data.orc.org/public/WEV.dll?action=series&eventid=${eventId}&classid=${classId}`;
+    let orcUrl;
+    if (raceId) {
+      // Individual race results with corrected times
+      orcUrl = `https://data.orc.org/public/WEV.dll?action=race&eventid=${eventId}&raceid=${raceId}`;
+    } else {
+      // Overall series standings
+      orcUrl = `https://data.orc.org/public/WEV.dll?action=series&eventid=${eventId}&classid=${classId}`;
+    }
     
     console.log('Fetching from:', orcUrl);
     
@@ -34,14 +40,15 @@ export default async function handler(req, res) {
 
     const html = await response.text();
     
-    // Parse the HTML to extract race results
-    const results = parseORCResults(html);
+    // Parse the HTML based on result type
+    const results = raceId ? parseRaceResults(html) : parseOverallResults(html);
     
     console.log(`Parsed ${results.length} results`);
     
     return res.status(200).json({
       success: true,
       results: results,
+      resultType: raceId ? 'race' : 'overall',
       lastUpdated: new Date().toISOString()
     });
 
@@ -55,30 +62,25 @@ export default async function handler(req, res) {
   }
 }
 
-function parseORCResults(html) {
+function parseOverallResults(html) {
   const results = [];
   
   try {
-    // Extract table data from HTML - this is a simplified parser
-    // The ORC results come in a table format
-    
-    // Look for table rows with race data
+    // Parse overall series standings table
     const tableRowRegex = /<tr[^>]*>.*?<\/tr>/gis;
     const matches = html.match(tableRowRegex);
     
     if (!matches) {
-      console.log('No table rows found in HTML');
+      console.log('No table rows found in overall results');
       return results;
     }
 
     for (const row of matches) {
-      // Extract cell data from each row
       const cellRegex = /<td[^>]*>(.*?)<\/td>/gis;
       const cells = [];
       let cellMatch;
       
       while ((cellMatch = cellRegex.exec(row)) !== null) {
-        // Clean HTML tags and whitespace
         const cellText = cellMatch[1].replace(/<[^>]*>/g, '').trim();
         cells.push(cellText);
       }
@@ -98,7 +100,68 @@ function parseORCResults(html) {
     }
     
   } catch (error) {
-    console.error('Error parsing ORC results:', error);
+    console.error('Error parsing overall results:', error);
+  }
+  
+  return results;
+}
+
+function parseRaceResults(html) {
+  const results = [];
+  
+  try {
+    // Parse individual race results table with corrected times
+    const tableRowRegex = /<tr[^>]*>.*?<\/tr>/gis;
+    const matches = html.match(tableRowRegex);
+    
+    if (!matches) {
+      console.log('No table rows found in race results');
+      return results;
+    }
+
+    for (const row of matches) {
+      const cellRegex = /<td[^>]*>(.*?)<\/td>/gis;
+      const cells = [];
+      let cellMatch;
+      
+      while ((cellMatch = cellRegex.exec(row)) !== null) {
+        const cellText = cellMatch[1].replace(/<[^>]*>/g, '').trim();
+        cells.push(cellText);
+      }
+      
+      // Race results have: Pos, Name, Sail No, Skipper, Finish Time, Elapsed, Corrected, Penalty, Points
+      if (cells.length >= 6 && cells[0] && !isNaN(parseInt(cells[0]))) {
+        results.push({
+          position: cells[0],
+          name: cells[1] || 'Unknown',
+          sailNo: cells[2] || '',
+          skipper: cells[3] || '',
+          finishTime: cells[4] || '',
+          elapsed: cells[5] || '',
+          correctedTime: cells[6] || '',
+          penalty: cells[7] || '0',
+          points: cells[8] || '0'
+        });
+      }
+      
+      // Handle DNF entries which have fewer columns
+      else if (cells.length >= 3 && cells[0] && !isNaN(parseInt(cells[0])) && cells[4] === 'DNF') {
+        results.push({
+          position: cells[0],
+          name: cells[1] || 'Unknown',
+          sailNo: cells[2] || '',
+          skipper: cells[3] || '',
+          finishTime: 'DNF',
+          elapsed: 'DNF',
+          correctedTime: 'DNF',
+          penalty: '0',
+          points: cells[5] || '6.00'
+        });
+      }
+    }
+    
+  } catch (error) {
+    console.error('Error parsing race results:', error);
   }
   
   return results;
